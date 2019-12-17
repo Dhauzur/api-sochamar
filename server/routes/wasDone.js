@@ -1,42 +1,42 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
-const ToDo = require('../models/wasDone');
+const Activities = require('../models/activities');
 const app = express();
 
-app.get('/wasDone', function(req, res) {
+app.get('/activities', function(req, res) {
   let from = req.query.from || 0;
   from = Number(from);
-  let to = req.query.to || 5;
+  let to = req.query.to || 50;
   to = Number(to);
-  ToDo.find(null, 'workPlace whatWasDone ncamas date')
+  Activities.find(null)
     .skip(from)
     .limit(to)
-    .exec((err, todoes) => {
+    .exec((err, activities) => {
       if (err) return res.status(400).json({
           ok: false,
           err
       });
 
-      ToDo.count({ estado: true }, (err, conteo) => {
+      Activities.count({ estado: true }, (err, conteo) => {
           res.json({
               ok: true,
-              todoes,
+              activities,
               cuantos: conteo
           });
       });
     });
 });
 
-app.post('/wasDone/create', function(req, res) {
+app.post('/activities/create', function(req, res) {
   let body = req.body;
-  let toDo = new ToDo({
+  let activities = new Activities({
       workPlace: body.workPlace,
       whatWasDone: body.whatWasDone,
       ncamas: body.ncamas,
       date: body.date
   });
-  toDo.save((err, tododb) => {
+  activities.save((err, activitiesDB) => {
     if (err) {
       return res.status(400).json({
           ok: false,
@@ -45,7 +45,7 @@ app.post('/wasDone/create', function(req, res) {
     }
     res.json({
       ok: true,
-      ToDo: tododb
+      activities: activitiesDB
     });
   });
 });

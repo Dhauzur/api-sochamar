@@ -14,7 +14,7 @@ let toDo = new Schema({
         type: String
     },
     whatWasDone: {
-        type: [String]
+        type: Array
     },
     ncamas: {
         type: Number,
@@ -24,6 +24,10 @@ let toDo = new Schema({
       type: Date,
       default: Date.now
     },
+    state: {
+      type: Boolean,
+      default: false
+    }
 });
 
 toDo.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
