@@ -9,9 +9,9 @@ const bodyParser = require('body-parser');
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(require('./routes/wasDone'));
+app.use(require('./routes/activities'));
 app.use(require('./routes/usuario'));
-app.use(require('./routes/stance'));
+app.use(require('./routes/lodging'));
 app.use(require('./routes/rooms'));
 app.use(require('./routes/config'));
 

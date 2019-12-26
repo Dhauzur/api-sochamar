@@ -14,15 +14,15 @@ app.get('/activities', function(req, res) {
     .limit(to)
     .exec((err, activities) => {
       if (err) return res.status(400).json({
-          ok: false,
+          status: false,
           err
       });
 
-      Activities.count({ estado: true }, (err, conteo) => {
+      Activities.count({ estado: true }, (err, length) => {
           res.json({
-              ok: true,
+              status: true,
               activities,
-              cuantos: conteo
+              length
           });
       });
     });
@@ -39,16 +39,26 @@ app.post('/activities/create', function(req, res) {
   activities.save((err, activitiesDB) => {
     if (err) {
       return res.status(400).json({
-          ok: false,
+          status: false,
           err
       });
     }
     res.json({
-      ok: true,
+      status: true,
       activities: activitiesDB
     });
   });
 });
 
+
+app.delete('/activities/delete/all', function(req, res) {
+  Activities.deleteMany({}, function (err, activities) {
+    if (err) return res.status(400).json({ ok: false, err });
+    res.json({
+      deleteAll: true,
+      deletedCount: activities.deletedCount,
+    });
+  });
+});
 
 module.exports = app;

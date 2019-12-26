@@ -90,6 +90,15 @@ app.delete('/usuario/:id', function(req, res) {
   });
 });
 
+app.delete('/users/delete/all', function(req, res) {
+  Usuario.deleteMany({}, function (err, users) {
+    if (err) return res.status(400).json({ ok: false, err });
+    res.json({
+      deleteAll: true,
+      deletedCount: users.deletedCount,
+    });
+  });
+});
 
 
 module.exports = app;

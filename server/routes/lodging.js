@@ -1,54 +1,55 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
-const Stance = require('../models/stance');
+const Lodging = require('../models/lodging');
 const app = express();
 
-app.delete('/stances/delete/all', function(req, res) {
-  Stance.deleteMany({}, function (err, stances) {
+app.delete('/lodging/delete/all', function(req, res) {
+  Lodging.deleteMany({}, function (err, lodging) {
     if (err) return res.status(400).json({ ok: false, err });
     res.json({
       deleteAll: true,
-      deletedCount: stances.deletedCount,
+      deletedCount: lodging.deletedCount,
     });
   });
 });
 
-app.get('/stances', function(req, res) {
+app.get('/lodgings', function(req, res) {
   let from = req.query.from || 0;
   from = Number(from);
   let to = req.query.to || 50;
   to = Number(to);
-  Stance.find(null)
+  Lodging.find(null)
     .skip(from)
     .limit(to)
-    .exec((err, stances) => {
+    .exec((err, lodgings) => {
       if (err) return res.status(400).json({ ok: false, err });
-      Stance.count({ estado: true }, (err, conteo) => {
+      Lodging.count({}, (err, length) => {
         res.json({
-            ok: true,
-            stances,
-            cuantos: conteo
+            status: true,
+            lodgings,
+            length
         });
       });
     });
 });
 
-app.post('/stances/create', function(req, res) {
+app.post('/lodging/create', function(req, res) {
   let body = req.body;
-  let stances = new Stance({
+  let lodging = new Lodging({
       id: body.id,
       idGroup: body.idGroup,
-      startDate: body.startDate,
-      endDate: body.endDate,
+      start: body.start,
+      end: body.end,
+      content: body.idGroup + ' Hab.' ,
       numberPassanger: body.numberPassanger,
       typePension: body.typePension
   });
-  stances.save((err, stancesDB) => {
+  lodging.save((err, lodgingDB) => {
     if (err) return res.status(400).json({ ok: false, err });
     res.json({
-      ok: true,
-      stances: stancesDB
+      status: true,
+      lodging: lodgingDB
     });
   });
 });

@@ -9,17 +9,17 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 
 let Schema = mongoose.Schema;
-let stance = new Schema({
+let lodging = new Schema({
   id: {
     type: String
   },
   idGroup: {
     type: Number
   },
-  startDate: {
+  start: {
     type: Date,
   },
-  endDate: {
+  end: {
     type: Date,
   },
   numberPassanger: {
@@ -28,7 +28,10 @@ let stance = new Schema({
   typePension: {
     type: Array
   },
+  content: {
+    type: String
+  }
 });
 
-stance.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
-module.exports = mongoose.model('stance', stance);
+lodging.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
+module.exports = mongoose.model('lodging', lodging);

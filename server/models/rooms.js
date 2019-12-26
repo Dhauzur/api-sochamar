@@ -8,7 +8,7 @@ let rooms = new Schema({
     type: String
   },
   name: {
-    type: Date,
+    type: String,
   },
   numberPassangerMax: {
     type: Number
