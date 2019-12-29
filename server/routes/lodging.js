@@ -19,16 +19,16 @@ app.get('/lodgings', function(req, res) {
   from = Number(from);
   let to = req.query.to || 50;
   to = Number(to);
-  Lodging.find(null)
+  Lodging.find({})
     .skip(from)
     .limit(to)
     .exec((err, lodgings) => {
       if (err) return res.status(400).json({ ok: false, err });
       Lodging.count({}, (err, length) => {
         res.json({
-            status: true,
-            lodgings,
-            length
+          status: true,
+          lodgings,
+          length
         });
       });
     });
@@ -38,12 +38,10 @@ app.post('/lodging/create', function(req, res) {
   let body = req.body;
   let lodging = new Lodging({
       id: body.id,
-      idGroup: body.idGroup,
+      group: body.group,
       start: body.start,
       end: body.end,
-      content: body.idGroup + ' Hab.' ,
-      numberPassanger: body.numberPassanger,
-      typePension: body.typePension
+      service: body.service,
   });
   lodging.save((err, lodgingDB) => {
     if (err) return res.status(400).json({ ok: false, err });

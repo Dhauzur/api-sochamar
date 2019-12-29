@@ -13,7 +13,7 @@ let lodging = new Schema({
   id: {
     type: String
   },
-  idGroup: {
+  group: {
     type: Number
   },
   start: {
@@ -22,14 +22,8 @@ let lodging = new Schema({
   end: {
     type: Date,
   },
-  numberPassanger: {
-    type: Number
-  },
-  typePension: {
+  service: {
     type: Array
-  },
-  content: {
-    type: String
   }
 });
 

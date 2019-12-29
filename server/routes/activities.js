@@ -18,10 +18,10 @@ app.get('/activities', function(req, res) {
           err
       });
 
-      Activities.count({ estado: true }, (err, length) => {
+      Activities.count(null, (err, length) => {
           res.json({
               status: true,
-              activities,
+              activities: activities.reverse(),
               length
           });
       });

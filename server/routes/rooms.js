@@ -19,16 +19,16 @@ app.get('/rooms', function(req, res) {
   from = Number(from);
   let to = req.query.to || 50;
   to = Number(to);
-  Rooms.find(null)
+  Rooms.find({})
   .skip(from)
   .limit(to)
   .exec((err, rooms) => {
     if (err) return res.status(400).json({ ok: false, err });
-    Rooms.count({ estado: true }, (err, conteo) => {
+    Rooms.count({}, (err, length) => {
       res.json({
-        ok: true,
+        status: true,
         rooms,
-        length: conteo
+        length
       });
     });
   });
