@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const moment = require('moment');
 const _ = require('underscore');
 const Lodging = require('../models/lodging');
 const app = express();
@@ -34,13 +35,15 @@ app.get('/lodgings', function(req, res) {
     });
 });
 
+
+
 app.post('/lodging/create', function(req, res) {
   let body = req.body;
   let lodging = new Lodging({
       id: body.id,
       group: body.group,
-      start: body.start,
-      end: body.end,
+      start: moment(body.start).hours(16).format('YYYY-MM-DD'),
+      end: moment(body.end).hours(12).format('YYYY-MM-DD'),
       service: body.service,
   });
   lodging.save((err, lodgingDB) => {

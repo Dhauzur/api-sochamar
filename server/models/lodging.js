@@ -17,10 +17,10 @@ let lodging = new Schema({
     type: Number
   },
   start: {
-    type: Date,
+    type: String,
   },
   end: {
-    type: Date,
+    type: String,
   },
   service: {
     type: Array
