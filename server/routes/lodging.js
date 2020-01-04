@@ -45,6 +45,7 @@ app.post('/lodging/create', function(req, res) {
       start: moment(body.start).hours(16).format('YYYY-MM-DD'),
       end: moment(body.end).hours(12).format('YYYY-MM-DD'),
       service: body.service,
+      company: body.company,
   });
   lodging.save((err, lodgingDB) => {
     if (err) return res.status(400).json({ ok: false, err });
