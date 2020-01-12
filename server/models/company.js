@@ -12,6 +12,10 @@ let company = new Schema({
   },
   rut: {
     type: String,
+  },
+  prices: {
+    type: Array,
+    default: [2000,3000,3000,10500]
   }
 });
 

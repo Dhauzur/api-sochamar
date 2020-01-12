@@ -38,7 +38,8 @@ app.post('/company/create', function(req, res) {
   let body = req.body;
   let company = new Company({
     rut: body.rut,
-    name: body.name
+    name: body.name,
+    prices: body.prices
   });
   company.save((err, companyDB) => {
     if (err) return res.status(400).json({ ok: false, err });
