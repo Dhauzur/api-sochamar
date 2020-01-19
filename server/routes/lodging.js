@@ -5,8 +5,20 @@ const _ = require('underscore');
 const Lodging = require('../models/lodging');
 const app = express();
 
-app.delete('/lodging/delete/all', function(req, res) {
-  Lodging.deleteMany({}, function (err, lodging) {
+app.delete('/lodging/delete/:id', function(req, res) {
+  let id = req.params.id;
+  Lodging.deleteMany({ id }, function (err, lodging) {
+    if (err) return res.status(400).json({ ok: false, err });
+    res.json({
+      deleteAll: true,
+      deletedCount: lodging.deletedCount,
+    });
+  });
+});
+
+app.delete('/lodging/delete/all/:company', function(req, res) {
+  let company = req.params.company;
+  Lodging.deleteMany({ company }, function (err, lodging) {
     if (err) return res.status(400).json({ ok: false, err });
     res.json({
       deleteAll: true,
