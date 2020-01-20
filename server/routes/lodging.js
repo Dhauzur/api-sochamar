@@ -53,17 +53,27 @@ app.get('/lodgings', function(req, res) {
 
 
 
-app.post('/lodging/create', function(req, res) {
+app.post('/lodging', function(req, res) {
   let body = req.body;
-  let lodging = new Lodging({
-      id: body.id,
-      group: body.group,
-      start: moment(body.start).hours(16).format('YYYY-MM-DD'),
-      end: moment(body.end).hours(12).format('YYYY-MM-DD'),
-      service: body.service,
-      company: body.company,
-  });
-  lodging.save((err, lodgingDB) => {
+  // let lodging = new Lodging({
+  //     id: body.id,
+  //     group: body.group,
+  //     start: moment(body.start).hours(16).format('YYYY-MM-DD'),
+  //     end: moment(body.end).hours(12).format('YYYY-MM-DD'),
+  //     service: body.service,
+  //     company: body.company,
+  // });
+  Lodging.findOneAndUpdate({
+    id: body.id
+  }, {
+    group: body.group,
+    start: moment(body.start).hours(16).format('YYYY-MM-DD'),
+    end: moment(body.end).hours(12).format('YYYY-MM-DD'),
+    service: body.service,
+    company: body.company,
+  }, {
+    upsert: true
+  }, (err, lodgingDB) => {
     if (err) return res.status(400).json({ ok: false, err });
     res.json({
       status: true,
