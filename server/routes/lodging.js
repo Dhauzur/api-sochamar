@@ -38,13 +38,7 @@ app.delete('/lodging/delete/all/:company', function(req, res) {
 });
 
 app.get('/lodgings', function(req, res) {
-  let from = req.query.from || 0;
-  from = Number(from);
-  let to = req.query.to || 50;
-  to = Number(to);
   Lodging.find({})
-    .skip(from)
-    .limit(to)
     .exec((err, lodgings) => {
       if (err) return res.status(400).json({ ok: false, err });
       Lodging.count({}, (err, length) => {
