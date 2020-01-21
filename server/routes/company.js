@@ -15,13 +15,7 @@ app.delete('/company/delete/all', function(req, res) {
 });
 
 app.get('/company', function(req, res) {
-  let from = req.query.from || 0;
-  from = Number(from);
-  let to = req.query.to || 50;
-  to = Number(to);
   Company.find({})
-  .skip(from)
-  .limit(to)
   .exec((err, company) => {
     if (err) return res.status(400).json({ ok: false, err });
     Company.count({}, (err, length) => {
@@ -39,7 +33,7 @@ app.post('/company/create', function(req, res) {
   let company = new Company({
     rut: body.rut,
     name: body.name,
-    prices: body.prices
+    prices: JSON.parse(body.prices)
   });
   company.save((err, companyDB) => {
     if (err) return res.status(400).json({ ok: false, err });

@@ -15,13 +15,7 @@ app.delete('/rooms/delete/all', function(req, res) {
 });
 
 app.get('/rooms', function(req, res) {
-  let from = req.query.from || 0;
-  from = Number(from);
-  let to = req.query.to || 50;
-  to = Number(to);
   Rooms.find({})
-  .skip(from)
-  .limit(to)
   .exec((err, rooms) => {
     if (err) return res.status(400).json({ ok: false, err });
     Rooms.count({}, (err, length) => {

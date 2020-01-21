@@ -37,7 +37,7 @@ app.delete('/lodging/delete/companies/:company', function(req, res) {
   });
 });
 
-app.get('/lodgings', function(req, res) {
+app.get('/lodging', function(req, res) {
   Lodging.find({})
     .exec((err, lodgings) => {
       if (err) return res.status(400).json({ ok: false, err });
