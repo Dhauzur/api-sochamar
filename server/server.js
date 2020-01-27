@@ -15,6 +15,7 @@ app.use(require('./routes/lodging'));
 app.use(require('./routes/rooms'));
 app.use(require('./routes/config'));
 app.use(require('./routes/company'));
+app.use(require('./routes/reports'));
 
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, (err, res) => {
     if (err) throw err;
