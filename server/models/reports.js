@@ -14,7 +14,7 @@ let reports = new Schema({
       type: String
     },
     whatWasDone: {
-        type: Array
+        type: String
     },
     date: {
       type: Date,
