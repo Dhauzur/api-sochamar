@@ -13,12 +13,10 @@ app.use(bodyParser.json());
 
 routes(app);
 
-app.use(require('./routes/usuario'));
-app.use(require('./routes/lodging'));
-app.use(require('./routes/rooms'));
-app.use(require('./routes/config'));
-app.use(require('./routes/company'));
 app.use(require('./routes/reports'));
+app.use(require('./routes/usuario'));
+app.use(require('./routes/config'));
+
 
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, (err, res) => {
     if (err) throw err;
