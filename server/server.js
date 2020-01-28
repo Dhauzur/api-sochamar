@@ -13,8 +13,6 @@ app.use(bodyParser.json());
 
 routes(app);
 
-app.use(require('./routes/reports'));
-app.use(require('./routes/usuario'));
 app.use(require('./routes/config'));
 
 
