@@ -13,9 +13,6 @@ app.use(bodyParser.json());
 
 routes(app);
 
-app.use(require('./routes/config'));
-
-
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, (err, res) => {
     if (err) throw err;
     console.log('Base de datos ONLINE');
