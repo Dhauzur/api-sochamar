@@ -1,19 +1,18 @@
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
-
-const Usuario = require('../models/usuario');
+const User = require('../models/user');
 
 const getAll = (res) => {
-    Usuario.find({estado: true}, 'nombre email role estado google img')
-        .exec((err, usuarios) => {
+    User.find({estado: true}, 'nombre email role estado google img')
+        .exec((err, Users) => {
             if (err) return res.status(400).json({
                 ok: false,
                 err
             });
-            Usuario.count({estado: true}, (err, conteo) => {
+            User.count({estado: true}, (err, conteo) => {
                 res.json({
                     ok: true,
-                    usuarios,
+                    Users,
                     cuantos: conteo
                 });
             });
@@ -22,20 +21,20 @@ const getAll = (res) => {
 
 const createOne = (req, res) => {
     let body = req.body;
-    let usuario = new Usuario({
+    let User = new User({
         nombre: body.nombre,
         email: body.email,
         password: bcrypt.hashSync(body.password, 10),
         role: body.role
     });
-    usuario.save((err, usuarioDB) => {
+    User.save((err, UserDB) => {
         if (err) return res.status(400).json({
             ok: false,
             err
         });
         res.json({
             ok: true,
-            usuario: usuarioDB
+            User: UserDB
         });
     });
 };
@@ -43,44 +42,44 @@ const createOne = (req, res) => {
 const editOne = (req, res) => {
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
-    Usuario.findByIdAndUpdate(id, body, {new: true, runValidators: true}, (err, usuarioDB) => {
+    User.findByIdAndUpdate(id, body, {new: true, runValidators: true}, (err, UserDB) => {
         if (err) return res.status(400).json({
             ok: false,
             err
         });
         res.json({
             ok: true,
-            usuario: usuarioDB
+            User: UserDB
         });
     })
 };
 
 const deleteOne = (req, res) => {
     let id = req.params.id;
-    // Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
+    // User.findByIdAndRemove(id, (err, UserBorrado) => {
     let cambiaEstado = {
         estado: false
     };
-    Usuario.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, usuarioBorrado) => {
+    User.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, DeletedUser) => {
         if (err) return res.status(400).json({
             ok: false,
             err
         });
-        if (!usuarioBorrado) return res.status(400).json({
+        if (!DeletedUser) return res.status(400).json({
             ok: false,
             err: {
-                message: 'Usuario no encontrado'
+                message: 'User no encontrado'
             }
         });
         res.json({
             ok: true,
-            usuario: usuarioBorrado
+            User: DeletedUser
         });
     });
 };
 
 const deleteAll = (res) => {
-    Usuario.deleteMany({}, function (err, users) {
+    User.deleteMany({}, function (err, users) {
         if (err) return res.status(400).json({ ok: false, err });
         res.json({
             deleteAll: true,
@@ -89,7 +88,7 @@ const deleteAll = (res) => {
     });
 };
 
-const usuariosService = {
+const UsersService = {
     getAll,
     createOne,
     deleteAll,
@@ -97,4 +96,4 @@ const usuariosService = {
     deleteOne
 };
 
-module.exports = Object.freeze(usuariosService);
+module.exports = Object.freeze(UsersService);
