@@ -2,20 +2,16 @@ require('./config/config');
 
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors')
+const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
+const routes = require('./routes/index');
 
-app.use(cors())
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-app.use(require('./routes/activities'));
-app.use(require('./routes/usuario'));
-app.use(require('./routes/lodging'));
-app.use(require('./routes/rooms'));
-app.use(require('./routes/config'));
-app.use(require('./routes/company'));
-app.use(require('./routes/reports'));
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+routes(app);
 
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, (err, res) => {
     if (err) throw err;

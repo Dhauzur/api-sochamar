@@ -1,48 +1,12 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
-const _ = require('underscore');
-const Company = require('../models/company');
-const app = express();
 
-app.delete('/company/delete/all', function(req, res) {
-  Company.deleteMany({}, function (err, company) {
-    if (err) return res.status(400).json({ ok: false, err });
-    res.json({
-      deleteAll: true,
-      deletedCount: company.deletedCount,
-    });
-  });
-});
+const companyRouter = express.Router();
+const companyController = require('../controllers/company');
 
-app.get('/company', function(req, res) {
-  Company.find({})
-  .exec((err, company) => {
-    if (err) return res.status(400).json({ ok: false, err });
-    Company.count({}, (err, length) => {
-      res.json({
-        status: true,
-        company,
-        length
-      });
-    });
-  });
-});
+/*Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
+/*Los verbos de por si ya estan dando a entender la accion que se realiza sobre esta ruta*/
+companyRouter.get('/company', companyController.getAll);
+companyRouter.post('/company/create', companyController.create);
+companyRouter.delete('/company/delete/all', companyController.deleteAll);
 
-app.post('/company/create', function(req, res) {
-  let body = req.body;
-  let company = new Company({
-    rut: body.rut,
-    name: body.name,
-    prices: JSON.parse(body.prices)
-  });
-  company.save((err, companyDB) => {
-    if (err) return res.status(400).json({ ok: false, err });
-    res.json({
-      ok: true,
-      company: companyDB
-    });
-  });
-});
-
-
-module.exports = app;
+module.exports = companyRouter;
