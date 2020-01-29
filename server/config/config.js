@@ -16,8 +16,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 let urlDB
 
 if (process.env.NODE_ENV == 'dev') {
-    /*urlDB = 'mongodb://localhost:27017/sochamar'*/
-    urlDB = 'mongodb+srv://silvita:Perez123@api-sochamar-awvck.mongodb.net/sochamar';
+    urlDB = 'mongodb://localhost:27017/sochamar'
 } else {
     urlDB = 'mongodb+srv://silvita:Perez123@api-sochamar-awvck.mongodb.net/sochamar';
 }
