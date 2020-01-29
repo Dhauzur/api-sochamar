@@ -12,11 +12,11 @@ const apiVersion = '/api/v1';
 /*Con esto ya podemos olvidarnos de configurar las rutas en server.js o app.js*/
 /*esto mismo puede ser aplicado con las configuraciones de la app, ej: cors, etc*/
 module.exports = (app) => {
-    app.use(`/`, companyRoutes);
-    app.use(`/`, activitiesRoutes);
-    app.use(`/`, lodgingRoutes);
-    app.use(`/`, roomsRoutes);
-    app.use(`/`, reportsRoutes);
-    app.use(`/`, userRoutes);
-    app.use(`/`, configRoutes);
+    app.use(apiVersion, companyRoutes);
+    app.use(apiVersion, activitiesRoutes);
+    app.use(apiVersion, lodgingRoutes);
+    app.use(apiVersion, roomsRoutes);
+    app.use(apiVersion, reportsRoutes);
+    app.use(apiVersion, userRoutes);
+    app.use(apiVersion, configRoutes);
 };
