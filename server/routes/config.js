@@ -7,5 +7,4 @@ const configController = require('../controllers/config');
 /*Los verbos de por si ya estan dando a entender la accion que se realiza sobre esta ruta*/
 configRouter.get('/config', configController.getConfig);
 
-
 module.exports = configRouter;
