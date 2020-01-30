@@ -21,13 +21,12 @@ const getAll = res => {
 	);
 };
 
-const createOne = (req, res) => {
-	let body = req.body;
+const createOne = (user, res) => {
 	let User = new User({
-		nombre: body.nombre,
-		email: body.email,
-		password: bcrypt.hashSync(body.password, 10),
-		role: body.role,
+		nombre: user.nombre,
+		email: user.email,
+		password: bcrypt.hashSync(user.password, 10),
+		role: user.role,
 	});
 	User.save((err, UserDB) => {
 		if (err)

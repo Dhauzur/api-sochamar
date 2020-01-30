@@ -1,5 +1,5 @@
 require('./config/config');
-
+const passport = require('passport');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -10,6 +10,7 @@ const routes = require('./routes/index');
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(passport.initialize());
 
 routes(app);
 
