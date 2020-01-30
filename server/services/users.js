@@ -22,13 +22,14 @@ const getAll = res => {
 };
 
 const createOne = (user, res) => {
-	let User = new User({
+	console.log('Entre');
+	let created = new User({
 		nombre: user.nombre,
 		email: user.email,
 		password: bcrypt.hashSync(user.password, 10),
 		role: user.role,
 	});
-	User.save((err, UserDB) => {
+	created.save((err, UserDB) => {
 		if (err)
 			return res.status(400).json({
 				ok: false,
