@@ -1,24 +1,23 @@
 // ============================
-//  Puerto
+//  Port
 // ============================
 process.env.PORT = process.env.PORT || 3000;
 
-
 // ============================
-//  Entorno
+//  Enviroment
 // ============================
 process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 
-
 // ============================
-//  Base de datos
+//  data base
 // ============================
 let urlDB;
 
 if (process.env.NODE_ENV == 'dev') {
-    urlDB = 'mongodb://localhost:27017/sochamar'
+	urlDB = 'mongodb://localhost:27017/sochamar';
 } else {
-    urlDB = 'mongodb+srv://silvita:Perez123@api-sochamar-awvck.mongodb.net/sochamar';
+	urlDB =
+		'mongodb+srv://silvita:Perez123@api-sochamar-awvck.mongodb.net/sochamar';
 }
 process.env.URLDB = urlDB;
 

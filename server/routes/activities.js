@@ -8,6 +8,9 @@ const activitiesController = require('../controllers/activities');
 activitiesRouter.get('/activities', activitiesController.getAll);
 /*Podemos cambiar el nombre a singular y borrar el /create*/
 activitiesRouter.post('/activities/create', activitiesController.create);
-activitiesRouter.delete('/activities/delete/all', activitiesController.deleteAll);
+activitiesRouter.delete(
+	'/activities/delete/all',
+	activitiesController.deleteAll
+);
 
 module.exports = activitiesRouter;

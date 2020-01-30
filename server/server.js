@@ -14,10 +14,10 @@ app.use(bodyParser.json());
 routes(app);
 
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, (err, res) => {
-    if (err) throw err;
-    console.log('Base de datos ONLINE');
+	if (err) throw err;
+	console.log('Base de datos ONLINE');
 });
 
 app.listen(process.env.PORT, () => {
-    console.log('Escuchando puerto: ', process.env.PORT);
+	console.log('Escuchando puerto: ', process.env.PORT);
 });
