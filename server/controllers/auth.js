@@ -4,8 +4,10 @@ const authController = {
 	register(req, res) {
 		authService.register(req, res);
 	},
-	login(req, res) {
-		authService.login(req, res);
+	generateJwt(req, res) {
+		const user = req.user;
+		const jwt = authService.generateJwt(user);
+		res.json(jwt);
 	},
 };
 
