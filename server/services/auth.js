@@ -1,14 +1,14 @@
-const User = require('../models/user');
+require('../config/config');
+const jwt = require('jsonwebtoken');
 
 const generateJwt = user => {
-	console.log('comienza la generación del payload');
 	const payload = {
 		username: user.nombre,
 		sub: user._id,
-		exp: 'aqui va la expiracion del jwt',
+		exp: Date.now() + parseInt(process.env.JWT_EXPIRATION),
 	};
-	const token = 'Mañana aqui se programa la logica de jwt.sign';
-	return payload;
+
+	return jwt.sign(payload, process.env.JWT_SECRET);
 };
 
 const authService = {

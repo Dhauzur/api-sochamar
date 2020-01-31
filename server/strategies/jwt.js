@@ -5,19 +5,17 @@ const User = require('../models/user');
 
 const options = {};
 /*jwt extraction from request header*/
-options.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+options.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('Bearer');
 /*jwt key*/
 options.secretOrKey = process.env.JWT_SECRET;
 
 const strategy = new JwtStrategy(options, function(jwt_payload, done) {
-	User.findOne({ id: jwt_payload.sub })
+	User.findOne({ _id: jwt_payload.sub })
 		.then(user => {
 			if (user) {
-				console.log('encontre el user del jwt');
 				return done(null, user);
 			} else {
 				/*Este else lo podemos hacer funcionar si en un futuro implementamos estrategias de facebook, etc.*/
-				console.log('no encontre el user, pero podemos crearlo');
 				return done(null, false);
 				// or you could create a new account
 			}

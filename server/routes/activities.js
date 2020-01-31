@@ -3,7 +3,6 @@ const passport = require('passport');
 
 const activitiesRouter = express.Router();
 const activitiesController = require('../controllers/activities');
-
 /*Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
 /*Los verbos de por si ya estan dando a entender la accion que se realiza sobre esta ruta*/
 activitiesRouter.get(
