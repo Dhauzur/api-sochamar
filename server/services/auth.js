@@ -4,7 +4,7 @@ const generateJwt = user => {
 	console.log('comienza la generación del payload');
 	const payload = {
 		username: user.nombre,
-		id: user._id,
+		sub: user._id,
 		exp: 'aqui va la expiracion del jwt',
 	};
 	const token = 'Mañana aqui se programa la logica de jwt.sign';

@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('passport');
+
 const authRouter = express.Router();
 const authController = require('../controllers/auth');
 /*Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
