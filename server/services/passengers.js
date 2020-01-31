@@ -8,10 +8,10 @@ const createOne = (req, res, createAt) => {
 	let body = req.body;
 	console.log(createAt);
 	let passengers = new Passengers({
-		passenger: `${req.files.passenger[0].fieldname}-${createAt}${
+		passenger: `${req.files.passenger[0].fieldname}_${createAt}${
 			path.parse(req.files.passenger[0].originalname).ext
 		}`,
-		pdf: `${req.files.pdf[0].fieldname}${createAt}${
+		pdf: `${req.files.pdf[0].fieldname}_${createAt}${
 			path.parse(req.files.pdf[0].originalname).ext
 		}`,
 		firstName: body.firstName,
