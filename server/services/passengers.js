@@ -95,10 +95,44 @@ const getAll = res => {
 	});
 };
 
+const deleteOne = (req, res) => {
+	let id = req.params.id;
+
+	Passengers.findByIdAndRemove(id, (err, DeletedPassenger) => {
+		if (err)
+			return res.status(400).json({
+				ok: false,
+				err,
+			});
+		if (!DeletedPassenger)
+			return res.status(400).json({
+				status: false,
+				err: {
+					message: 'Passenger no encontrado',
+				},
+			});
+		res.json({
+			status: true,
+		});
+	});
+};
+
+const deleteAll = res => {
+	Passengers.deleteMany({}, function(err, passenger) {
+		if (err) return res.status(400).json({ ok: false, err });
+		res.json({
+			deleteAll: true,
+			deletedCount: passenger.deletedCount,
+		});
+	});
+};
+
 const passengersService = {
 	createOne,
 	getAll,
 	editOne,
+	deleteOne,
+	deleteAll,
 };
 
 module.exports = Object.freeze(passengersService);

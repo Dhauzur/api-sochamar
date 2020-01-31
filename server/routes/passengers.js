@@ -85,4 +85,13 @@ passengersRouter.put(
 	(req, res) => passengersController.editOne(req, res)
 );
 
+// delete a passenger
+passengersRouter.delete('/passengers/:id', passengersController.deleteOne);
+
+// delete all passengers
+passengersRouter.delete(
+	'/passengers/delete/all',
+	passengersController.deleteAll
+);
+
 module.exports = passengersRouter;

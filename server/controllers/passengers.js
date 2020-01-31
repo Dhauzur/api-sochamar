@@ -13,6 +13,12 @@ const passengersController = {
 	editOne(req, res) {
 		passengersService.editOne(req, res);
 	},
+	deleteAll(req, res) {
+		passengersService.deleteAll(res);
+	},
+	deleteOne(req, res) {
+		passengersService.deleteOne(req, res);
+	},
 };
 
 module.exports = Object.freeze(passengersController);
