@@ -11,7 +11,7 @@ let passengers = new Schema({
 		type: String,
 	},
 	pdf: {
-		type: String,
+		type: Array,
 	},
 	firstName: {
 		type: String,

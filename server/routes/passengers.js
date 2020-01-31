@@ -4,23 +4,18 @@ const passengersController = require('../controllers/passengers');
 const path = require('path');
 const multer = require('multer');
 
-const createAt = Date.now();
-
 var storage = multer.diskStorage({
-	destination: function(req, file, cb) {
+	destination: (req, file, cb) => {
 		cb(null, path.join(__dirname, '../uploads'));
 	},
-	filename: function(req, file, cb) {
-		cb(
-			null,
-			`${file.fieldname}_${createAt}${path.parse(file.originalname).ext}`
-		);
+	filename: (req, file, cb) => {
+		cb(null, file.originalname);
 	},
 });
 
 const fileFilter = (req, file, cb) => {
 	if (file.fieldname === 'pdf') {
-		// if uploading resume
+		// if uploading pdf || msword || document
 		if (
 			file.mimetype === 'application/pdf' ||
 			file.mimetype === 'application/msword' ||
@@ -39,7 +34,7 @@ const fileFilter = (req, file, cb) => {
 			file.mimetype === 'image/jpg' ||
 			file.mimetype === 'image/jpeg'
 		) {
-			// check file type to be png, jpeg, or jpg
+			// check file type to be png, jpeg, png or jpg
 			cb(null, true);
 		} else {
 			cb(null, false); // else fails
@@ -57,6 +52,7 @@ var upload = multer({
 
 // route for get all passengers
 passengersRouter.get('/passengers', passengersController.getAll);
+
 // route create a passenger
 passengersRouter.post(
 	'/passengers/create',
@@ -67,10 +63,26 @@ passengersRouter.post(
 		},
 		{
 			name: 'pdf',
-			maxCount: 1,
+			maxCount: 5,
 		},
 	]),
-	(req, res) => passengersController.create(req, res, createAt)
+	(req, res) => passengersController.create(req, res)
 );
+
+// route for update a passenger
+// passengersRouter.put(
+// 	'/passengers/:id',
+// 	upload.fields([
+// 		{
+// 			name: 'passenger',
+// 			maxCount: 1,
+// 		},
+// 		{
+// 			name: 'pdf',
+// 			maxCount: 5,
+// 		},
+// 	]),
+// 	(req, res) => passengersController.editOne(req, res)
+// );
 
 module.exports = passengersRouter;
