@@ -70,19 +70,19 @@ passengersRouter.post(
 );
 
 // route for update a passenger
-// passengersRouter.put(
-// 	'/passengers/:id',
-// 	upload.fields([
-// 		{
-// 			name: 'passenger',
-// 			maxCount: 1,
-// 		},
-// 		{
-// 			name: 'pdf',
-// 			maxCount: 5,
-// 		},
-// 	]),
-// 	(req, res) => passengersController.editOne(req, res)
-// );
+passengersRouter.put(
+	'/passengers/:id',
+	upload.fields([
+		{
+			name: 'passenger',
+			maxCount: 1,
+		},
+		{
+			name: 'pdf',
+			maxCount: 5,
+		},
+	]),
+	(req, res) => passengersController.editOne(req, res)
+);
 
 module.exports = passengersRouter;

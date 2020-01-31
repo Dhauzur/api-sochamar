@@ -1,7 +1,5 @@
 const Passengers = require('../models/passengers');
 const _ = require('underscore');
-// const fs = require('fs');
-// const path = require('path');
 
 /**
  * create a new passengers and return the passengers
@@ -11,7 +9,7 @@ const createOne = (req, res) => {
 
 	// create array pdf names to save
 	const pdfList = req.files.pdf.map(pdf => pdf.originalname);
-	console.log(req.body);
+
 	let passengers = new Passengers({
 		passenger: req.files.passenger[0].originalname,
 		pdf: pdfList,
@@ -55,6 +53,7 @@ const editOne = (req, res) => {
 		'appointment',
 		'function',
 	]);
+
 	body.passenger = req.files.passenger[0].originalname;
 	body.pdf = pdfList;
 
