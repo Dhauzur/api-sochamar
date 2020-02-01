@@ -7,12 +7,14 @@ const _ = require('underscore');
 const createOne = (req, res) => {
 	let body = req.body;
 
-	// create array pdf names to save
-	const pdfList = req.files.pdf.map(pdf => pdf.originalname);
+	// create array the documents to save
+	const documentsList = req.files.documents.map(
+		document => document.originalname
+	);
 
 	let passengers = new Passengers({
 		passenger: req.files.passenger[0].originalname,
-		pdf: pdfList,
+		documents: documentsList,
 		firstName: body.firstName,
 		lastName: body.lastName,
 		age: body.age,
@@ -41,8 +43,10 @@ const createOne = (req, res) => {
 const editOne = (req, res) => {
 	let id = req.params.id;
 
-	// create array pdf names to edit
-	const pdfList = req.files.pdf.map(pdf => pdf.originalname);
+	// create array the documents to edit
+	const documentsList = req.files.documents.map(
+		document => document.originalname
+	);
 
 	let body = _.pick(req.body, [
 		'firstName',
@@ -55,7 +59,7 @@ const editOne = (req, res) => {
 	]);
 
 	body.passenger = req.files.passenger[0].originalname;
-	body.pdf = pdfList;
+	body.documents = documentsList;
 
 	Passengers.findByIdAndUpdate(
 		id,
@@ -95,6 +99,9 @@ const getAll = res => {
 	});
 };
 
+/**
+ * delete a passenger
+ */
 const deleteOne = (req, res) => {
 	let id = req.params.id;
 
@@ -117,6 +124,9 @@ const deleteOne = (req, res) => {
 	});
 };
 
+/**
+ * delete all passengers
+ */
 const deleteAll = res => {
 	Passengers.deleteMany({}, function(err, passenger) {
 		if (err) return res.status(400).json({ ok: false, err });

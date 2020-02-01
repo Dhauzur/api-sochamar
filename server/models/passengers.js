@@ -10,7 +10,7 @@ let passengers = new Schema({
 	passenger: {
 		type: String,
 	},
-	pdf: {
+	documents: {
 		type: Array,
 	},
 	firstName: {
