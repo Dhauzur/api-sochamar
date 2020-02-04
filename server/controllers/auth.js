@@ -6,8 +6,12 @@ const authController = {
 	},
 	generateJwt(req, res) {
 		const user = req.user;
-		const jwt = authService.generateJwt(user);
-		res.json(jwt);
+		const token = authService.generateJwt(user);
+		const response = {
+			user,
+			token,
+		};
+		res.json(response);
 	},
 };
 

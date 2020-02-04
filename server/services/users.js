@@ -24,7 +24,7 @@ const getAll = res => {
 const createOne = (user, res) => {
 	console.log('Entre');
 	let created = new User({
-		nombre: user.nombre,
+		name: user.name,
 		email: user.email,
 		password: bcrypt.hashSync(user.password, 10),
 		role: user.role,
