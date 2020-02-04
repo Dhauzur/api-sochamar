@@ -30,7 +30,7 @@ const createOne = (req, res) => {
 	if (req.files.passenger) {
 		passengers.passenger = req.files.passenger[0].originalname;
 	}
-	console.log(passengers);
+
 	passengers.save((err, passengersDB) => {
 		if (err) {
 			return res.status(400).json({
