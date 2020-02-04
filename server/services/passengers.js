@@ -7,14 +7,9 @@ const _ = require('underscore');
 const createOne = (req, res) => {
 	let body = req.body;
 
-	// create array the documents to save
-	const documentsList = req.files.documents.map(
-		document => document.originalname
-	);
+	let documentsList = [];
 
 	let passengers = new Passengers({
-		passenger: req.files.passenger[0].originalname,
-		documents: documentsList,
 		firstName: body.firstName,
 		lastName: body.lastName,
 		age: body.age,
@@ -23,6 +18,19 @@ const createOne = (req, res) => {
 		appointment: body.appointment,
 		function: body.function,
 	});
+
+	if (req.files.documents) {
+		// create array the documents to save
+		documentsList = req.files.documents.map(
+			document => document.originalname
+		);
+		passengers.documents = documentsList;
+	}
+
+	if (req.files.passenger) {
+		passengers.passenger = req.files.passenger[0].originalname;
+	}
+	console.log(passengers);
 	passengers.save((err, passengersDB) => {
 		if (err) {
 			return res.status(400).json({
@@ -42,11 +50,7 @@ const createOne = (req, res) => {
  */
 const editOne = (req, res) => {
 	let id = req.params.id;
-
-	// create array the documents to edit
-	const documentsList = req.files.documents.map(
-		document => document.originalname
-	);
+	let documentsList = [];
 
 	let body = _.pick(req.body, [
 		'firstName',
@@ -58,8 +62,16 @@ const editOne = (req, res) => {
 		'function',
 	]);
 
-	body.passenger = req.files.passenger[0].originalname;
-	body.documents = documentsList;
+	// create array the documents to edit
+	if (req.files.documents) {
+		documentsList = req.files.documents.map(
+			document => document.originalname
+		);
+		body.documents = documentsList;
+	}
+	if (req.files.passenger) {
+		body.passenger = req.files.passenger[0].originalname;
+	}
 
 	Passengers.findByIdAndUpdate(
 		id,

@@ -1,7 +1,7 @@
 const express = require('express');
 const passengersRouter = express.Router();
 const passengersController = require('../controllers/passengers');
-const upload = require('./middleware/passengersMulterConfig');
+const upload = require('../middleware/passengersMulterConfig');
 
 // route for get all passengers
 passengersRouter.get('/passengers', passengersController.getAll);
