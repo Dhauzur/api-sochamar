@@ -21,27 +21,6 @@ const getAll = res => {
 	);
 };
 
-const createOne = (user, res) => {
-	console.log('Entre');
-	let created = new User({
-		name: user.name,
-		email: user.email,
-		password: bcrypt.hashSync(user.password, 10),
-		role: user.role,
-	});
-	created.save((err, UserDB) => {
-		if (err)
-			return res.status(400).json({
-				ok: false,
-				err,
-			});
-		res.json({
-			ok: true,
-			User: UserDB,
-		});
-	});
-};
-
 const editOne = (req, res) => {
 	let id = req.params.id;
 	let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
@@ -106,7 +85,6 @@ const deleteAll = res => {
 
 const UsersService = {
 	getAll,
-	createOne,
 	deleteAll,
 	editOne,
 	deleteOne,

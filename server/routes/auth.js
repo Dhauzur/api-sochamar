@@ -12,6 +12,6 @@ authRouter.post(
 	authController.generateJwt
 );
 
-authRouter.post('/auth/register');
+authRouter.post('/auth/register', authController.register);
 
 module.exports = authRouter;

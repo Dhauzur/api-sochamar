@@ -1,8 +1,18 @@
 const authService = require('../services/auth');
 
 const authController = {
-	register(req, res) {
-		authService.register(req, res);
+	async register(req, res) {
+		const user = req.body;
+		try {
+			const result = await authService.register(user);
+			const response = { ok: true, User: result };
+			await res.json(response);
+		} catch (e) {
+			res.status(400).json({
+				ok: false,
+				e,
+			});
+		}
 	},
 	generateJwt(req, res) {
 		const user = req.user;
