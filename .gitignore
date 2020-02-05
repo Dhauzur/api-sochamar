@@ -41,9 +41,6 @@ build/Release
 node_modules/
 jspm_packages/
 
-# static directory for uploads images, pdf..etc
-server/uploads
-
 # TypeScript v1 declaration files
 typings/
 
