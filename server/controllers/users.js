@@ -5,7 +5,8 @@ const userController = {
 		userService.getAll(res);
 	},
 	createOne(req, res) {
-		userService.createOne(req, res);
+		const user = req.body;
+		userService.createOne(user, res);
 	},
 	deleteAll(req, res) {
 		userService.deleteAll(res);

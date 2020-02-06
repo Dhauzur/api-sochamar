@@ -9,7 +9,7 @@ let validRoles = {
 let Schema = mongoose.Schema;
 
 let userSchema = new Schema({
-	nombre: {
+	name: {
 		type: String,
 		required: [true, 'El nombre es necesario'],
 	},
@@ -31,7 +31,7 @@ let userSchema = new Schema({
 		default: 'USER_ROLE',
 		enum: validRoles,
 	},
-	estado: {
+	state: {
 		type: Boolean,
 		default: true,
 	},
@@ -51,4 +51,4 @@ userSchema.methods.toJSON = function() {
 
 userSchema.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
 
-module.exports = mongoose.model('Usuario', userSchema);
+module.exports = mongoose.model('User', userSchema);
