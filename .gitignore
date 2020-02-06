@@ -41,6 +41,11 @@ build/Release
 node_modules/
 jspm_packages/
 
+
+# directory upload files
+server/uploads/*
+!server/uploads/README.md
+
 # TypeScript v1 declaration files
 typings/
 
@@ -104,3 +109,4 @@ dist
 .tern-port
 
 .idea
+package-lock.json

@@ -1,8 +1,9 @@
+const _ = require('underscore');
 const authService = require('../services/auth');
 
 const authController = {
 	register(req, res) {
-		const user = req.body;
+		const user = _.pick(req.body, ['name', 'email', 'password']);
 		return authService.register(user, res);
 	},
 	generateJwt(req, res) {
