@@ -23,7 +23,7 @@ const register = (user, res) => {
 
 	return newUser
 		.save()
-		.then(user => res.json({ ok: true, User: user }))
+		.then(user => res.json({ token: generateJwt(user), user }))
 		.catch(e =>
 			res.status(409).json({
 				ok: false,
