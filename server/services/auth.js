@@ -12,7 +12,8 @@ const generateJwt = user => {
 
 	return jwt.sign(payload, process.env.JWT_SECRET);
 };
-const register = user => {
+
+const register = (user, res) => {
 	let newUser = new User({
 		name: user.name,
 		email: user.email,
@@ -22,8 +23,13 @@ const register = user => {
 
 	return newUser
 		.save()
-		.then(user => user)
-		.catch(e => e);
+		.then(user => res.json({ ok: true, User: user }))
+		.catch(e =>
+			res.status(409).json({
+				ok: false,
+				e,
+			})
+		);
 };
 
 const authService = {
