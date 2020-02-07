@@ -13,5 +13,8 @@ authRouter.post(
 );
 
 authRouter.post('/auth/register', authController.register);
-
+authRouter.post(
+	'/auth/send/passwordRecover',
+	authController.sendPasswordRecover
+);
 module.exports = authRouter;

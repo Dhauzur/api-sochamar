@@ -2,6 +2,7 @@ require('../config/config');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const mailerService = require('./mailer');
 
 const generateJwt = user => {
 	const payload = {
@@ -32,9 +33,15 @@ const register = (user, res) => {
 		);
 };
 
+const sendPasswordRecover = (email, res) => {
+	mailerService.sendPasswordRecover(email);
+	return res.status(200).send();
+};
+
 const authService = {
 	generateJwt,
 	register,
+	sendPasswordRecover,
 };
 
 module.exports = Object.freeze(authService);

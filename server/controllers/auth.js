@@ -7,6 +7,7 @@ const authController = {
 		return authService.register(user, res);
 	},
 	generateJwt(req, res) {
+		/*We dont need to .pick here, because user is attached from the local middleware*/
 		const user = req.user;
 		const token = authService.generateJwt(user);
 		const response = {
@@ -14,6 +15,10 @@ const authController = {
 			token,
 		};
 		res.json(response);
+	},
+	sendPasswordRecover(req, res) {
+		const { email } = req.body;
+		return authService.sendPasswordRecover(email, res);
 	},
 };
 
