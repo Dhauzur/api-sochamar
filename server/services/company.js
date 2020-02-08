@@ -18,7 +18,7 @@ const createOne = (req, res) => {
 	let company = new Company({
 		rut: body.rut,
 		name: body.name,
-		prices: JSON.parse(body.prices),
+		prices: body.prices,
 	});
 	company.save((err, companyDB) => {
 		if (err) return res.status(400).json({ ok: false, err });
