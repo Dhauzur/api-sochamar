@@ -29,6 +29,17 @@ const createOne = (req, res) => {
 	});
 };
 
+const delete = (req, res) => {
+	let id = req.params.id;
+	Rooms.deleteMany({ id }, function(err, roomsDB) {
+		if (err) return res.status(400).json({ ok: false, err });
+		res.json({
+			deleteAll: true,
+			deletedCount: roomsDB.deletedCount,
+		});
+	});
+};
+
 const deleteAll = res => {
 	Rooms.deleteMany({}, function(err, lodging) {
 		if (err) return res.status(400).json({ ok: false, err });
@@ -42,6 +53,7 @@ const deleteAll = res => {
 const roomsService = {
 	getAll,
 	createOne,
+	delete,
 	deleteAll,
 };
 

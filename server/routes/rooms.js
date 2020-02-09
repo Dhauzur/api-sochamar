@@ -17,6 +17,11 @@ roomsRouter.post(
 	roomsController.create
 );
 roomsRouter.delete(
+	'/rooms/delete',
+	passport.authenticate('jwt', { session: false }),
+	roomsController.delete
+);
+roomsRouter.delete(
 	'/rooms/delete/all',
 	passport.authenticate('jwt', { session: false }),
 	roomsController.deleteAll
