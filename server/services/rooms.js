@@ -1,4 +1,5 @@
 const Rooms = require('../models/rooms');
+const Lodging = require('../models/lodging');
 
 const getAll = res => {
 	Rooms.find({}).exec((err, rooms) => {
@@ -16,7 +17,6 @@ const getAll = res => {
 const createOne = (req, res) => {
 	let body = req.body;
 	let rooms = new Rooms({
-		id: body.id,
 		name: body.name,
 		numberPassangerMax: body.numberPassangerMax,
 	});
@@ -29,9 +29,29 @@ const createOne = (req, res) => {
 	});
 };
 
-const delete = (req, res) => {
+const deleteOne = (req, res) => {
 	let id = req.params.id;
-	Rooms.deleteMany({ id }, function(err, roomsDB) {
+	Rooms.findById(id).exec((err, roomFind) => {
+		Rooms.deleteOne({ id }, function(err, room) {
+			if (err) return res.status(400).json({ ok: false, err });
+			Lodging.deleteMany({ group: id }, (err, lodging) => {
+				if (err)
+					return res.status(400).json({
+						error:
+							'Error al eliminar hospedajes relacionados a la habitación',
+						err,
+					});
+				res.json({
+					delete: roomFind.name,
+					lodgins: lodging.deletedCount,
+				});
+			});
+		});
+	});
+};
+
+const deleteAll = res => {
+	Rooms.deleteMany({}, function(err, roomsDB) {
 		if (err) return res.status(400).json({ ok: false, err });
 		res.json({
 			deleteAll: true,
@@ -40,20 +60,10 @@ const delete = (req, res) => {
 	});
 };
 
-const deleteAll = res => {
-	Rooms.deleteMany({}, function(err, lodging) {
-		if (err) return res.status(400).json({ ok: false, err });
-		res.json({
-			deleteAll: true,
-			deletedCount: lodging.deletedCount,
-		});
-	});
-};
-
 const roomsService = {
 	getAll,
 	createOne,
-	delete,
+	deleteOne,
 	deleteAll,
 };
 

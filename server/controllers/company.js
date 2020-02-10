@@ -10,6 +10,9 @@ const companyController = {
 	deleteAll(req, res) {
 		companyService.deleteAll(res);
 	},
+	deleteOne(req, res) {
+		companyService.deleteOne(req, res);
+	},
 };
 
 module.exports = Object.freeze(companyController);

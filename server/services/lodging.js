@@ -44,6 +44,7 @@ const createOne = (req, res) => {
 			upsert: true,
 		},
 		(err, lodgingDB) => {
+			console.log(err);
 			if (err) return res.status(400).json({ ok: false, err });
 			res.json({
 				status: true,
