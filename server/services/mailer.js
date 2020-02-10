@@ -1,13 +1,19 @@
+require('../config/config');
 const sender = require('../mailer/index');
 const from = 'pruebanodemailersochamar@gmail.com';
 
-const createPasswordRecoverMessage = (email, token) => {
+const createPasswordRecoveryHtml = (token, url) => {
+	const recoveryUrl = url + '/passwordReset?token=' + token;
+	return `<a href="${recoveryUrl}" target="_blank">Recuperar Contraseña</a>`;
+};
+
+const createPasswordRecoverMessage = (email, html) => {
 	return {
 		from: from,
 		to: email,
 		subject: 'Password Recovery',
-		text: 'probando el envio de token: ' + token,
-		html: '<p>probando el envio de token: </p>' + token,
+		text: '',
+		html: html,
 	};
 };
 
@@ -22,7 +28,10 @@ const createNewAccountMessage = email => {
 };
 
 const sendPasswordRecover = (email, token) => {
-	const message = createPasswordRecoverMessage(email, token);
+	const frontendUrl = process.env.FRONTEND_URL;
+	const html = createPasswordRecoveryHtml(token, frontendUrl);
+	const message = createPasswordRecoverMessage(email, html);
+	console.log(message);
 	sender.sendMail(message);
 };
 
