@@ -26,4 +26,5 @@ process.env.URLDB = urlDB;
 //jwt
 process.env.JWT_SECRET = 'sochamar12345';
 process.env.JWT_ALGORITHM = 'HS256';
-process.env.JWT_EXPIRATION = 6000;
+process.env.JWT_EXPIRATION = '30d';
+process.env.PASSWORD_RECOVERY_JWT_EXPIRATION = '4m';

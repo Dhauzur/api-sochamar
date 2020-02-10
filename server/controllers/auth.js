@@ -20,6 +20,11 @@ const authController = {
 		const { email } = req.body;
 		return authService.sendPasswordRecover(email, res);
 	},
+	changeUserPassword(req, res) {
+		const { password } = req.body;
+		const user = req.user;
+		return authService.changeUserPassword(user, password, res);
+	},
 };
 
 module.exports = Object.freeze(authController);

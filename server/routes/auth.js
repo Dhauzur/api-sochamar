@@ -13,8 +13,16 @@ authRouter.post(
 );
 
 authRouter.post('/auth/register', authController.register);
+
 authRouter.post(
 	'/auth/send/passwordRecover',
 	authController.sendPasswordRecover
 );
+
+authRouter.put(
+	'/auth/user/password',
+	passport.authenticate('jwt'),
+	authController.changeUserPassword
+);
+
 module.exports = authRouter;

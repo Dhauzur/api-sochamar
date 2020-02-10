@@ -1,14 +1,13 @@
 const sender = require('../mailer/index');
 const from = 'pruebanodemailersochamar@gmail.com';
-const createPasswordRecoverMessage = email => {
+
+const createPasswordRecoverMessage = (email, token) => {
 	return {
 		from: from,
 		to: email,
 		subject: 'Password Recovery',
-		text:
-			'Aqui va llegar un boton con un la ruta ejemplo: rutaFront+?token=478123nj3',
-		html:
-			'<p>Aqui va llegar un boton con un la ruta ejemplo: rutaFront+?token=478123nj3</p>',
+		text: 'probando el envio de token: ' + token,
+		html: '<p>probando el envio de token: </p>' + token,
 	};
 };
 
@@ -17,13 +16,13 @@ const createNewAccountMessage = email => {
 		from: from,
 		to: email,
 		subject: 'Password Recovery',
-		text: 'Cuenta creada con exito, ya puedes usar nuestro sistema',
-		html: '<p>Cuenta creada con exito, ya puedes usar nuestro sistema</p>',
+		text: 'Cuenta creada con exito, ya puedes usar nuestro sistema.',
+		html: '<p>Cuenta creada con exito, ya puedes usar nuestro sistema.</p>',
 	};
 };
 
-const sendPasswordRecover = email => {
-	const message = createPasswordRecoverMessage(email);
+const sendPasswordRecover = (email, token) => {
+	const message = createPasswordRecoverMessage(email, token);
 	sender.sendMail(message);
 };
 
