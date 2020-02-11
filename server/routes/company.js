@@ -12,14 +12,19 @@ companyRouter.get(
 	companyController.getAll
 );
 companyRouter.post(
-	'/company/create',
+	'/company',
 	passport.authenticate('jwt', { session: false }),
 	companyController.create
 );
 companyRouter.delete(
-	'/company/delete/all',
+	'/company/all',
 	passport.authenticate('jwt', { session: false }),
 	companyController.deleteAll
+);
+companyRouter.delete(
+	'/company/one/:id',
+	passport.authenticate('jwt', { session: false }),
+	companyController.deleteOne
 );
 
 module.exports = companyRouter;
