@@ -7,6 +7,9 @@ const roomsController = {
 	create(req, res) {
 		roomsService.createOne(req, res);
 	},
+	deleteOne(req, res) {
+		roomsService.deleteOne(req, res);
+	},
 	deleteAll(req, res) {
 		roomsService.deleteAll(res);
 	},

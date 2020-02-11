@@ -12,7 +12,7 @@ let lodging = new Schema({
 		type: String,
 	},
 	group: {
-		type: Number,
+		type: String,
 	},
 	start: {
 		type: String,
@@ -24,6 +24,9 @@ let lodging = new Schema({
 		type: String,
 	},
 	service: {
+		type: Array,
+	},
+	passengers: {
 		type: Array,
 	},
 });

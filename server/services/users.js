@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt');
 const _ = require('underscore');
 const User = require('../models/user');
 
@@ -19,27 +18,6 @@ const getAll = res => {
 			});
 		}
 	);
-};
-
-const createOne = (req, res) => {
-	let body = req.body;
-	let User = new User({
-		nombre: body.nombre,
-		email: body.email,
-		password: bcrypt.hashSync(body.password, 10),
-		role: body.role,
-	});
-	User.save((err, UserDB) => {
-		if (err)
-			return res.status(400).json({
-				ok: false,
-				err,
-			});
-		res.json({
-			ok: true,
-			User: UserDB,
-		});
-	});
 };
 
 const editOne = (req, res) => {
@@ -106,7 +84,6 @@ const deleteAll = res => {
 
 const UsersService = {
 	getAll,
-	createOne,
 	deleteAll,
 	editOne,
 	deleteOne,
