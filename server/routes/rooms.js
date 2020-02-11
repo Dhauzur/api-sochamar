@@ -12,14 +12,19 @@ roomsRouter.get(
 	roomsController.getAll
 );
 roomsRouter.post(
-	'/rooms/create',
+	'/rooms',
 	passport.authenticate('jwt', { session: false }),
 	roomsController.create
 );
 roomsRouter.delete(
-	'/rooms/delete/all',
+	'/rooms/all',
 	passport.authenticate('jwt', { session: false }),
 	roomsController.deleteAll
+);
+roomsRouter.delete(
+	'/rooms/one/:id',
+	passport.authenticate('jwt', { session: false }),
+	roomsController.deleteOne
 );
 
 module.exports = roomsRouter;
