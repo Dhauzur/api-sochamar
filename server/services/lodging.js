@@ -39,7 +39,7 @@ const createOne = (req, res) => {
 				.format('YYYY-MM-DD'),
 			service: body.service,
 			company: body.company,
-			$push: { passengers: body.passengers },
+			passengers: body.passengers,
 		},
 		{
 			upsert: true,
