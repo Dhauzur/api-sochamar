@@ -99,14 +99,10 @@ const getProfile = (user, res) => {
 	User.findOne({ _id: user._id }).then(data => sendProfile(data, res));
 };
 
-const saveProfile = (userData, profile, res) => {
-
-};
-
 const updateProfile = (user, profile, res) => {
-	User.findOne({ _id: user._id }).then(data =>
-		saveProfile(data, profile, res)
-	);
+	User.findByIdAndUpdate(user._id, profile)
+		.then(() => res.sendStatus(201))
+		.catch(err => console.log('entro al catch:' + err));
 };
 
 const UsersService = {
@@ -115,6 +111,7 @@ const UsersService = {
 	editOne,
 	deleteOne,
 	getProfile,
+	updateProfile,
 };
 
 module.exports = Object.freeze(UsersService);
