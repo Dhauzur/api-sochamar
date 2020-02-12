@@ -82,11 +82,39 @@ const deleteAll = res => {
 	});
 };
 
+const generateProfile = user => {
+	return {
+		name: user.name,
+		img: user.img || '',
+	};
+};
+
+const sendProfile = (user, res) => {
+	console.log('este es el user:' + user);
+	const profile = generateProfile(user);
+	return res.json(profile);
+};
+
+const getProfile = (user, res) => {
+	User.findOne({ _id: user._id }).then(data => sendProfile(data, res));
+};
+
+const saveProfile = (userData, profile, res) => {
+
+};
+
+const updateProfile = (user, profile, res) => {
+	User.findOne({ _id: user._id }).then(data =>
+		saveProfile(data, profile, res)
+	);
+};
+
 const UsersService = {
 	getAll,
 	deleteAll,
 	editOne,
 	deleteOne,
+	getProfile,
 };
 
 module.exports = Object.freeze(UsersService);

@@ -8,7 +8,7 @@ const authController = {
 	},
 	generateJwt(req, res) {
 		/*We dont need to .pick here, because user is attached from the local middleware*/
-		const user = req.user;
+		const { user } = req;
 		const token = authService.generateJwt(user);
 		const response = {
 			user,
