@@ -34,7 +34,6 @@ const sendPasswordRecover = (email, token) => {
 	const frontendUrl = process.env.FRONTEND_URL;
 	const html = createPasswordRecoveryHtml(token, frontendUrl);
 	const message = createPasswordRecoverMessage(email, html);
-	console.log(message);
 	sender.sendMail(message);
 };
 
