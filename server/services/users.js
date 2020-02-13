@@ -85,12 +85,12 @@ const deleteAll = res => {
 const generateProfile = user => {
 	return {
 		name: user.name,
+		lastName: user.lastName,
 		img: user.img || '',
 	};
 };
 
 const sendProfile = (user, res) => {
-	console.log('este es el user:' + user);
 	const profile = generateProfile(user);
 	return res.json(profile);
 };
@@ -100,9 +100,12 @@ const getProfile = (user, res) => {
 };
 
 const updateProfile = (user, profile, res) => {
-	User.findByIdAndUpdate(user._id, profile)
+	User.findByIdAndUpdate(user._id, profile, {
+		new: true,
+		runValidators: true,
+	})
 		.then(() => res.sendStatus(201))
-		.catch(err => console.log('entro al catch:' + err));
+		.catch(err => res.status(400).json(err));
 };
 
 const UsersService = {

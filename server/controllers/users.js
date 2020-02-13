@@ -8,7 +8,7 @@ const userController = {
 	},
 	updateProfile(req, res) {
 		const { user } = req;
-		const profile = _.pick(req.body, ['name', 'img', 'password']);
+		const profile = _.pick(req.body, ['name', 'lastName', 'img', 'password']);
 		userService.updateProfile(user, profile, res);
 	},
 	deleteAll(req, res) {

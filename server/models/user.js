@@ -12,6 +12,14 @@ let userSchema = new Schema({
 	name: {
 		type: String,
 		required: [true, 'El nombre es necesario'],
+		minlength: 5,
+		maxlength: 100,
+	},
+	lastName: {
+		type: String,
+		default: '',
+		minlength: 5,
+		maxlength: 100,
 	},
 	email: {
 		type: String,
@@ -21,6 +29,8 @@ let userSchema = new Schema({
 	password: {
 		type: String,
 		required: [true, 'La contraseña es obligatoria'],
+		min: 5,
+		max: 100,
 	},
 	img: {
 		type: String,
@@ -36,6 +46,10 @@ let userSchema = new Schema({
 		default: true,
 	},
 	google: {
+		type: Boolean,
+		default: false,
+	},
+	observer: {
 		type: Boolean,
 		default: false,
 	},
