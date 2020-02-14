@@ -1,6 +1,17 @@
 const Company = require('../models/company');
 const Lodging = require('../models/lodging');
 
+const getOne = (req, res) => {
+	const { id } = req.query;
+	Company.findById(id).exec((err, company) => {
+		if (err) return res.status(400).json({ status: false, err });
+		res.json({
+			status: true,
+			company,
+		});
+	});
+};
+
 const getAll = res => {
 	Company.find({}).exec((err, company) => {
 		if (err) return res.status(400).json({ ok: false, err });
@@ -62,6 +73,7 @@ const deleteAll = res => {
 };
 
 const companyService = {
+	getOne,
 	getAll,
 	createOne,
 	deleteOne,

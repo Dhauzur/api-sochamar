@@ -1,6 +1,9 @@
 const companyService = require('../services/company');
 
 const companyController = {
+	getOne(req, res) {
+		companyService.getOne(req, res);
+	},
 	getAll(req, res) {
 		companyService.getAll(res);
 	},

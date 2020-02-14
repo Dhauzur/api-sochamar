@@ -11,6 +11,11 @@ companyRouter.get(
 	passport.authenticate('jwt', { session: false }),
 	companyController.getAll
 );
+companyRouter.get(
+	'/company/:id',
+	passport.authenticate('jwt', { session: false }),
+	companyController.getOne
+);
 companyRouter.post(
 	'/company',
 	passport.authenticate('jwt', { session: false }),
