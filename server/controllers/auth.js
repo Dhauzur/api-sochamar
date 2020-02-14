@@ -11,7 +11,6 @@ const authController = {
 		const { user } = req;
 		const token = authService.generateJwt(user);
 		const response = {
-			user,
 			token,
 		};
 		res.json(response);

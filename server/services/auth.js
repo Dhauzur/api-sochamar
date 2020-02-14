@@ -30,10 +30,6 @@ const getUserByEmail = email => {
 	return User.findOne({ email: email });
 };
 
-const getUserById = id => {
-	return User.findOne({ _id: id });
-};
-
 const register = (user, res) => {
 	const newUser = new User({
 		name: user.name,
@@ -71,19 +67,12 @@ const sendPasswordRecover = (email, res) => {
 };
 
 const changeUserPassword = (user, newPassword, res) => {
-	getUserById(user._id).then(user => {
-		if (!user) {
-			return res.sendStatus(409);
-		} else {
-			user.password = bcrypt.hashSync(newPassword, 10);
-			return user
-				.save()
-				.then(() => {
-					res.sendStatus(200);
-				})
-				.catch(() => res.sendStatus(409));
-		}
-	});
+	User.findByIdAndUpdate(user._id, {
+		password: bcrypt.hashSync(newPassword, 10),
+	})
+		.then(() => res.sendStatus(200))
+		.catch(() => res.sendStatus(404));
+	/*We handle the possible not found User error*/
 };
 
 const authService = {

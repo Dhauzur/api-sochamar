@@ -81,12 +81,21 @@ const deleteAll = res => {
 		});
 	});
 };
-
+/*After we find our target user, we dont need the entire data*/
+/*GenerateProfile is going to return a profile object based in our user*/
 const generateProfile = user => {
+	console.log(user);
+	let imgUrl;
+	if (user.img) {
+		imgUrl = 'http://localhost:3000/' + user.img;
+	} else {
+		imgUrl = '';
+	}
 	return {
 		name: user.name,
 		lastName: user.lastName,
-		img: user.img || '',
+		img: imgUrl,
+		observer: user.observer,
 	};
 };
 
@@ -104,7 +113,7 @@ const updateProfile = (user, profile, res) => {
 		new: true,
 		runValidators: true,
 	})
-		.then(() => res.sendStatus(201))
+		.then(updated => sendProfile(updated, res))
 		.catch(err => res.status(400).json(err));
 };
 
