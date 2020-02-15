@@ -1,6 +1,6 @@
-const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcrypt');
-const User = require('../models/user');
+import { Strategy as LocalStrategy } from 'passport-local';
+import bcrypt from 'bcrypt';
+import User from '../models/user';
 
 /*strategyConfig specified because we need to disable the session use*/
 const strategyConfig = {
@@ -26,4 +26,4 @@ const strategy = new LocalStrategy(strategyConfig, function(
 		.catch(err => done(err));
 });
 
-module.exports = strategy;
+export default strategy;

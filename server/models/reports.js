@@ -1,12 +1,11 @@
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
+import uniqueValidator from 'mongoose-unique-validator';
+import { Schema, model } from 'mongoose';
 
 // let rolesValidos = {
 //     values: ['COMPRA', 'VENTA'],
 //     message: '{VALUE} no es un tipo válido'
 // };
 
-let Schema = mongoose.Schema;
 let reports = new Schema({
 	member: {
 		type: String,
@@ -25,4 +24,4 @@ let reports = new Schema({
 });
 
 reports.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
-module.exports = mongoose.model('reports', reports);
+export default model('reports', reports);

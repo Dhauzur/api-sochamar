@@ -1,8 +1,8 @@
-const express = require('express');
-const passport = require('passport');
+import { Router } from 'express';
+import passport from 'passport';
+import authController from '../controllers/auth';
 
-const authRouter = express.Router();
-const authController = require('../controllers/auth');
+const authRouter = Router();
 /*Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
 /*Los verbos de por si ya estan dando a entender la accion que se realiza sobre esta ruta*/
 
@@ -25,4 +25,4 @@ authRouter.put(
 	authController.changeUserPassword
 );
 
-module.exports = authRouter;
+export default authRouter;

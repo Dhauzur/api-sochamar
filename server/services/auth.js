@@ -1,8 +1,8 @@
-require('../config/config');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const User = require('../models/user');
-const mailerService = require('./mailer');
+import '../config/config';
+import bcrypt from 'bcrypt';
+import User from '../models/user';
+import { sendNewAccountMessage } from './mailer';
+import { sign } from 'jsonwebtoken';
 
 const generateJwt = user => {
 	const payload = {
@@ -10,7 +10,7 @@ const generateJwt = user => {
 		sub: user._id,
 	};
 
-	return jwt.sign(payload, process.env.JWT_SECRET, {
+	return sign(payload, process.env.JWT_SECRET, {
 		expiresIn: process.env.JWT_EXPIRATION,
 	});
 };
@@ -21,7 +21,7 @@ const generatePasswordRecoverJwt = user => {
 		sub: user._id,
 	};
 
-	return jwt.sign(payload, process.env.JWT_SECRET, {
+	return sign(payload, process.env.JWT_SECRET, {
 		expiresIn: process.env.PASSWORD_RECOVERY_JWT_EXPIRATION,
 	});
 };
@@ -43,7 +43,7 @@ const register = (user, res) => {
 	});
 
 	const sendEmailAndApiResponse = user => {
-		mailerService.sendNewAccountMessage(user.email);
+		sendNewAccountMessage(user.email);
 		return res.json({ token: generateJwt(user), user });
 	};
 
@@ -64,7 +64,7 @@ const sendPasswordRecover = (email, res) => {
 			return res.sendStatus(404);
 		} else {
 			const token = generatePasswordRecoverJwt(user);
-			mailerService.sendPasswordRecover(email, token);
+			sendPasswordRecover(email, token);
 			return res.sendStatus(200);
 		}
 	});
@@ -93,4 +93,4 @@ const authService = {
 	changeUserPassword,
 };
 
-module.exports = Object.freeze(authService);
+export default Object.freeze(authService);

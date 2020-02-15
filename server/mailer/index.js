@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 const transportConfig = {
 	service: 'gmail',
@@ -21,4 +21,4 @@ const verifyCallback = (error, success) => {
 
 transporter.verify(verifyCallback());
 
-module.exports = transporter;
+export default transporter;

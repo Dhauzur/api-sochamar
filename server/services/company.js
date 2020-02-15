@@ -1,5 +1,5 @@
-const Company = require('../models/company');
-const Lodging = require('../models/lodging');
+import Company from '../models/company';
+import Lodging from '../models/lodging';
 
 const getOne = (req, res) => {
 	const { id } = req.query;
@@ -44,7 +44,7 @@ const createOne = (req, res) => {
 const deleteOne = (req, res) => {
 	let id = req.params.id;
 	Company.findById(id).exec((err, companyFind) => {
-		Company.deleteOne({ _id: id }, function(err, company) {
+		Company.deleteOne({ _id: id }, function(err) {
 			if (err) return res.status(400).json({ ok: false, err });
 			Lodging.deleteMany({ company: id }, (err, lodging) => {
 				if (err)
@@ -80,4 +80,4 @@ const companyService = {
 	deleteAll,
 };
 
-module.exports = Object.freeze(companyService);
+export default Object.freeze(companyService);

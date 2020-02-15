@@ -1,13 +1,14 @@
-require('./config/config');
-const express = require('express');
+import './config/config';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import express from 'express';
+import mongoose from 'mongoose';
+import passport from 'passport';
+import passportConfig from './config/passport';
+import path from 'path';
+import routes from './routes/index';
+
 const app = express();
-const passport = require('passport');
-const passportConfig = require('./config/passport');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const routes = require('./routes/index');
-const path = require('path');
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'uploads')));

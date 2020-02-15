@@ -1,4 +1,4 @@
-const Report = require('../models/reports');
+import Report from '../models/reports';
 
 const getAll = res => {
 	Report.find(null).exec((err, reports) => {
@@ -54,4 +54,4 @@ const reportService = {
 	deleteAll,
 };
 
-module.exports = Object.freeze(reportService);
+export default Object.freeze(reportService);

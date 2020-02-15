@@ -1,5 +1,6 @@
-const localStrategy = require('../strategies/local');
-const jwtStrategy = require('../strategies/jwt');
+import localStrategy from '../strategies/local';
+import jwtStrategy from '../strategies/jwt';
+
 //If we want to add  strategies or functions like serialize and deserialize we use this function
 const passportConfig = passport => {
 	passport.use('local', localStrategy);
@@ -13,4 +14,4 @@ const passportConfig = passport => {
 	});
 };
 
-module.exports = passportConfig;
+export default passportConfig;

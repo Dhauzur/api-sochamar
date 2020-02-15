@@ -1,5 +1,5 @@
-const Passengers = require('../models/passengers');
-const _ = require('underscore');
+import Passengers from '../models/passengers';
+import { pick } from 'underscore';
 
 /**
  * create a new passengers and return the passengers
@@ -52,7 +52,7 @@ const editOne = (req, res) => {
 	let id = req.params.id;
 	let documentsList = [];
 
-	let body = _.pick(req.body, [
+	let body = pick(req.body, [
 		'firstName',
 		'lastName',
 		'age',
@@ -157,4 +157,4 @@ const passengersService = {
 	deleteAll,
 };
 
-module.exports = Object.freeze(passengersService);
+export default Object.freeze(passengersService);
