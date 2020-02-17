@@ -84,7 +84,6 @@ const deleteAll = res => {
 /*After we find our target user, we dont need the entire data*/
 /*GenerateProfile is going to return a profile object based in our user*/
 const generateProfile = user => {
-	console.log(user);
 	let imgUrl;
 	if (user.img) {
 		imgUrl = 'http://localhost:3000/' + user.img;

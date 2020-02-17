@@ -13,7 +13,7 @@ userRouter.get(
 
 userRouter.put(
 	'/user/profile',
-	[passport.authenticate('jwt', { session: false }), upload.single('img')],
+	[passport.authenticate('jwt', { session: false }), upload.single('avatar')],
 	userController.updateProfile
 );
 
