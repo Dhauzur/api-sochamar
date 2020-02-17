@@ -20,11 +20,20 @@ app.use(passport.initialize());
 
 routes(app);
 
-mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, err => {
-	if (err) throw err;
-	console.log('Base de datos ONLINE');
-});
+mongoose.connect(
+	process.env.URLDB,
+	{
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+		useCreateIndex: true,
+		useFindAndModify: false,
+	},
+	err => {
+		if (err) throw err;
+		console.info('Data base online');
+	}
+);
 
 app.listen(process.env.PORT, () => {
-	console.log('Escuchando puerto: ', process.env.PORT);
+	console.info(`Listen on port ${process.env.PORT}`);
 });

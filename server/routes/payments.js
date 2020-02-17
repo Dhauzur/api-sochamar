@@ -5,7 +5,7 @@ import upload from '../middleware/paymentsMulterConfig';
 
 const paymentsRouter = express.Router();
 paymentsRouter.get(
-	'/payments',
+	'/payments/:id',
 	passport.authenticate('jwt', { session: false }),
 	paymentsController.getAll
 );

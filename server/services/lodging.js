@@ -4,7 +4,7 @@ import moment from 'moment';
 const getAll = res => {
 	Lodging.find({}).exec((err, lodgings) => {
 		if (err) return res.status(400).json({ ok: false, err });
-		Lodging.count({}, (err, length) => {
+		Lodging.countDocuments({}, (err, length) => {
 			res.json({
 				status: true,
 				lodgings,
@@ -94,7 +94,7 @@ const getAllForCompany = async (req, res) => {
 		const lodgings = await Lodging.find({
 			company: req.params.id,
 		});
-		const count = await Lodging.count({ company: req.params.id });
+		const count = await Lodging.countDocuments({ company: req.params.id });
 		res.json({
 			status: true,
 			count,

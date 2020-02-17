@@ -4,7 +4,7 @@ import Lodging from '../models/lodging';
 const getAll = res => {
 	Rooms.find({}).exec((err, rooms) => {
 		if (err) return res.status(400).json({ ok: false, err });
-		Rooms.count({}, (err, length) => {
+		Rooms.countDocuments({}, (err, length) => {
 			res.json({
 				status: true,
 				rooms,

@@ -101,7 +101,7 @@ const getAll = res => {
 				status: false,
 				err,
 			});
-		Passengers.count({}, (err, count) => {
+		Passengers.countDocuments({}, (err, count) => {
 			res.json({
 				status: true,
 				passengers,

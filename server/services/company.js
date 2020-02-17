@@ -15,7 +15,7 @@ const getOne = (req, res) => {
 const getAll = res => {
 	Company.find({}).exec((err, company) => {
 		if (err) return res.status(400).json({ ok: false, err });
-		Company.count({}, (err, length) => {
+		Company.countDocuments({}, (err, length) => {
 			res.json({
 				status: true,
 				company,

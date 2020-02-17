@@ -9,7 +9,7 @@ const getAll = res => {
 					ok: false,
 					err,
 				});
-			User.count({ estado: true }, (err, conteo) => {
+			User.countDocuments({ estado: true }, (err, conteo) => {
 				res.json({
 					ok: true,
 					Users,

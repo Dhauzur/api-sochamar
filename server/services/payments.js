@@ -6,7 +6,6 @@ import { pick } from 'underscore';
  */
 const createOne = async (req, res) => {
 	const { body } = req;
-	console.log(body);
 	try {
 		let payments = new Payments({
 			idCompany: body.idCompany,
@@ -63,7 +62,7 @@ const editOne = async (req, res) => {
  * get all payments of the company
  */
 const getAll = async (req, res) => {
-	const { id } = req.query;
+	const { id } = req.params;
 	try {
 		const payments = await Payments.find({ idCompany: id });
 		return res.json({

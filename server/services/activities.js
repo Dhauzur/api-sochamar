@@ -8,7 +8,7 @@ const getAll = res => {
 				err,
 			});
 
-		Activities.count(null, (err, length) => {
+		Activities.countDocuments(null, (err, length) => {
 			res.json({
 				status: true,
 				activities: activities.reverse(),

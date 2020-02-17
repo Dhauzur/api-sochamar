@@ -8,7 +8,7 @@ const getAll = res => {
 				err,
 			});
 
-		Report.count(null, (err, length) => {
+		Report.countDocuments(null, (err, length) => {
 			res.json({
 				status: true,
 				reports: reports.reverse(),
