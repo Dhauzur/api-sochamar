@@ -1,7 +1,7 @@
-require('../config/config');
+require('../../config/config');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
-const User = require('../models/user');
+const User = require('../../models/user');
 
 const options = {};
 /*jwt extraction from request header*/

@@ -1,6 +1,6 @@
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const User = require('../models/user');
+const User = require('../../models/user');
 
 /*strategyConfig specified because we need to disable the session use*/
 const strategyConfig = {

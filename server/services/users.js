@@ -83,10 +83,14 @@ const deleteAll = res => {
 };
 /*After we find our target user, we dont need the entire data*/
 /*GenerateProfile is going to return a profile object based in our user*/
+const generateImgUrl = img => {
+	return 'http://localhost:3000/' + img;
+};
+
 const generateProfile = user => {
 	let imgUrl;
 	if (user.img) {
-		imgUrl = 'http://localhost:3000/' + user.img;
+		imgUrl = generateImgUrl(user.img);
 	} else {
 		imgUrl = '';
 	}
@@ -116,6 +120,19 @@ const updateProfile = (user, profile, res) => {
 		.catch(err => res.status(400).json(err));
 };
 
+const updateAvatar = (user, img, res) => {
+	User.findByIdAndUpdate(
+		user._id,
+		{ img },
+		{
+			new: true,
+			runValidators: true,
+		}
+	)
+		.then(updated => res.json({ img: generateImgUrl(updated.img) }))
+		.catch(err => res.status(400).json(err));
+};
+
 const UsersService = {
 	getAll,
 	deleteAll,
@@ -123,6 +140,7 @@ const UsersService = {
 	deleteOne,
 	getProfile,
 	updateProfile,
+	updateAvatar,
 };
 
 module.exports = Object.freeze(UsersService);

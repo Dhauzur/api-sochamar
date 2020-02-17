@@ -8,18 +8,16 @@ const userController = {
 	},
 	updateProfile(req, res) {
 		const { user } = req;
-		const profile = _.pick(req.body, [
-			'name',
-			'lastName',
-			'img',
-			'password',
-		]);
+		const profile = _.pick(req.body, ['name', 'lastName']);
 		//If the request doesnt have a file we
-		if (req.file) {
-			profile.img = req.file.originalname;
-		}
-
 		userService.updateProfile(user, profile, res);
+	},
+	updateAvatar(req, res) {
+		if (req.file) {
+			const { user } = req;
+			const avatar = req.file.originalname;
+			userService.updateAvatar(user, avatar, res);
+		}
 	},
 	deleteAll(req, res) {
 		userService.deleteAll(res);

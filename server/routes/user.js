@@ -13,8 +13,14 @@ userRouter.get(
 
 userRouter.put(
 	'/user/profile',
-	[passport.authenticate('jwt', { session: false }), upload.single('avatar')],
+	passport.authenticate('jwt', { session: false }),
 	userController.updateProfile
+);
+
+userRouter.patch(
+	'/user/avatar',
+	[passport.authenticate('jwt', { session: false }), upload.single('avatar')],
+	userController.updateAvatar
 );
 
 module.exports = userRouter;

@@ -18,8 +18,8 @@ let userSchema = new Schema({
 	lastName: {
 		type: String,
 		default: '',
-		minlength: 5,
 		maxlength: 100,
+		optional: true,
 	},
 	email: {
 		type: String,
