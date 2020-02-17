@@ -13,9 +13,6 @@ const paymentsController = {
 	editOne(req, res) {
 		paymentsService.editOne(req, res);
 	},
-	deleteAll(req, res) {
-		paymentsService.deleteAll(res);
-	},
 	deleteOne(req, res) {
 		paymentsService.deleteOne(req, res);
 	},

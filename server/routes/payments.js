@@ -44,10 +44,4 @@ paymentsRouter.delete(
 	paymentsController.deleteOne
 );
 
-paymentsRouter.delete(
-	'/payments/delete/all',
-	passport.authenticate('jwt', { session: false }),
-	paymentsController.deleteAll
-);
-
 export default paymentsRouter;

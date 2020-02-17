@@ -30,6 +30,7 @@ const createOne = async (req, res) => {
  * edit a payment
  */
 const editOne = async (req, res) => {
+	console.log(req.files.voucher);
 	try {
 		const { id } = req.params;
 		let body = pick(req.body, [
@@ -40,16 +41,10 @@ const editOne = async (req, res) => {
 		]);
 		body.comments = req.body.comments;
 		if (req.files.voucher) {
-			body.voucher = req.files.vouver[0].originalname;
+			body.voucher = req.files.voucher[0].originalname;
 		}
-		const paymentsDB = await Payments.findByIdAndUpdate(id, body, {
-			new: true,
-			runValidators: true,
-		});
-		res.json({
-			status: true,
-			payments: paymentsDB,
-		});
+		await Payments.findByIdAndUpdate(id, body);
+		res.json({ status: true });
 	} catch (error) {
 		return res.status(400).send({
 			status: false,
@@ -97,26 +92,11 @@ const deleteOne = async (req, res) => {
 	}
 };
 
-/**
- * delete all payments
- */
-const deleteAll = async res => {
-	try {
-		await Payments.deleteMany({});
-		return res.json({
-			status: true,
-		});
-	} catch (error) {
-		return res.status(400).send({ status: false, error: error.message });
-	}
-};
-
 const passengersService = {
 	createOne,
 	getAll,
 	editOne,
 	deleteOne,
-	deleteAll,
 };
 
 export default Object.freeze(passengersService);
