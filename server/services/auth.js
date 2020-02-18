@@ -1,7 +1,7 @@
 import '../config/config';
 import bcrypt from 'bcrypt';
 import User from '../models/user';
-import { sendNewAccountMessage } from './mailer';
+import mailerService from './mailer';
 import { sign } from 'jsonwebtoken';
 
 const generateJwt = user => {
@@ -36,10 +36,11 @@ const register = (user, res) => {
 		email: user.email,
 		password: bcrypt.hashSync(user.password, 10),
 		role: user.role,
+		analyst: user.analyst,
 	});
 
 	const sendEmailAndApiResponse = user => {
-		sendNewAccountMessage(user.email);
+		mailerService.sendNewAccountMessage(user.email);
 		return res.json({ token: generateJwt(user), user });
 	};
 
@@ -60,7 +61,7 @@ const sendPasswordRecover = (email, res) => {
 			return res.sendStatus(404);
 		} else {
 			const token = generatePasswordRecoverJwt(user);
-			sendPasswordRecover(email, token);
+			mailerService.sendPasswordRecover(email, token);
 			return res.sendStatus(200);
 		}
 	});

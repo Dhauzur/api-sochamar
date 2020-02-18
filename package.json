@@ -14,6 +14,9 @@
 	},
 	"author": "",
 	"dependencies": {
+		"@babel/core": "^7.8.4",
+		"@babel/preset-env": "^7.8.4",
+		"@babel/register": "^7.8.3",
 		"bcrypt": "^3.0.6",
 		"body-parser": "^1.19.0",
 		"cors": "^2.8.5",
@@ -29,10 +32,8 @@
 		"passport": "^0.4.1",
 		"passport-jwt": "^4.0.0",
 		"passport-local": "^1.0.0",
-		"underscore": "^1.9.1",
-		"@babel/core": "^7.8.4",
-		"@babel/preset-env": "^7.8.4",
-		"@babel/register": "^7.8.3"
+		"pino": "^5.16.0",
+		"underscore": "^1.9.1"
 	},
 	"license": "ISC",
 	"bugs": {

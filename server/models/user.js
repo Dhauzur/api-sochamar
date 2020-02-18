@@ -47,7 +47,7 @@ let userSchema = new Schema({
 		type: Boolean,
 		default: false,
 	},
-	observer: {
+	analyst: {
 		type: Boolean,
 		default: false,
 	},

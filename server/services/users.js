@@ -98,7 +98,7 @@ const generateProfile = user => {
 		name: user.name,
 		lastName: user.lastName,
 		img: imgUrl,
-		observer: user.observer,
+		analyst: user.analyst,
 	};
 };
 

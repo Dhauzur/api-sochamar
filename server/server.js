@@ -7,7 +7,8 @@ import passport from 'passport';
 import passportConfig from './config/passport';
 import path from 'path';
 import routes from './routes/index';
-
+import logger from './config/pino';
+import logError from './utils/logError';
 const app = express();
 
 app.use(cors());
@@ -29,11 +30,10 @@ mongoose.connect(
 		useFindAndModify: false,
 	},
 	err => {
-		if (err) throw err;
-		console.info('Data base online');
+		if (err) logError('Database error: ' + err);
 	}
 );
 
 app.listen(process.env.PORT, () => {
-	console.info(`Listen on port ${process.env.PORT}`);
+	logger.info(`Listen on port ${process.env.PORT}`);
 });
