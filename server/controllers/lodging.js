@@ -1,4 +1,4 @@
-const lodgingService = require('../services/lodging');
+import lodgingService from '../services/lodging';
 
 const lodgingController = {
 	getAll(req, res) {
@@ -10,6 +10,9 @@ const lodgingController = {
 	deleteAll(req, res) {
 		lodgingService.deleteAll(res);
 	},
+	getAllForCompany(req, res) {
+		lodgingService.getAllForCompany(req, res);
+	},
 	deleteAllWithCompany(req, res) {
 		lodgingService.deleteAllWithCompany(req, res);
 	},
@@ -18,4 +21,4 @@ const lodgingController = {
 	},
 };
 
-module.exports = Object.freeze(lodgingController);
+export default Object.freeze(lodgingController);

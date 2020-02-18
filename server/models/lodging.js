@@ -1,12 +1,11 @@
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
+import uniqueValidator from 'mongoose-unique-validator';
+import { Schema, model } from 'mongoose';
 
 // let rolesValidos = {
 //     values: ['COMPRA', 'VENTA'],
 //     message: '{VALUE} no es un tipo válido'
 // };
 
-let Schema = mongoose.Schema;
 let lodging = new Schema({
 	id: {
 		type: String,
@@ -32,4 +31,4 @@ let lodging = new Schema({
 });
 
 lodging.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
-module.exports = mongoose.model('lodging', lodging);
+export default model('lodging', lodging);

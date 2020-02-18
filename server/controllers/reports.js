@@ -1,4 +1,4 @@
-const reportsService = require('../services/reports');
+import reportsService from '../services/reports';
 
 const reportsController = {
 	getAll(req, res) {
@@ -12,4 +12,4 @@ const reportsController = {
 	},
 };
 
-module.exports = Object.freeze(reportsController);
+export default Object.freeze(reportsController);

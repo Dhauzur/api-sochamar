@@ -1,9 +1,9 @@
-const _ = require('underscore');
-const authService = require('../services/auth');
+import authService from '../services/auth';
+import { pick } from 'underscore';
 
 const authController = {
 	register(req, res) {
-		const user = _.pick(req.body, ['name', 'email', 'password']);
+		const user = pick(req.body, ['name', 'email', 'password']);
 		return authService.register(user, res);
 	},
 	generateJwt(req, res) {
@@ -26,4 +26,4 @@ const authController = {
 	},
 };
 
-module.exports = Object.freeze(authController);
+export default Object.freeze(authController);

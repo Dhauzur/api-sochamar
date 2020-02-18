@@ -1,8 +1,8 @@
-const express = require('express');
-const passport = require('passport');
+import { Router } from 'express';
+import passport from 'passport';
+import activitiesController from '../controllers/activities';
 
-const activitiesRouter = express.Router();
-const activitiesController = require('../controllers/activities');
+const activitiesRouter = Router();
 /*Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
 /*Los verbos de por si ya estan dando a entender la accion que se realiza sobre esta ruta*/
 activitiesRouter.get(
@@ -22,4 +22,4 @@ activitiesRouter.delete(
 	activitiesController.deleteAll
 );
 
-module.exports = activitiesRouter;
+export default activitiesRouter;

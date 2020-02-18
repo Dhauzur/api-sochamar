@@ -1,5 +1,5 @@
-require('../config/config');
-const sender = require('../mailer/index');
+import '../config/config';
+import sender from '../mailer/index';
 const from = 'pruebanodemailersochamar@gmail.com';
 
 const createPasswordRecoveryHtml = (token, url) => {
@@ -47,4 +47,4 @@ const mailerService = {
 	sendNewAccountMessage,
 };
 
-module.exports = Object.freeze(mailerService);
+export default Object.freeze(mailerService);

@@ -1,4 +1,4 @@
-const configService = require('../services/config');
+import configService from '../services/config';
 
 const configController = {
 	getConfig(req, res) {
@@ -6,4 +6,4 @@ const configController = {
 	},
 };
 
-module.exports = Object.freeze(configController);
+export default Object.freeze(configController);

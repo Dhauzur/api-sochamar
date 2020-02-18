@@ -1,6 +1,9 @@
-const companyService = require('../services/company');
+import companyService from '../services/company';
 
 const companyController = {
+	getOne(req, res) {
+		companyService.getOne(req, res);
+	},
 	getAll(req, res) {
 		companyService.getAll(res);
 	},
@@ -15,4 +18,4 @@ const companyController = {
 	},
 };
 
-module.exports = Object.freeze(companyController);
+export default Object.freeze(companyController);

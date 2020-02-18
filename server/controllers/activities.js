@@ -1,4 +1,4 @@
-const activitiesService = require('../services/activities');
+import activitiesService from '../services/activities';
 
 const activitiesController = {
 	getAll(req, res) {
@@ -12,4 +12,4 @@ const activitiesController = {
 	},
 };
 
-module.exports = Object.freeze(activitiesController);
+export default Object.freeze(activitiesController);

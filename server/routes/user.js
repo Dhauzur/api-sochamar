@@ -1,9 +1,9 @@
-const express = require('express');
-const passport = require('passport');
-const upload = require('../middleware/passengersMulterConfig');
+import { Router } from 'express';
+import passport from 'passport';
+import upload from '../middleware/usersMulterConfig';
+import userController from '../controllers/users';
 
-const userRouter = express.Router();
-const userController = require('../controllers/users');
+const userRouter = Router();
 
 userRouter.get(
 	'/user/profile',

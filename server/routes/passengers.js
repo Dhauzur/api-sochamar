@@ -1,8 +1,9 @@
-const express = require('express');
-const passengersRouter = express.Router();
-const passengersController = require('../controllers/passengers');
-const upload = require('../middleware/passengersMulterConfig');
-const passport = require('passport');
+import { Router } from 'express';
+import passport from 'passport';
+import passengersController from '../controllers/passengers';
+import upload from '../middleware/passengersMulterConfig';
+
+const passengersRouter = Router();
 // route for get all passengers
 passengersRouter.get('/passengers', passengersController.getAll);
 
@@ -58,4 +59,4 @@ passengersRouter.delete(
 	passengersController.deleteAll
 );
 
-module.exports = passengersRouter;
+export default passengersRouter;

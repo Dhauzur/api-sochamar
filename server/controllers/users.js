@@ -1,4 +1,4 @@
-const _ = require('underscore');
+import { pick } from 'underscore';
 const userService = require('../services/users');
 
 const userController = {
@@ -8,7 +8,7 @@ const userController = {
 	},
 	updateProfile(req, res) {
 		const { user } = req;
-		const profile = _.pick(req.body, ['name', 'lastName']);
+		const profile = pick(req.body, ['name', 'lastName']);
 		//If the request doesnt have a file we
 		userService.updateProfile(user, profile, res);
 	},
@@ -27,4 +27,4 @@ const userController = {
 	},
 };
 
-module.exports = Object.freeze(userController);
+export default Object.freeze(userController);
