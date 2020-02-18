@@ -30,7 +30,6 @@ const createOne = async (req, res) => {
  * edit a payment
  */
 const editOne = async (req, res) => {
-	console.log(req.files.voucher);
 	try {
 		const { id } = req.params;
 		let body = pick(req.body, [

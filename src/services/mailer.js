@@ -1,4 +1,3 @@
-import '../config/config';
 import sender from '../mailer/index';
 const from = 'pruebanodemailersochamar@gmail.com';
 

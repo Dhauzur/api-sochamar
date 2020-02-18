@@ -1,4 +1,3 @@
-import '../config/config';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import User from '../models/user';
 

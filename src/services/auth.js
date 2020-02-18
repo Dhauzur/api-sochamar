@@ -1,4 +1,3 @@
-import '../config/config';
 import bcrypt from 'bcrypt';
 import User from '../models/user';
 import { sendNewAccountMessage } from './mailer';

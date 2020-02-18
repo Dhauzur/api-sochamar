@@ -1,4 +1,3 @@
-import './config/config';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
@@ -9,7 +8,6 @@ import path from 'path';
 import routes from './routes/index';
 
 const app = express();
-
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'uploads')));
 app.use(bodyParser.urlencoded({ extended: false }));
