@@ -11,5 +11,8 @@ module.exports = merge(common, {
 			whitelist: [/^underscore/],
 		}),
 	],
-	plugins: [new Dotenv(), new MinifyPlugin()],
+	plugins: [
+		new Dotenv({ path: './.env.production.local' }),
+		new MinifyPlugin(),
+	],
 });

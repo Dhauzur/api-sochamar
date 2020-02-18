@@ -12,5 +12,8 @@ module.exports = merge(common, {
 			whitelist: [/^underscore/],
 		}),
 	],
-	plugins: [new NodemonPlugin(), new Dotenv()],
+	plugins: [
+		new NodemonPlugin(),
+		new Dotenv({ path: './.env.development.local' }),
+	],
 });
