@@ -92,7 +92,7 @@ const generateProfile = user => {
 	if (user.img) {
 		imgUrl = generateImgUrl(user.img);
 	} else {
-		imgUrl = '';
+		imgUrl = generateImgUrl('default.png');
 	}
 	return {
 		name: user.name,

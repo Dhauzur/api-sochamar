@@ -110,3 +110,4 @@ dist
 
 .idea
 package-lock.json
+!server/uploads/default.png
