@@ -1,5 +1,6 @@
 import User from '../models/user';
 import { pick } from 'underscore';
+import logger from '../config/pino';
 
 const getAll = res => {
 	User.find({ estado: true }, 'nombre email role estado google img').exec(
@@ -107,12 +108,12 @@ const sendProfile = (user, res) => {
 	return res.json(profile);
 };
 
-const getProfile = (user, res) => {
-	User.findOne({ _id: user._id }).then(data => sendProfile(data, res));
+const getProfile = (id, res) => {
+	User.findById(id).then(user => sendProfile(user, res));
 };
 
-const updateProfile = (user, profile, res) => {
-	User.findByIdAndUpdate(user._id, profile, {
+const updateProfile = (id, profile, res) => {
+	User.findByIdAndUpdate(id, profile, {
 		new: true,
 		runValidators: true,
 	})
@@ -120,9 +121,9 @@ const updateProfile = (user, profile, res) => {
 		.catch(err => res.status(400).json(err));
 };
 
-const updateAvatar = (user, img, res) => {
+const updateAvatar = (id, img, res) => {
 	User.findByIdAndUpdate(
-		user._id,
+		id,
 		{ img },
 		{
 			new: true,
@@ -133,6 +134,30 @@ const updateAvatar = (user, img, res) => {
 		.catch(err => res.status(400).json(err));
 };
 
+const updatePassword = (id, password, res) => {
+	const comparePasswords = (newPassword, userPassword) => {
+		if (newPassword === userPassword) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+	const changeActualPassword = user => {
+		const isEqual = comparePasswords(user.password, password);
+		//if the password is the same, we cancel the update with this
+		if (isEqual) return res.sendStatus(409);
+
+		user.password = password;
+		user.save()
+			.then(() => res.sendStatus(200))
+			.catch(e => res.status(400).send(e));
+	};
+
+	User.findById(id)
+		.then(user => changeActualPassword(user))
+		.catch(e => logger.error(e));
+};
+
 const UsersService = {
 	getAll,
 	deleteAll,
@@ -141,6 +166,7 @@ const UsersService = {
 	getProfile,
 	updateProfile,
 	updateAvatar,
+	updatePassword,
 };
 
 export default Object.freeze(UsersService);

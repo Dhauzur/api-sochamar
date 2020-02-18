@@ -4,19 +4,19 @@ const userService = require('../services/users');
 const userController = {
 	getProfile(req, res) {
 		const { user } = req;
-		userService.getProfile(user, res);
+		userService.getProfile(user._id, res);
 	},
 	updateProfile(req, res) {
 		const { user } = req;
 		const profile = pick(req.body, ['name', 'lastName']);
 		//If the request doesnt have a file we
-		userService.updateProfile(user, profile, res);
+		userService.updateProfile(user._id, profile, res);
 	},
 	updateAvatar(req, res) {
 		if (req.file) {
 			const { user } = req;
 			const avatar = req.file.originalname;
-			userService.updateAvatar(user, avatar, res);
+			userService.updateAvatar(user._id, avatar, res);
 		}
 	},
 	deleteAll(req, res) {
@@ -24,6 +24,11 @@ const userController = {
 	},
 	deleteOne(req, res) {
 		userService.deleteOne(req, res);
+	},
+	updatePassword(req, res) {
+		const { user } = req;
+		const password = req.body.password;
+		userService.updatePassword(user._id, password, res);
 	},
 };
 

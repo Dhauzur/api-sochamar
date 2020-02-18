@@ -23,4 +23,10 @@ userRouter.patch(
 	userController.updateAvatar
 );
 
+userRouter.patch(
+	'/user/password',
+	passport.authenticate('jwt', { session: false }),
+	userController.updatePassword
+);
+
 module.exports = userRouter;
