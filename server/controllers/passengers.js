@@ -1,4 +1,4 @@
-const passengersService = require('../services/passengers');
+import passengersService from '../services/passengers';
 
 /**
  * controller for passengers
@@ -21,4 +21,4 @@ const passengersController = {
 	},
 };
 
-module.exports = Object.freeze(passengersController);
+export default Object.freeze(passengersController);

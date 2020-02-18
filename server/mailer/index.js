@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 const transportConfig = {
 	service: 'gmail',
@@ -10,15 +10,13 @@ const transportConfig = {
 
 const transporter = nodemailer.createTransport(transportConfig);
 
-const verifyCallback = (error, success) => {
+const verifyCallback = error => {
 	if (error) {
 		/*Aca lo ideal seria un sistema de logger que comunique esto, para atender este error altiro*/
-		console.log(error);
-	} else {
-		console.log('Transport works, server can send emails now');
+		console.error(error);
 	}
 };
 
 transporter.verify(verifyCallback());
 
-module.exports = transporter;
+export default transporter;

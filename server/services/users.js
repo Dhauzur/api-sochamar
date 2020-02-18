@@ -1,5 +1,5 @@
-const _ = require('underscore');
-const User = require('../models/user');
+import User from '../models/user';
+import { pick } from 'underscore';
 
 const getAll = res => {
 	User.find({ estado: true }, 'nombre email role estado google img').exec(
@@ -9,7 +9,7 @@ const getAll = res => {
 					ok: false,
 					err,
 				});
-			User.count({ estado: true }, (err, conteo) => {
+			User.countDocuments({ estado: true }, (err, conteo) => {
 				res.json({
 					ok: true,
 					Users,
@@ -22,7 +22,7 @@ const getAll = res => {
 
 const editOne = (req, res) => {
 	let id = req.params.id;
-	let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
+	let body = pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
 	User.findByIdAndUpdate(
 		id,
 		body,
@@ -89,4 +89,4 @@ const UsersService = {
 	deleteOne,
 };
 
-module.exports = Object.freeze(UsersService);
+export default Object.freeze(UsersService);

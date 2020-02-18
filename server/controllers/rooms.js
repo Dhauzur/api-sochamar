@@ -1,4 +1,4 @@
-const roomsService = require('../services/rooms');
+import roomsService from '../services/rooms';
 
 const roomsController = {
 	getAll(req, res) {
@@ -15,4 +15,4 @@ const roomsController = {
 	},
 };
 
-module.exports = Object.freeze(roomsController);
+export default Object.freeze(roomsController);

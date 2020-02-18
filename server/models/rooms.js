@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
+import uniqueValidator from 'mongoose-unique-validator';
+import { Schema, model } from 'mongoose';
 
-let Schema = mongoose.Schema;
 let rooms = new Schema({
 	id: {
 		type: String,
@@ -15,4 +14,4 @@ let rooms = new Schema({
 });
 
 rooms.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
-module.exports = mongoose.model('rooms', rooms);
+export default model('rooms', rooms);
