@@ -3,7 +3,7 @@ import { pick } from 'underscore';
 
 const authController = {
 	register(req, res) {
-		const user = pick(req.body, ['name', 'email', 'password']);
+		const user = pick(req.body, ['name', 'email', 'password', 'analyst']);
 		return authService.register(user, res);
 	},
 	generateJwt(req, res) {
