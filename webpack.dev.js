@@ -5,10 +5,16 @@ const Dotenv = require('dotenv-webpack');
 const NodemonPlugin = require('nodemon-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = merge(common, {
 	mode: 'development',
 	devtool: 'inline-source-map',
+	resolve: {
+		alias: {
+			'@': path.join(__dirname, './src/'),
+		},
+	},
 	externals: [
 		nodeExternals({
 			whitelist: [/^underscore/],

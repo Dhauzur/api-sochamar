@@ -5,9 +5,15 @@ const Dotenv = require('dotenv-webpack');
 const MinifyPlugin = require('babel-minify-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = merge(common, {
 	mode: 'production',
+	resolve: {
+		alias: {
+			'@': path.join(__dirname, './src/'),
+		},
+	},
 	externals: [
 		nodeExternals({
 			whitelist: [/^underscore/],
