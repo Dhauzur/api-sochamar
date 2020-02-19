@@ -9,7 +9,7 @@ import routes from './routes/index';
 
 const app = express();
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(path.resolve(`${$dirname}/uploads`)));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 

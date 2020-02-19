@@ -44,8 +44,8 @@ jspm_packages/
 
 
 # directory upload files
-server/uploads/*
-!server/uploads/README.md
+src/uploads/*
+!src/uploads/README.md
 
 # TypeScript v1 declaration files
 typings/
