@@ -30,8 +30,7 @@ npm run start
 ### Dev enviroment
 ###### modo dev: Agregue un archivo llamado ".env.development.local"
 
-```enviroment
-
+```
 PORT=3000
 NODE_ENV=dev
 URLDB=mongodb://localhost:27017/sochamar
