@@ -2,7 +2,7 @@
 
 ###### Administracion de datos de sochamar
 
-## Installation
+## Instalación
 
 ###### Por favor instale node js, npm y asegurese de tener instalado mongodb y corriendo antes de comenzar. Tambien debe agregar las variables de entorno para desarrollo o produccion necesarias.
 
