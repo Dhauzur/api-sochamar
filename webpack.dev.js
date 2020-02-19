@@ -13,7 +13,7 @@ module.exports = merge(common, {
 		}),
 	],
 	plugins: [
-		new NodemonPlugin(),
+		new NodemonPlugin({ nodeArgs: '--inspect=0.0.0.0:9229' }),
 		new Dotenv({ path: './.env.development.local' }),
 	],
 });
