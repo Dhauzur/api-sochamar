@@ -111,5 +111,7 @@ dist
 # TernJS port file
 .tern-port
 
-.idea
 package-lock.json
+// editors config
+.idea
+.vscode
