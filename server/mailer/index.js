@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import logError from '../utils/logError';
+import { logError } from '../config/pino';
 
 const transportConfig = {
 	service: 'gmail',
