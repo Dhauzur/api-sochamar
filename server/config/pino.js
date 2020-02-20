@@ -1,7 +1,7 @@
 import pino from 'pino';
 
-const logger = pino({
+export const logger = pino({
 	level: 'info',
 });
 
-export default logger;
+export const logError = err => logger.error(err);

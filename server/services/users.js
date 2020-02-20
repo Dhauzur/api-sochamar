@@ -1,6 +1,6 @@
 import User from '../models/user';
 import { pick } from 'underscore';
-import logger from '../config/pino';
+import { logError } from '../config/pino';
 
 const getAll = res => {
 	User.find({ estado: true }, 'nombre email role estado google img').exec(
@@ -85,7 +85,8 @@ const deleteAll = res => {
 /*After we find our target user, we dont need the entire data*/
 /*GenerateProfile is going to return a profile object based in our user*/
 const generateImgUrl = img => {
-	return 'http://localhost:3000/' + img;
+	const apiUrl = process.env.API_URL;
+	return apiUrl + img;
 };
 
 const generateProfile = user => {
@@ -127,7 +128,6 @@ const updateAvatar = (id, img, res) => {
 		{ img },
 		{
 			new: true,
-			runValidators: true,
 		}
 	)
 		.then(updated => res.json({ img: generateImgUrl(updated.img) }))
@@ -155,7 +155,7 @@ const updatePassword = (id, password, res) => {
 
 	User.findById(id)
 		.then(user => changeActualPassword(user))
-		.catch(e => logger.error(e));
+		.catch(logError);
 };
 
 const UsersService = {
