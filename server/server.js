@@ -7,8 +7,7 @@ import passport from 'passport';
 import passportConfig from './config/passport';
 import path from 'path';
 import routes from './routes/index';
-import logger from './config/pino';
-import logError from './utils/logError';
+import { logger, logError } from './config/pino';
 const app = express();
 
 app.use(cors());
@@ -21,18 +20,15 @@ app.use(passport.initialize());
 
 routes(app);
 
-mongoose.connect(
-	process.env.URLDB,
-	{
+mongoose
+	.connect(process.env.URLDB, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 		useCreateIndex: true,
 		useFindAndModify: false,
-	},
-	err => {
-		if (err) logError('Database error: ' + err);
-	}
-);
+	})
+	.then(logger.info('database online'))
+	.catch(err => logError('Database error: ' + err));
 
 app.listen(process.env.PORT, () => {
 	logger.info(`Listen on port ${process.env.PORT}`);
