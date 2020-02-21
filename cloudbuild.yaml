@@ -4,16 +4,16 @@ steps:
     args: ["install"]
   - name: node:10.15.1
     entrypoint: npm
-  args: ["run", "create-env"]
-  env:
-    - 'API_URL=${_API_URL}'
-    - 'FRONTEND_URL=${_FRONTEND_URL}'
-    - 'JWT_ALGORITHM=${_JWT_ALGORITHM}'
-    - 'JWT_EXPIRATION=${_JWT_EXPIRATION}'
-    - 'JWT_SECRET=${_JWT_SECRET}'
-    - 'PASSWORD_RECOVERY_JWT_EXPIRATION=${_PASSWORD_RECOVERY_JWT_EXPIRATION}'
-    - 'URLDB=${_URLDB}'
-    - 'NODE_ENV=${_NODE_ENV}'
+    args: ["run", "create-env"]
+    env:
+      - "API_URL=${_API_URL}"
+      - "FRONTEND_URL=${_FRONTEND_URL}"
+      - "JWT_ALGORITHM=${_JWT_ALGORITHM}"
+      - "JWT_EXPIRATION=${_JWT_EXPIRATION}"
+      - "JWT_SECRET=${_JWT_SECRET}"
+      - "PASSWORD_RECOVERY_JWT_EXPIRATION=${_PASSWORD_RECOVERY_JWT_EXPIRATION}"
+      - "URLDB=${_URLDB}"
+      - "NODE_ENV=${_NODE_ENV}"
   - name: node:10.15.1
     entrypoint: npm
     args: ["run", "build"]
