@@ -1,152 +1,134 @@
 import Passengers from '../models/passengers';
-import { pick } from 'underscore';
 
 /**
  * create a new passengers and return the passengers
  */
-const createOne = (req, res) => {
-	let body = req.body;
-
-	let documentsList = [];
-
-	let passengers = new Passengers({
-		firstName: body.firstName,
-		lastName: body.lastName,
-		age: body.age,
-		birthdate: body.birthdate,
-		state: body.state,
-		appointment: body.appointment,
-		function: body.function,
-	});
-
-	if (req.files.documents) {
-		// create array the documents to save
-		documentsList = req.files.documents.map(
-			document => document.originalname
-		);
-		passengers.documents = documentsList;
-	}
-
-	if (req.files.passenger) {
-		passengers.passenger = req.files.passenger[0].originalname;
-	}
-
-	passengers.save((err, passengersDB) => {
-		if (err) {
-			return res.status(400).json({
-				status: false,
-				err,
-			});
+const createOne = async (req, res) => {
+	try {
+		let { body } = req;
+		let documentsList = [];
+		let passengers = new Passengers({
+			firstName: body.firstName,
+			lastName: body.lastName,
+			age: body.age,
+			birthdate: body.birthdate,
+			state: body.state,
+			appointment: body.appointment,
+			function: body.function,
+			phone: body.phone,
+			region: body.region,
+			comuna: body.comuna,
+		});
+		if (req.files.documents) {
+			// create array the documents to save
+			documentsList = req.files.documents.map(
+				document => document.originalname
+			);
+			passengers.documents = documentsList;
 		}
+		if (req.files.passenger) {
+			passengers.passenger = req.files.passenger[0].originalname;
+		}
+		const passengersDB = await passengers.save();
 		res.json({
 			status: true,
 			passengers: passengersDB,
 		});
-	});
+	} catch (error) {
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
 };
 
 /**
  * edit a passengers
  */
-const editOne = (req, res) => {
-	let id = req.params.id;
-	let documentsList = [];
-
-	let body = pick(req.body, [
-		'firstName',
-		'lastName',
-		'age',
-		'birthdate',
-		'state',
-		'appointment',
-		'function',
-	]);
-
-	// create array the documents to edit
-	if (req.files.documents) {
-		documentsList = req.files.documents.map(
-			document => document.originalname
-		);
-		body.documents = documentsList;
-	}
-	if (req.files.passenger) {
-		body.passenger = req.files.passenger[0].originalname;
-	}
-
-	Passengers.findByIdAndUpdate(
-		id,
-		body,
-		{ new: true, runValidators: true },
-		(err, passengersDB) => {
-			if (err)
-				return res.status(400).json({
-					ok: false,
-					err,
-				});
-			res.json({
-				ok: true,
-				passengers: passengersDB,
-			});
+const editOne = async (req, res) => {
+	try {
+		let { body } = req;
+		let { id } = req.params;
+		let documentsList = [];
+		// create array the documents to edit
+		if (req.files.documents) {
+			documentsList = req.files.documents.map(
+				document => document.originalname
+			);
+			body.documents = documentsList;
 		}
-	);
+		if (req.files.passenger) {
+			body.passenger = req.files.passenger[0].originalname;
+		}
+		const passengersDB = await Passengers.findByIdAndUpdate(id, body, {
+			new: true,
+			runValidators: true,
+		});
+		res.json({
+			status: true,
+			passengers: passengersDB,
+		});
+	} catch (error) {
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
 };
 
 /**
  * get all passengers and the count
  */
-const getAll = res => {
-	Passengers.find({}).exec((err, passengers) => {
-		if (err)
-			return res.status(400).json({
-				status: false,
-				err,
-			});
-		Passengers.countDocuments({}, (err, count) => {
-			res.json({
-				status: true,
-				passengers,
-				count,
-			});
+const getAll = async res => {
+	try {
+		const passengers = await Passengers.find({});
+		const count = await Passengers.countDocuments({});
+		res.json({
+			status: true,
+			passengers,
+			count,
 		});
-	});
+	} catch (error) {
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
 };
 
 /**
  * delete a passenger
  */
-const deleteOne = (req, res) => {
-	let id = req.params.id;
-
-	Passengers.findByIdAndRemove(id, (err, DeletedPassenger) => {
-		if (err)
-			return res.status(400).json({
-				ok: false,
-				err,
-			});
-		if (!DeletedPassenger)
-			return res.status(400).json({
-				status: false,
-				err: {
-					message: 'Passenger no encontrado',
-				},
-			});
+const deleteOne = async (req, res) => {
+	try {
+		const { id } = req.params;
+		await Passengers.findByIdAndRemove(id);
 		res.json({
 			status: true,
 		});
-	});
+	} catch (error) {
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
 };
 
 /**
  * delete all passengers
  */
-const deleteAll = res => {
-	Passengers.deleteMany({}, function(err, passenger) {
-		if (err) return res.status(400).json({ ok: false, err });
+const deleteAll = async res => {
+	try {
+		await Passengers.deleteMany({});
 		res.json({
-			deleteAll: true,
-			deletedCount: passenger.deletedCount,
+			status: true,
 		});
-	});
+	} catch (error) {
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
 };
 
 const passengersService = {

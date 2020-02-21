@@ -23,6 +23,9 @@ let passengers = new Schema({
 	state: {
 		type: String,
 	},
+	phone: {
+		type: String,
+	},
 	appointment: {
 		type: String,
 	},
@@ -30,6 +33,12 @@ let passengers = new Schema({
 		type: String,
 	},
 	age: {
+		type: String,
+	},
+	region: {
+		type: String,
+	},
+	comuna: {
 		type: String,
 	},
 });
