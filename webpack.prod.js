@@ -20,7 +20,7 @@ module.exports = merge(common, {
 		}),
 	],
 	plugins: [
-		new Dotenv({ path: './.env.production.local' }),
+		new Dotenv({ defaults: true }),
 		new MinifyPlugin(),
 		new CopyPlugin([{ from: './src/uploads', to: './uploads' }]),
 		new webpack.DefinePlugin({

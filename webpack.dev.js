@@ -22,7 +22,7 @@ module.exports = merge(common, {
 	],
 	plugins: [
 		new NodemonPlugin({ nodeArgs: ['--inspect=127.0.0.1:9229'] }),
-		new Dotenv({ path: './.env.development.local' }),
+		new Dotenv({ defaults: true, silent: true }),
 		new CopyPlugin([{ from: './src/uploads', to: './uploads' }]),
 		new webpack.DefinePlugin({
 			$dirname: '__dirname',

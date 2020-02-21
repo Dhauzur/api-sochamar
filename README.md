@@ -26,5 +26,18 @@ npm run build
 npm run start
 ```
 
+### Enviroment
+###### Para produccion agregue un archivo llamado ".env", si no lo encuentra webpack utilizara por defecto ".env.defaults"
+```
+PORT=*******
+NODE_ENV=*******
+URLDB=*******
+API_URL=*******
+FRONTEND_URL=*******
+JWT_SECRET=*******
+JWT_ALGORITHM=*******
+JWT_EXPIRATION=*******
+PASSWORD_RECOVERY_JWT_EXPIRATION=*******
+```
 ## License
 [ISC](https://choosealicense.com/licenses/isc/)
