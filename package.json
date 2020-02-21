@@ -3,8 +3,9 @@
 	"version": "1.0.0",
 	"description": "Administracion de datos de sochamar",
 	"private": true,
+	"main": "./dist/main.js",
 	"scripts": {
-		"start": "node dist/main.js",
+		"prod": "node ./dist/main.js",
 		"dev": "webpack --watch --config webpack.dev.js",
 		"build": "webpack --config webpack.prod.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
