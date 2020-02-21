@@ -21,5 +21,5 @@ steps:
     args: ["app", "deploy"]
   - name: node:10.15.1
     entrypoint: npm
-    args: ["run", "start"]
+    args: ["start"]
 timeout: "1600s"
