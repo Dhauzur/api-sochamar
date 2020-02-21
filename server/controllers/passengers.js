@@ -5,19 +5,24 @@ import passengersService from '../services/passengers';
  */
 const passengersController = {
 	create(req, res) {
-		passengersService.createOne(req, res);
+		const { user } = req;
+		passengersService.createOne(user._id, req, res);
 	},
 	getAll(req, res) {
-		passengersService.getAll(res);
+		const { user } = req;
+		passengersService.getAll(user._id, res);
 	},
 	editOne(req, res) {
-		passengersService.editOne(req, res);
+		const { user } = req;
+		passengersService.editOne(user._id, req, res);
 	},
 	deleteAll(req, res) {
-		passengersService.deleteAll(res);
+		const { user } = req;
+		passengersService.deleteAll(user._id, res);
 	},
 	deleteOne(req, res) {
-		passengersService.deleteOne(req, res);
+		const { user } = req;
+		passengersService.deleteOne(user._id, req, res);
 	},
 };
 

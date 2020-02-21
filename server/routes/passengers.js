@@ -5,7 +5,11 @@ import upload from '../middleware/passengersMulterConfig';
 
 const passengersRouter = Router();
 // route for get all passengers
-passengersRouter.get('/passengers', passengersController.getAll);
+passengersRouter.get(
+	'/passengers',
+	passport.authenticate('jwt', { session: false }),
+	passengersController.getAll
+);
 
 // route create a passenger
 passengersRouter.post(

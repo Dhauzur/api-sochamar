@@ -15,10 +15,12 @@ let company = new Schema({
 		type: Array,
 		default: [2000, 3000, 3000, 10500],
 	},
-	user: {
-		type: Schema.Types.ObjectID,
-		ref: 'User',
-	},
+	users: [
+		{
+			type: Schema.Types.ObjectID,
+			ref: 'User',
+		},
+	],
 });
 
 company.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });

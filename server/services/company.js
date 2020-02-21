@@ -2,17 +2,20 @@ import Company from '../models/company';
 import Lodging from '../models/lodging';
 
 const getOne = (userId, companyId, res) => {
-	Company.findOne({ _id: companyId, user: userId }).exec((err, company) => {
-		if (err) return res.status(400).json({ status: false, err });
-		res.json({
-			status: true,
-			company,
-		});
-	});
+	Company.findOne({ _id: companyId, users: { $in: userId } }).exec(
+		(err, company) => {
+			if (err) return res.status(400).json({ status: false, err });
+			res.json({
+				status: true,
+				company,
+			});
+		}
+	);
 };
 
 const getAll = (userId, res) => {
-	Company.find({ user: userId }).exec((err, company) => {
+	Company.find({ users: { $in: userId } }).exec((err, company) => {
+		console.log(company);
 		if (err) return res.status(400).json({ ok: false, err });
 		Company.countDocuments({}, (err, length) => {
 			res.json({
@@ -26,7 +29,7 @@ const getAll = (userId, res) => {
 
 const createOne = (userId, company, res) => {
 	const newCompany = new Company(company);
-	newCompany.user = userId;
+	newCompany.users.push(userId);
 	newCompany.save((err, companyDB) => {
 		if (err) return res.status(400).json({ err });
 		res.json({
@@ -37,7 +40,7 @@ const createOne = (userId, company, res) => {
 };
 
 const deleteOne = (userId, companyId, res) => {
-	Company.findOne({ _id: companyId, user: userId }).exec(
+	Company.findOne({ _id: companyId, users: { $in: userId } }).exec(
 		(err, companyFind) => {
 			Company.deleteOne({ _id: companyId }, function(err) {
 				if (err) return res.status(400).json({ ok: false, err });
@@ -59,7 +62,7 @@ const deleteOne = (userId, companyId, res) => {
 };
 
 const deleteAll = (userId, res) => {
-	Company.deleteMany({ user: userId }, function(err, company) {
+	Company.deleteMany({ users: { $in: userId } }, function(err, company) {
 		if (err) return res.status(400).json({ ok: false, err });
 		res.json({
 			deleteAll: true,
