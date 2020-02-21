@@ -1,7 +1,26 @@
 steps:
-    - name: node:10.15.1
-      entrypoint: npm
-      args: ['install']
-    - name: 'gcr.io/cloud-builders/gcloud'
-      args: ['app', 'deploy']
-timeout: '1600s'
+  - name: node:10.15.1
+    entrypoint: npm
+    args: ["install"]
+  - name: node:10.15.1
+    entrypoint: npm
+    args: ["run", "create-env"]
+    env:
+      - "API_URL=${_API_URL}"
+      - "FRONTEND_URL=${_FRONTEND_URL}"
+      - "JWT_ALGORITHM=${_JWT_ALGORITHM}"
+      - "JWT_EXPIRATION=${_JWT_EXPIRATION}"
+      - "JWT_SECRET=${_JWT_SECRET}"
+      - "PASSWORD_RECOVERY_JWT_EXPIRATION=${_PASSWORD_RECOVERY_JWT_EXPIRATION}"
+      - "URLDB=${_URLDB}"
+      - "NODE_ENV=${_NODE_ENV}"
+      - "PORT=${_PORT}"
+  - name: node:10.15.1
+    entrypoint: npm
+    args: ["run", "build"]
+  - name: "gcr.io/cloud-builders/gcloud"
+    args: ["app", "deploy"]
+  - name: node:10.15.1
+    entrypoint: npm
+    args: ["run prod"]
+timeout: "1600s"
