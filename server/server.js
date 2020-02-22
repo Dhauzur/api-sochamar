@@ -10,11 +10,11 @@ const routes = require("./routes/index");
 const path = require("path");
 
 app.use(cors());
-app.all("*", function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
-});
+// app.all("*", function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//   next();
+// });
 app.use(express.static(path.join(__dirname, "uploads")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -26,10 +26,10 @@ routes(app);
 
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, err => {
   if (err) throw err;
-  console.log("Base de datos ONLINE");
+  console.info("Base de datos ONLINE");
 });
 
 app.listen(process.env.PORT, () => {
-  console.log("MONGO DB:: ", process.env.URLDB);
-  console.log("Escuchando puerto: ", process.env.PORT);
+  console.info("MONGO DB:: ", process.env.URLDB);
+  console.info("Escuchando puerto: ", process.env.PORT);
 });
