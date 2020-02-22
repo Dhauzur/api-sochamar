@@ -7,8 +7,7 @@
     "create-env": "printenv > .env",
     "dev": "webpack --watch --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "prestart": "npm run build",
-    "start": "node ./dist/bundle.js"
+    "start": "node dist/bundle.js"
   },
   "repository": {
     "type": "git",
