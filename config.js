@@ -1,5 +1,5 @@
 // Import all env vars from .env file
-require("dotenv").config();
+require('dotenv').config();
 // export const API_URL = process.env.API_URL;
 // export const FRONTEND_URL = process.env.FRONTEND_URL;
 // export const JWT_ALGORITHM = process.env.JWT_ALGORITHM;
