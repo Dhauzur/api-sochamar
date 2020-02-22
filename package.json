@@ -6,8 +6,8 @@
 	"scripts": {
 		"create-env": "printenv > .env",
 		"dev": "nodemon --exec babel-node server/register.js",
-		"clean": "rm -rf dist && mkdir dist",
-		"build": "babel -d ./dist ./server",
+		"clean": "rm -rf build && mkdir build",
+		"build": "babel -d ./build ./server",
 		"prestart": "npm run clean && npm run build",
 		"start": "node -r dotenv/config ./dist/server.js"
 	},
