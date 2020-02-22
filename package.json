@@ -2,7 +2,7 @@
 	"name": "api-sochamar",
 	"version": "1.0.0",
 	"description": "Administracion de datos de sochamar",
-	"main": "./server/index.js",
+	"main": "server.js",
 	"scripts": {
 		"create-env": "printenv > .env",
 		"dev": "nodemon --exec babel-node server/register.js",
