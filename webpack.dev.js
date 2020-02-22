@@ -9,6 +9,10 @@ const path = require('path');
 
 module.exports = merge(common, {
 	mode: 'development',
+	output: {
+		path: path.resolve(__dirname, 'dist'),
+		filename: 'bundle.js',
+	},
 	devtool: 'inline-source-map',
 	resolve: {
 		alias: {

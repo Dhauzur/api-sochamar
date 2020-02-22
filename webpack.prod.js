@@ -9,6 +9,10 @@ const path = require('path');
 
 module.exports = merge(common, {
 	mode: 'production',
+	output: {
+		path: path.resolve(__dirname, 'dist'),
+		filename: 'bundle.js',
+	},
 	resolve: {
 		alias: {
 			'@': path.join(__dirname, './src/'),

@@ -4,10 +4,6 @@ module.exports = () => {
 	return {
 		target: 'node',
 		entry: { server: path.resolve(__dirname, './src') },
-		output: {
-			path: path.resolve(__dirname, 'dist'),
-			filename: 'main.js',
-		},
 		module: {
 			rules: [
 				{

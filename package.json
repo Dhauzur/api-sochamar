@@ -5,11 +5,10 @@
   "private": true,
   "scripts": {
     "create-env": "printenv > .env",
-    "start": "node dist/main.js",
     "dev": "webpack --watch --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./dist/main.js"
+    "prestart": "npm run build",
+    "start": "node ./dist/bundle.js"
   },
   "repository": {
     "type": "git",
