@@ -1,9 +1,8 @@
-import '../config/config';
+import '../config/config.js';
 import bcrypt from 'bcrypt';
 import User from '../models/user';
 import { sendNewAccountMessage } from './mailer';
 import { sign } from 'jsonwebtoken';
-
 const generateJwt = user => {
 	const payload = {
 		username: user.name,
