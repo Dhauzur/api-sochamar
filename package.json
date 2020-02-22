@@ -2,7 +2,7 @@
   "name": "api-sochamar",
   "version": "1.0.0",
   "description": "Administracion de datos de sochamar",
-  "main": "server.js",
+  "main": "server/server.js",
   "scripts": {
     "create-env": "printenv > .env",
     "dev": "nodemon server/server.js",
