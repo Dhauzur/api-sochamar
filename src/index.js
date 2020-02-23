@@ -1,4 +1,4 @@
-import "./config/dotenv.js";
+require("dotenv").load();
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
@@ -7,7 +7,6 @@ import passport from "passport";
 import passportConfig from "./config/passport";
 import path from "path";
 import routes from "./routes/index";
-
 const app = express();
 app.use(cors());
 app.use(express.static(path.resolve(`${$dirname}/uploads`)));
