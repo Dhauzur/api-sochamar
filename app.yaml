@@ -2,5 +2,7 @@ runtime: nodejs10
 handlers:
   - url: /.*
     static_files: server/server.js
+    upload: server/server.js
+    script: auto
     http_headers:
-      Access-Control-Allow-Origin: http://sochamar-front.appspot.com
+      Access-Control-Allow-Origin: http://sochamar.com
