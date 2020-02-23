@@ -1,7 +1,8 @@
 runtime: nodejs10
-handlers:
-  - url: /.*
-    static_files: server/server.js
-    upload: server/server.js
-    http_headers:
-      Access-Control-Allow-Origin: http://sochamar.com
+env: flex
+# handlers:
+#   - url: /.*
+#     static_files: server/server.js
+#     upload: server/server.js
+#     http_headers:
+#       Access-Control-Allow-Origin: http://sochamar.com
