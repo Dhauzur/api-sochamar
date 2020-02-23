@@ -5,7 +5,7 @@
   "private": true,
   "main": "dist/bundle.js",
   "scripts": {
-    "create-env": "printenv > server/.env && printenv > .env",
+    "create-env": "printenv > src/.env && printenv > .env",
     "dev": "webpack --watch --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js"
   },
