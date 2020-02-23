@@ -22,7 +22,8 @@ passportConfig(passport);
 app.use(passport.initialize());
 
 routes(app);
-
+console.info("CONECT MONG TRY");
+console.info(process.env.URLDB);
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, err => {
   if (err) throw err;
   console.info("Base de datos ONLINE");
