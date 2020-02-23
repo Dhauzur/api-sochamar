@@ -1,11 +1,12 @@
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import express from 'express';
-import mongoose from 'mongoose';
-import passport from 'passport';
-import passportConfig from './config/passport';
-import path from 'path';
-import routes from './routes/index';
+import "./config/dotenv.js";
+import bodyParser from "body-parser";
+import cors from "cors";
+import express from "express";
+import mongoose from "mongoose";
+import passport from "passport";
+import passportConfig from "./config/passport";
+import path from "path";
+import routes from "./routes/index";
 
 const app = express();
 app.use(cors());
@@ -17,21 +18,22 @@ passportConfig(passport);
 app.use(passport.initialize());
 
 routes(app);
-
+console.log("MONGO :: URL ::");
+console.log(process.env.URLDB);
 mongoose.connect(
-	process.env.URLDB,
-	{
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-		useCreateIndex: true,
-		useFindAndModify: false,
-	},
-	err => {
-		if (err) throw err;
-		console.info('Data base online');
-	}
+  process.env.URLDB,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false
+  },
+  err => {
+    if (err) throw err;
+    console.info("Data base online");
+  }
 );
 
 app.listen(process.env.PORT, () => {
-	console.info(`Listen on port ${process.env.PORT}`);
+  console.info(`Listen on port ${process.env.PORT}`);
 });
