@@ -4,7 +4,7 @@
   "description": "Administracion de datos de sochamar",
   "main": "server/server.js",
   "scripts": {
-    "create-env": "printenv > .env",
+    "create-env": "printenv > .env && echo .env",
     "dev": "nodemon server/server.js",
     "start": "node server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
