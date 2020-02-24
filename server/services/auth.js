@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import User from '../models/user';
 import mailerService from './mailer';
 import { sign } from 'jsonwebtoken';
+
 const generateJwt = user => {
 	const payload = {
 		username: user.name,
