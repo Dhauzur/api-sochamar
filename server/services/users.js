@@ -1,6 +1,7 @@
 import User from '../models/user';
 import { pick } from 'underscore';
 import { logError } from '../config/pino';
+import bcrypt from 'bcrypt';
 
 const getAll = res => {
 	User.find({ estado: true }, 'nombre email role estado google img').exec(
@@ -147,7 +148,7 @@ const updatePassword = (id, password, res) => {
 		//if the password is the same, we cancel the update with this
 		if (isEqual) return res.sendStatus(409);
 
-		user.password = password;
+		user.password = bcrypt.hashSync(password, 10);
 		user.save()
 			.then(() => res.sendStatus(200))
 			.catch(e => res.status(400).send(e));
