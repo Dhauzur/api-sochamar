@@ -4,7 +4,6 @@ import upload from '../middleware/usersMulterConfig';
 import userController from '../controllers/users';
 
 const userRouter = Router();
-
 userRouter.get(
 	'/user/profile',
 	passport.authenticate('jwt', { session: false }),
@@ -29,4 +28,4 @@ userRouter.patch(
 	userController.updatePassword
 );
 
-module.exports = userRouter;
+export default userRouter;

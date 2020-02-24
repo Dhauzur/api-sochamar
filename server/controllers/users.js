@@ -1,5 +1,5 @@
 import { pick } from 'underscore';
-const userService = require('../services/users');
+import userService from '../services/users';
 
 const userController = {
 	getProfile(req, res) {
