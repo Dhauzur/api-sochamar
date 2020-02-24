@@ -7,6 +7,7 @@ import passport from 'passport';
 import passportConfig from './config/passport';
 import path from 'path';
 import routes from './routes/index';
+
 const app = express();
 
 app.use(cors());
