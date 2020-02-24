@@ -15,9 +15,9 @@ steps:
       - "URLDB=${_URLDB}"
       - "NODE_ENV=${_NODE_ENV}"
       - "PORT=${_PORT}"
-  - name: node:10.15.1
-    entrypoint: npm
-    args: ["run", "build"]
+  # - name: node:10.15.1
+  #   entrypoint: npm
+  #   args: ["run", "build"]
   - name: "gcr.io/cloud-builders/gcloud"
     args: ["app", "deploy"]
 timeout: "1600s"
