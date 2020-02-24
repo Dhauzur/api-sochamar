@@ -1,7 +1,6 @@
-import '../config/config';
+import '../config/config.js';
 import sender from '../mailer/index';
 const from = 'pruebanodemailersochamar@gmail.com';
-
 const createPasswordRecoveryHtml = (token, url) => {
 	const recoveryUrl = url + '/passwordReset?token=' + token;
 	return `
@@ -37,7 +36,7 @@ const sendPasswordRecover = (email, token) => {
 	sender.sendMail(message);
 };
 
-const sendNewAccountMessage = email => {
+export const sendNewAccountMessage = email => {
 	const message = createNewAccountMessage(email);
 	sender.sendMail(message);
 };
