@@ -43,8 +43,8 @@ jspm_packages/
 
 
 # directory upload files
-server/uploads/*
-!server/uploads/README.md
+uploads/*
+!uploads/README.md
 
 # TypeScript v1 declaration files
 typings/
@@ -109,5 +109,6 @@ dist
 .tern-port
 
 .idea
+.vscode
 package-lock.json
-!server/uploads/default.png
+!/uploads/default.png
