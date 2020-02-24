@@ -136,15 +136,8 @@ const updateAvatar = (id, img, res) => {
 };
 
 const updatePassword = (id, password, res) => {
-	const comparePasswords = (newPassword, userPassword) => {
-		if (newPassword === userPassword) {
-			return true;
-		} else {
-			return false;
-		}
-	};
 	const changeActualPassword = user => {
-		const isEqual = comparePasswords(user.password, password);
+		const isEqual = bcrypt.compareSync(password, user.password);
 		//if the password is the same, we cancel the update with this
 		if (isEqual) return res.sendStatus(409);
 
