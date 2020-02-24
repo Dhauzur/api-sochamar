@@ -1,8 +1,6 @@
-require('../config/config');
-const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
-const User = require('../models/user');
-
+import '../config/config.js';
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import User from '../models/user';
 const options = {};
 /*jwt extraction from request header*/
 options.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('Bearer');
@@ -23,4 +21,4 @@ const strategy = new JwtStrategy(options, function(jwt_payload, done) {
 		.catch(err => done(err, false));
 });
 
-module.exports = strategy;
+export default strategy;

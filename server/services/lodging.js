@@ -1,10 +1,10 @@
-const Lodging = require('../models/lodging');
-const moment = require('moment');
+import Lodging from '../models/lodging';
+import moment from 'moment';
 
 const getAll = res => {
 	Lodging.find({}).exec((err, lodgings) => {
 		if (err) return res.status(400).json({ ok: false, err });
-		Lodging.count({}, (err, length) => {
+		Lodging.countDocuments({}, (err, length) => {
 			res.json({
 				status: true,
 				lodgings,
@@ -86,12 +86,35 @@ const deleteOneWithCompanyId = (req, res) => {
 	});
 };
 
+/**
+ * search all lodgings for idcompany
+ */
+const getAllForCompany = async (req, res) => {
+	try {
+		const lodgings = await Lodging.find({
+			company: req.params.id,
+		});
+		const count = await Lodging.countDocuments({ company: req.params.id });
+		res.json({
+			status: true,
+			count,
+			lodgings,
+		});
+	} catch (error) {
+		return res.status(400).send({
+			status: false,
+			error: error.message,
+		});
+	}
+};
+
 const lodgingService = {
 	getAll,
 	createOne,
 	deleteAll,
+	getAllForCompany,
 	deleteAllWithCompany,
 	deleteOneWithCompanyId,
 };
 
-module.exports = Object.freeze(lodgingService);
+export default Object.freeze(lodgingService);

@@ -1,7 +1,5 @@
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
-
-let Schema = mongoose.Schema;
+import uniqueValidator from 'mongoose-unique-validator';
+import { Schema, model } from 'mongoose';
 
 /**
  * create schema for a passenger
@@ -39,4 +37,4 @@ let passengers = new Schema({
 passengers.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
 
 // export model passenger
-module.exports = mongoose.model('passengers', passengers);
+export default model('passengers', passengers);

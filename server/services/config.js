@@ -1,4 +1,5 @@
-const moment = require('moment');
+import moment from 'moment';
+
 const getConfig = res => {
 	res.json({
 		stack: true,
@@ -19,4 +20,4 @@ const configService = {
 	getConfig,
 };
 
-module.exports = Object.freeze(configService);
+export default Object.freeze(configService);

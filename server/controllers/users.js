@@ -1,4 +1,4 @@
-const userService = require('../services/users');
+import userService from '../services/users';
 
 const userController = {
 	getAll(req, res) {
@@ -19,4 +19,4 @@ const userController = {
 	},
 };
 
-module.exports = Object.freeze(userController);
+export default Object.freeze(userController);

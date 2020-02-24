@@ -1,4 +1,4 @@
-const Activities = require('../models/activities');
+import Activities from '../models/activities';
 
 const getAll = res => {
 	Activities.find(null).exec((err, activities) => {
@@ -8,7 +8,7 @@ const getAll = res => {
 				err,
 			});
 
-		Activities.count(null, (err, length) => {
+		Activities.countDocuments(null, (err, length) => {
 			res.json({
 				status: true,
 				activities: activities.reverse(),
@@ -56,4 +56,4 @@ const activitiesService = {
 	deleteAll,
 };
 
-module.exports = Object.freeze(activitiesService);
+export default Object.freeze(activitiesService);
