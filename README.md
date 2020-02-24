@@ -4,7 +4,7 @@
 
 ## Instalación
 
-###### Por favor instale node js, npm y asegurese de tener instalado mongodb y corriendo antes de comenzar. Tambien debe agregar las variables de entorno para desarrollo o produccion necesarias.
+###### Por favor instale node js, npm y asegurese de tener instalado mongodb y corriendo antes de comenzar. Si es para Produccion debe agregar las variables de entorno necesarias.
 
 ### Para desarrollo
 ```bash
@@ -19,9 +19,7 @@ npm run dev
 ```bash
 npm run install
 ```
-```bash
-npm run build
-```
+
 ```bash
 npm run start
 ```
