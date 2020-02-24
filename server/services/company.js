@@ -15,7 +15,6 @@ const getOne = (userId, companyId, res) => {
 
 const getAll = (userId, res) => {
 	Company.find({ users: { $in: userId } }).exec((err, company) => {
-		console.log(company);
 		if (err) return res.status(400).json({ ok: false, err });
 		Company.countDocuments({}, (err, length) => {
 			res.json({

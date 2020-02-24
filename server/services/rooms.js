@@ -1,8 +1,8 @@
 import Rooms from '../models/rooms';
 import Lodging from '../models/lodging';
 
-const getAll = res => {
-	Rooms.find({}).exec((err, rooms) => {
+const getAll = (companyId, res) => {
+	Rooms.find({ company: companyId }).exec((err, rooms) => {
 		if (err) return res.status(400).json({ ok: false, err });
 		Rooms.countDocuments({}, (err, length) => {
 			res.json({
@@ -14,12 +14,9 @@ const getAll = res => {
 	});
 };
 
-const createOne = (req, res) => {
-	let body = req.body;
-	let rooms = new Rooms({
-		name: body.name,
-		numberPassangerMax: body.numberPassangerMax,
-	});
+const createOne = (companyId, room, res) => {
+	let rooms = new Rooms(room);
+	rooms.company = companyId;
 	rooms.save((err, roomsDB) => {
 		if (err) return res.status(400).json({ ok: false, err });
 		res.json({
@@ -29,7 +26,7 @@ const createOne = (req, res) => {
 	});
 };
 
-const deleteOne = (req, res) => {
+const deleteOne = (companyId, req, res) => {
 	let id = req.params.id;
 	Rooms.findById(id).exec((err, roomFind) => {
 		Rooms.deleteOne({ id }, function(err) {
@@ -50,8 +47,14 @@ const deleteOne = (req, res) => {
 	});
 };
 
-const deleteAll = res => {
-	Rooms.deleteMany({}, function(err, roomsDB) {
+const deleteOne2 = (companyId, roomId, res) => {
+	Rooms.findOneAndDelete({ _id: roomId, company: companyId })
+		.then(() => res.sendStatus(200))
+		.catch(() => res.sendStatus(400));
+};
+
+const deleteAll = (companyId, res) => {
+	Rooms.deleteMany({ company: companyId }, function(err, roomsDB) {
 		if (err) return res.status(400).json({ ok: false, err });
 		res.json({
 			deleteAll: true,

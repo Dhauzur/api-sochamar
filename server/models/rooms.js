@@ -11,6 +11,10 @@ let rooms = new Schema({
 	numberPassangerMax: {
 		type: Number,
 	},
+	company: {
+		type: Schema.Types.ObjectID,
+		ref: 'company',
+	},
 });
 
 rooms.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
