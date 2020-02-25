@@ -11,7 +11,6 @@ const roomsController = {
 		roomsService.createOne(companyId, req.body, res);
 	},
 	deleteOne(req, res) {
-		console.log(req);
 		const { id } = req.params;
 		const { companyId } = req.body;
 		roomsService.deleteOne(companyId, id, res);

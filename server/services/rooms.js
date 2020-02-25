@@ -26,30 +26,12 @@ const createOne = (companyId, room, res) => {
 	});
 };
 
-const deleteOne = (companyId, req, res) => {
-	let id = req.params.id;
-	Rooms.findById(id).exec((err, roomFind) => {
-		Rooms.deleteOne({ id }, function(err) {
-			if (err) return res.status(400).json({ ok: false, err });
-			Lodging.deleteMany({ group: id }, (err, lodging) => {
-				if (err)
-					return res.status(400).json({
-						error:
-							'Error al eliminar hospedajes relacionados a la habitación',
-						err,
-					});
-				res.json({
-					delete: roomFind.name,
-					lodgins: lodging.deletedCount,
-				});
-			});
-		});
-	});
-};
-
-const deleteOne2 = (companyId, roomId, res) => {
-	Rooms.findOneAndDelete({ _id: roomId, company: companyId })
-		.then(() => res.sendStatus(200))
+const deleteOne = (companyId, roomId, res) => {
+	Rooms.findOneAndDelete(
+		{ _id: roomId, company: companyId },
+		{ projection: 'name' }
+	)
+		.then(room => res.json(room))
 		.catch(() => res.sendStatus(400));
 };
 
