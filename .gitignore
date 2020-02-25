@@ -111,3 +111,4 @@ dist
 .idea
 .vscode
 package-lock.json
+!/uploads/default.png

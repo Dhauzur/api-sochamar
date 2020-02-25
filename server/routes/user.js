@@ -1,34 +1,31 @@
 import { Router } from 'express';
 import passport from 'passport';
+import upload from '../middleware/usersMulterConfig';
 import userController from '../controllers/users';
 
 const userRouter = Router();
-/* Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
-/* Los verbos de por si ya estan dando a entender la accion que se realiza sobre esta ruta*/
 userRouter.get(
-	'/user',
+	'/user/profile',
 	passport.authenticate('jwt', { session: false }),
-	userController.getAll
+	userController.getProfile
 );
-userRouter.post(
-	'/user',
-	passport.authenticate('jwt', { session: false }),
-	userController.createOne
-);
+
 userRouter.put(
-	'/user/:id',
+	'/user/profile',
 	passport.authenticate('jwt', { session: false }),
-	userController.editOne
+	userController.updateProfile
 );
-userRouter.delete(
-	'/user/:id',
-	passport.authenticate('jwt', { session: false }),
-	userController.deleteOne
+
+userRouter.patch(
+	'/user/avatar',
+	[passport.authenticate('jwt', { session: false }), upload.single('avatar')],
+	userController.updateAvatar
 );
-userRouter.delete(
-	'/user/delete/all',
+
+userRouter.patch(
+	'/user/password',
 	passport.authenticate('jwt', { session: false }),
-	userController.deleteAll
+	userController.updatePassword
 );
 
 export default userRouter;

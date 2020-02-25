@@ -31,6 +31,7 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "pino": "^5.16.0",
     "underscore": "^1.9.1"
   },
   "license": "ISC",

@@ -1,6 +1,6 @@
 import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcrypt';
-import User from '../models/user';
+import User from '../../models/user';
 
 /*strategyConfig specified because we need to disable the session use*/
 const strategyConfig = {
