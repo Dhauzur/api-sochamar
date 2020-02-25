@@ -8,6 +8,7 @@ const createOne = async (req, res) => {
 	const { body } = req;
 	try {
 		let payments = new Payments({
+			idLodging: body.idLodging,
 			idCompany: body.idCompany,
 			startDate: body.startDate,
 			endDate: body.endDate,
@@ -35,6 +36,7 @@ const editOne = async (req, res) => {
 		const { id } = req.params;
 		let body = pick(req.body, [
 			'idCompany',
+			'idLodging',
 			'startDate',
 			'endDate',
 			'mount',
@@ -77,18 +79,16 @@ const getAll = async (req, res) => {
  */
 const deleteOne = async (req, res) => {
 	try {
-		let { id } = req.params;
+		const { id } = req.params;
 		await Payments.findByIdAndRemove(id);
 		res.json({
 			status: true,
 		});
 	} catch (error) {
-		if (error) {
-			return res.status(400).send({
-				status: false,
-				error: error.message,
-			});
-		}
+		return res.status(400).send({
+			status: false,
+			error: error.message,
+		});
 	}
 };
 
