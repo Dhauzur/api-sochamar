@@ -1,5 +1,4 @@
 import Rooms from '../models/rooms';
-import Lodging from '../models/lodging';
 
 const getAll = (companyId, res) => {
 	Rooms.find({ company: companyId }).exec((err, rooms) => {
