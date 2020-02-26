@@ -70,12 +70,19 @@ const deleteAll = (userId, res) => {
 	});
 };
 
+const getCompaniesIds = userId => {
+	return Company.find({ users: { $in: userId } }).then(companies =>
+		companies.map(x => x._id)
+	);
+};
+
 const companyService = {
 	getOne,
 	getAll,
 	createOne,
 	deleteOne,
 	deleteAll,
+	getCompaniesIds,
 };
 
 export default Object.freeze(companyService);

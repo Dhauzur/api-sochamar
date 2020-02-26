@@ -1,16 +1,33 @@
 import Rooms from '../models/rooms';
+import companyService from './company';
 
-const getAll = (companyId, res) => {
-	Rooms.find({ company: companyId }).exec((err, rooms) => {
-		if (err) return res.status(400).json({ ok: false, err });
-		Rooms.countDocuments({}, (err, length) => {
-			res.json({
-				status: true,
-				rooms,
-				length,
-			});
-		});
-	});
+const getAll = (userId, companyId, res) => {
+	/*Si no existe id de compañia, significa que el frontend esta usando 'Todas las compañias'*/
+	if (companyId === 'null') {
+		/*Entonces buscamos todas las compañias del usuario*/
+		const userCompanies = companyService.getCompaniesIds(userId);
+		/*Para luego devolver todos los cuartos que tengan esas ids*/
+		const findRoomsFromTheseCompanies = companies => {
+			Rooms.find({ company: { $in: companies } })
+				.then(rooms =>
+					res.json({
+						status: true,
+						rooms,
+					})
+				)
+				.catch(e => res.status(400).json({ ok: false, e }));
+		};
+		userCompanies.then(companies => findRoomsFromTheseCompanies(companies));
+	} else {
+		Rooms.find({ company: companyId })
+			.then(rooms =>
+				res.json({
+					status: true,
+					rooms,
+				})
+			)
+			.catch(e => res.status(400).json({ ok: false, e }));
+	}
 };
 
 const createOne = (companyId, room, res) => {

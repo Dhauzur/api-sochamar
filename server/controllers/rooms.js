@@ -2,8 +2,9 @@ import roomsService from '../services/rooms';
 
 const roomsController = {
 	getAll(req, res) {
+		const { user } = req;
 		const companyId = req.params.companyId;
-		roomsService.getAll(companyId, res);
+		roomsService.getAll(user._id, companyId, res);
 	},
 	create(req, res) {
 		const { companyId } = req.body;
