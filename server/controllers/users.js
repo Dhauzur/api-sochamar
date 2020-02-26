@@ -1,21 +1,34 @@
+import { pick } from 'underscore';
 import userService from '../services/users';
 
 const userController = {
-	getAll(req, res) {
-		userService.getAll(res);
+	getProfile(req, res) {
+		const { user } = req;
+		userService.getProfile(user._id, res);
 	},
-	createOne(req, res) {
-		const user = req.body;
-		userService.createOne(user, res);
+	updateProfile(req, res) {
+		const { user } = req;
+		const profile = pick(req.body, ['name', 'lastName']);
+		//If the request doesnt have a file we
+		userService.updateProfile(user._id, profile, res);
+	},
+	updateAvatar(req, res) {
+		if (req.file) {
+			const { user } = req;
+			const avatar = req.file.originalname;
+			userService.updateAvatar(user._id, avatar, res);
+		}
 	},
 	deleteAll(req, res) {
 		userService.deleteAll(res);
 	},
-	editOne(req, res) {
-		userService.editOne(req, res);
-	},
 	deleteOne(req, res) {
 		userService.deleteOne(req, res);
+	},
+	updatePassword(req, res) {
+		const { user } = req;
+		const password = req.body.password;
+		userService.updatePassword(user._id, password, res);
 	},
 };
 

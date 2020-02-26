@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { logError } from '../config/pino';
 
 const transportConfig = {
 	service: 'gmail',
@@ -13,7 +14,7 @@ const transporter = nodemailer.createTransport(transportConfig);
 const verifyCallback = error => {
 	if (error) {
 		/*Aca lo ideal seria un sistema de logger que comunique esto, para atender este error altiro*/
-		console.error(error);
+		logError('nodemailer error:' + error);
 	}
 };
 

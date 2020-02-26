@@ -36,7 +36,7 @@ const sendPasswordRecover = (email, token) => {
 	sender.sendMail(message);
 };
 
-export const sendNewAccountMessage = email => {
+const sendNewAccountMessage = email => {
 	const message = createNewAccountMessage(email);
 	sender.sendMail(message);
 };
