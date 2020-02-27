@@ -28,6 +28,9 @@ let lodging = new Schema({
 	passengers: {
 		type: Array,
 	},
+	mountTotal: {
+		type: Number,
+	},
 });
 
 lodging.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });

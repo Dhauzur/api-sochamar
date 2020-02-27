@@ -40,6 +40,7 @@ const createOne = (req, res) => {
 			service: body.service,
 			company: body.company,
 			passengers: body.passengers,
+			mountTotal: body.mountTotal,
 		},
 		{
 			upsert: true,
