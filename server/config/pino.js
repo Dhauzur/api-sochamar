@@ -1,6 +1,10 @@
 import pino from 'pino';
 
 export const logger = pino({
+	prettyPrint: {
+		ignore: 'pid,hostname,time',
+		levelFirst: true,
+	},
 	level: 'info',
 });
 
