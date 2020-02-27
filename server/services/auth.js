@@ -41,7 +41,7 @@ const register = (user, res) => {
 
 	const sendEmailAndApiResponse = user => {
 		mailerService.sendNewAccountMessage(user.email);
-		return res.json({ token: generateJwt(user), user });
+		return res.status(201).json({ token: generateJwt(user), user });
 	};
 
 	return newUser
