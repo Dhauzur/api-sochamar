@@ -76,11 +76,14 @@ const changeUserPassword = (user, newPassword, res) => {
 	/*We handle the possible not found User error*/
 };
 
+const googleAuthCallback = (req, res) => {};
+
 const authService = {
 	generateJwt,
 	register,
 	sendPasswordRecover,
 	changeUserPassword,
+	googleAuthCallback,
 };
 
 export default Object.freeze(authService);

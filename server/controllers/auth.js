@@ -24,6 +24,9 @@ const authController = {
 		const user = req.user;
 		return authService.changeUserPassword(user, password, res);
 	},
+	googleAuthCallback(req, res) {
+		authService.googleAuthCallback(req, res);
+	},
 };
 
 export default Object.freeze(authController);
