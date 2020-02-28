@@ -32,6 +32,12 @@ let passengers = new Schema({
 	age: {
 		type: String,
 	},
+	users: [
+		{
+			type: Schema.Types.ObjectID,
+			ref: 'User',
+		},
+	],
 });
 
 passengers.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });

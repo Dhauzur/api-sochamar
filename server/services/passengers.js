@@ -4,11 +4,12 @@ import { pick } from 'underscore';
 /**
  * create a new passengers and return the passengers
  */
-const createOne = (req, res) => {
+const createOne = (userId, req, res) => {
 	let body = req.body;
 
 	let documentsList = [];
-
+	//Esta parte se puede mejorar, con joi funcionando podriamos pasarle todo el req.body en new Passengers()
+	//Deje un ejemplo en el services company función createOne
 	let passengers = new Passengers({
 		firstName: body.firstName,
 		lastName: body.lastName,
@@ -30,7 +31,7 @@ const createOne = (req, res) => {
 	if (req.files.passenger) {
 		passengers.passenger = req.files.passenger[0].originalname;
 	}
-
+	passengers.users.push(userId);
 	passengers.save((err, passengersDB) => {
 		if (err) {
 			return res.status(400).json({
@@ -48,7 +49,7 @@ const createOne = (req, res) => {
 /**
  * edit a passengers
  */
-const editOne = (req, res) => {
+const editOne = (userId, req, res) => {
 	let id = req.params.id;
 	let documentsList = [];
 
@@ -73,8 +74,8 @@ const editOne = (req, res) => {
 		body.passenger = req.files.passenger[0].originalname;
 	}
 
-	Passengers.findByIdAndUpdate(
-		id,
+	Passengers.findOneAndUpdate(
+		{ _id: id, users: { $in: userId } },
 		body,
 		{ new: true, runValidators: true },
 		(err, passengersDB) => {
@@ -94,8 +95,8 @@ const editOne = (req, res) => {
 /**
  * get all passengers and the count
  */
-const getAll = res => {
-	Passengers.find({}).exec((err, passengers) => {
+const getAll = (userId, res) => {
+	Passengers.find({ users: { $in: userId } }).exec((err, passengers) => {
 		if (err)
 			return res.status(400).json({
 				status: false,
@@ -114,33 +115,36 @@ const getAll = res => {
 /**
  * delete a passenger
  */
-const deleteOne = (req, res) => {
+const deleteOne = (userId, req, res) => {
 	let id = req.params.id;
 
-	Passengers.findByIdAndRemove(id, (err, DeletedPassenger) => {
-		if (err)
-			return res.status(400).json({
-				ok: false,
-				err,
+	Passengers.findOneAndRemove(
+		{ _id: id, users: { $in: userId } },
+		(err, DeletedPassenger) => {
+			if (err)
+				return res.status(400).json({
+					ok: false,
+					err,
+				});
+			if (!DeletedPassenger)
+				return res.status(400).json({
+					status: false,
+					err: {
+						message: 'Passenger no encontrado',
+					},
+				});
+			res.json({
+				status: true,
 			});
-		if (!DeletedPassenger)
-			return res.status(400).json({
-				status: false,
-				err: {
-					message: 'Passenger no encontrado',
-				},
-			});
-		res.json({
-			status: true,
-		});
-	});
+		}
+	);
 };
 
 /**
  * delete all passengers
  */
-const deleteAll = res => {
-	Passengers.deleteMany({}, function(err, passenger) {
+const deleteAll = (userId, res) => {
+	Passengers.deleteMany({ users: { $in: userId } }, function(err, passenger) {
 		if (err) return res.status(400).json({ ok: false, err });
 		res.json({
 			deleteAll: true,

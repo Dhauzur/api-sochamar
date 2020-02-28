@@ -1,19 +1,20 @@
 import Company from '../models/company';
 import Lodging from '../models/lodging';
 
-const getOne = (req, res) => {
-	const { id } = req.query;
-	Company.findById(id).exec((err, company) => {
-		if (err) return res.status(400).json({ status: false, err });
-		res.json({
-			status: true,
-			company,
-		});
-	});
+const getOne = (userId, companyId, res) => {
+	Company.findOne({ _id: companyId, users: { $in: userId } }).exec(
+		(err, company) => {
+			if (err) return res.status(400).json({ status: false, err });
+			res.json({
+				status: true,
+				company,
+			});
+		}
+	);
 };
 
-const getAll = res => {
-	Company.find({}).exec((err, company) => {
+const getAll = (userId, res) => {
+	Company.find({ users: { $in: userId } }).exec((err, company) => {
 		if (err) return res.status(400).json({ ok: false, err });
 		Company.countDocuments({}, (err, length) => {
 			res.json({
@@ -25,15 +26,11 @@ const getAll = res => {
 	});
 };
 
-const createOne = (req, res) => {
-	let body = req.body;
-	let company = new Company({
-		rut: body.rut,
-		name: body.name,
-		prices: body.prices,
-	});
-	company.save((err, companyDB) => {
-		if (err) return res.status(400).json({ ok: false, err });
+const createOne = (userId, company, res) => {
+	const newCompany = new Company(company);
+	newCompany.users.push(userId);
+	newCompany.save((err, companyDB) => {
+		if (err) return res.status(400).json({ err });
 		res.json({
 			ok: true,
 			company: companyDB,
@@ -41,29 +38,30 @@ const createOne = (req, res) => {
 	});
 };
 
-const deleteOne = (req, res) => {
-	let id = req.params.id;
-	Company.findById(id).exec((err, companyFind) => {
-		Company.deleteOne({ _id: id }, function(err) {
-			if (err) return res.status(400).json({ ok: false, err });
-			Lodging.deleteMany({ company: id }, (err, lodging) => {
-				if (err)
-					return res.status(400).json({
-						error:
-							'Error al eliminar hospedajes relacionados a compañias',
-						err,
+const deleteOne = (userId, companyId, res) => {
+	Company.findOne({ _id: companyId, users: { $in: userId } }).exec(
+		(err, companyFind) => {
+			Company.deleteOne({ _id: companyId }, function(err) {
+				if (err) return res.status(400).json({ ok: false, err });
+				Lodging.deleteMany({ company: companyId }, (err, lodging) => {
+					if (err)
+						return res.status(400).json({
+							error:
+								'Error al eliminar hospedajes relacionados a compañias',
+							err,
+						});
+					res.json({
+						delete: companyFind.name,
+						lodgins: lodging.deletedCount,
 					});
-				res.json({
-					delete: companyFind.name,
-					lodgins: lodging.deletedCount,
 				});
 			});
-		});
-	});
+		}
+	);
 };
 
-const deleteAll = res => {
-	Company.deleteMany({}, function(err, company) {
+const deleteAll = (userId, res) => {
+	Company.deleteMany({ users: { $in: userId } }, function(err, company) {
 		if (err) return res.status(400).json({ ok: false, err });
 		res.json({
 			deleteAll: true,
@@ -72,12 +70,19 @@ const deleteAll = res => {
 	});
 };
 
+const getCompaniesIds = userId => {
+	return Company.find({ users: { $in: userId } }).then(companies =>
+		companies.map(x => x._id)
+	);
+};
+
 const companyService = {
 	getOne,
 	getAll,
 	createOne,
 	deleteOne,
 	deleteAll,
+	getCompaniesIds,
 };
 
 export default Object.freeze(companyService);
