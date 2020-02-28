@@ -76,7 +76,10 @@ const changeUserPassword = (user, newPassword, res) => {
 	/*We handle the possible not found User error*/
 };
 
-const googleAuthCallback = (req, res) => {};
+const googleAuthCallback = (req, res) => {
+	console.log(req.user);
+	res.sendStatus(200);
+};
 
 const authService = {
 	generateJwt,

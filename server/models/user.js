@@ -19,6 +19,7 @@ let userSchema = new Schema({
 		maxlength: 100,
 		optional: true,
 	},
+	googleId: { type: String },
 	email: {
 		type: String,
 		unique: true,

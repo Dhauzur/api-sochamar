@@ -12,6 +12,23 @@ authRouter.post(
 	authController.generateJwt
 );
 
+authRouter.get(
+	'/auth/google',
+	passport.authenticate('google', {
+		scope: [
+			'https://www.googleapis.com/auth/plus.login',
+			'https://www.googleapis.com/auth/userinfo.email',
+		],
+	}),
+	authController.generateJwt
+);
+
+authRouter.get(
+	'/auth/google/callback',
+	passport.authenticate('google', { failureRedirect: '/login' }),
+	authController.googleAuthCallback
+);
+
 authRouter.post('/auth/register', authController.register);
 
 authRouter.post(
