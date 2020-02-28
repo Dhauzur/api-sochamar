@@ -3,7 +3,7 @@ import Passengers from '../models/passengers';
 /**
  * create a new passengers and return the passengers
  */
-const createOne = async (req, res) => {
+const createOne = async (userId, req, res) => {
 	try {
 		let { body } = req;
 		let documentsList = [];
@@ -29,6 +29,7 @@ const createOne = async (req, res) => {
 		if (req.files.passenger) {
 			passengers.passenger = req.files.passenger[0].originalname;
 		}
+		passengers.users.push(userId);
 		const passengersDB = await passengers.save();
 		res.json({
 			status: true,
@@ -45,7 +46,7 @@ const createOne = async (req, res) => {
 /**
  * edit a passengers
  */
-const editOne = async (req, res) => {
+const editOne = async (userId, req, res) => {
 	try {
 		let { body } = req;
 		let { id } = req.params;
@@ -60,10 +61,11 @@ const editOne = async (req, res) => {
 		if (req.files.passenger) {
 			body.passenger = req.files.passenger[0].originalname;
 		}
-		const passengersDB = await Passengers.findByIdAndUpdate(id, body, {
-			new: true,
-			runValidators: true,
-		});
+		const passengersDB = await Passengers.findByIdAndUpdate(
+			{ _id: id, users: { $in: userId } },
+			body,
+			{ new: true, runValidators: true }
+		);
 		res.json({
 			status: true,
 			passengers: passengersDB,
@@ -79,9 +81,9 @@ const editOne = async (req, res) => {
 /**
  * get all passengers and the count
  */
-const getAll = async res => {
+const getAll = async (userId, res) => {
 	try {
-		const passengers = await Passengers.find({});
+		const passengers = await Passengers.find({ users: { $in: userId } });
 		const count = await Passengers.countDocuments({});
 		res.json({
 			status: true,
@@ -99,10 +101,10 @@ const getAll = async res => {
 /**
  * delete a passenger
  */
-const deleteOne = async (req, res) => {
+const deleteOne = async (userId, req, res) => {
 	try {
 		const { id } = req.params;
-		await Passengers.findByIdAndRemove(id);
+		await Passengers.findByIdAndRemove({ _id: id, users: { $in: userId } });
 		res.json({
 			status: true,
 		});
@@ -117,9 +119,9 @@ const deleteOne = async (req, res) => {
 /**
  * delete all passengers
  */
-const deleteAll = async res => {
+const deleteAll = async (userId, res) => {
 	try {
-		await Passengers.deleteMany({});
+		await Passengers.deleteMany({ users: { $in: userId } });
 		res.json({
 			status: true,
 		});

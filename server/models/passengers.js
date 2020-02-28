@@ -41,6 +41,12 @@ let passengers = new Schema({
 	comuna: {
 		type: String,
 	},
+	users: [
+		{
+			type: Schema.Types.ObjectID,
+			ref: 'User',
+		},
+	],
 });
 
 passengers.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
