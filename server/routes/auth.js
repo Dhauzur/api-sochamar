@@ -25,7 +25,11 @@ authRouter.get(
 
 authRouter.get(
 	'/auth/google/callback',
-	passport.authenticate('google', { failureRedirect: '/login' }),
+	passport.authenticate('google', {
+		session: false,
+		realm: 'http://localhost:8080/#/',
+		failureRedirect: 'http://localhost:8080/#/login',
+	}),
 	authController.googleAuthCallback
 );
 

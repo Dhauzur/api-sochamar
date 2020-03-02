@@ -77,8 +77,12 @@ const changeUserPassword = (user, newPassword, res) => {
 };
 
 const googleAuthCallback = (req, res) => {
-	console.log(req.user);
-	res.sendStatus(200);
+	const frontendUrL = 'http://localhost:8080/#/';
+	const jwt = generateJwt(req.user);
+	//Esta es la unica manera segura de enviarle el jwt al front
+	//La otra forma era enviar un html con js incluido, pero el jwt se quedaba asignado en la ruta de la api.
+	res.cookie('auth_jwt', jwt);
+	res.redirect(frontendUrL);
 };
 
 const authService = {
