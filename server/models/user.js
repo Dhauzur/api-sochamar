@@ -10,7 +10,7 @@ let userSchema = new Schema({
 	name: {
 		type: String,
 		required: [true, 'El nombre es necesario'],
-		minlength: 5,
+		minlength: 3,
 		maxlength: 100,
 	},
 	lastName: {
