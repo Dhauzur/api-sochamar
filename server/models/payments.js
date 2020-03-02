@@ -21,7 +21,7 @@ let payments = new Schema({
 		type: String,
 	},
 	voucher: {
-		type: String,
+		type: Object,
 	},
 	comments: {
 		type: String,
