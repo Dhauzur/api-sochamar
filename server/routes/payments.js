@@ -2,7 +2,7 @@ import express from 'express';
 import passport from 'passport';
 import paymentsController from '../controllers/payments';
 import multer from '../middleware/multer';
-import upload from '../middleware/googleCloudStorage';
+import storage from '../middleware/storage';
 
 const paymentsRouter = express.Router();
 paymentsRouter.get(
@@ -16,7 +16,7 @@ paymentsRouter.post(
 	[
 		passport.authenticate('jwt', { session: false }),
 		multer.single('voucher'),
-		upload,
+		storage,
 	],
 	(req, res) => paymentsController.create(req, res)
 );
@@ -26,7 +26,7 @@ paymentsRouter.put(
 	[
 		passport.authenticate('jwt', { session: false }),
 		multer.single('voucher'),
-		upload,
+		storage,
 	],
 	(req, res) => paymentsController.editOne(req, res)
 );
