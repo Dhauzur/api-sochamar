@@ -9,7 +9,7 @@ const strategy = new GoogleStrategy(
 	{
 		clientID: process.env.GOOGLE_CLIENT_ID,
 		clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-		callbackURL: 'http://localhost:3000/api/v1/auth/google/callback',
+		callbackURL: process.env.GOOGLE_STRATEGY_CALLBACK,
 	},
 	function(accessToken, refreshToken, profile, done) {
 		const googleEmail = profile.emails[0].value;
@@ -21,31 +21,29 @@ const strategy = new GoogleStrategy(
 				email: googleEmail,
 				img: profile.photos[0].value,
 				analyst: false,
-				password: 'SOLO PARA TESTING DE GOOGL AUTH',
+				password: 'adgajisokdjaklsd',
 				googleId: profile.id,
 			});
-			return newUser
+			newUser
 				.save()
 				.then(user => done(null, user))
-				.catch(err => done(err, false));
+				.catch(() => done(null, false));
 		};
 
 		const updateOneUser = (user, profile) => {
-			user.name = profile.name.givenName;
-			user.lastName = profile.name.familyName;
 			user.email = googleEmail;
 			user.img = profile.photos[0].value;
 			user.googleId = profile.id;
 			return user
 				.save()
 				.then(updatedUser => done(null, updatedUser))
-				.catch(err => done(err, false));
+				.catch(() => done(null, false));
 		};
 
 		const findOneWIthGoogleEmail = email => {
 			return User.findOne({ email: email })
 				.then(user => user)
-				.catch(err => done(err, false));
+				.catch(() => done(null, false));
 		};
 		//Importante. Es posible que el correo exista en la db entonces nosotros buscamos si existe
 		//en caso de encontrar un usuario, actualizamos sus datos y añadimos la id de google profile
@@ -61,7 +59,7 @@ const strategy = new GoogleStrategy(
 						if (!user) createOneUser(profile);
 						else updateOneUser(user, profile);
 					})
-					.catch(err => done(err, false));
+					.catch(() => done(null, false));
 			}
 		});
 	}

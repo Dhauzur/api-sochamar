@@ -20,3 +20,6 @@ process.env.GOOGLE_CLIENT_ID =
 	'326428183768-n5t9r18fekpb722933s3sv07q3sd6n0a.apps.googleusercontent.com';
 process.env.GOOGLE_CLIENT_SECRET =
 	process.env.GOOGLE_CLIENT_SECRET || 'sUkgN-R-0vIYMKhaOhOD0WVh';
+process.env.GOOGLE_STRATEGY_CALLBACK =
+	process.env.GOOGLE_STRATEGY_CALLBACK ||
+	'http://localhost:3000/api/v1/auth/google/callback';

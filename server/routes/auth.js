@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import passport from 'passport';
 import authController from '../controllers/auth';
+import validation from '../middleware/validation';
+import authSchema from '../schemas/auth';
 
 const authRouter = Router();
 /*Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
@@ -26,14 +28,16 @@ authRouter.get(
 authRouter.get(
 	'/auth/google/callback',
 	passport.authenticate('google', {
-		session: false,
-		realm: 'http://localhost:8080/#/',
-		failureRedirect: 'http://localhost:8080/#/login',
+		failureRedirect: process.env.FRONTEND_URL + '/login',
 	}),
 	authController.googleAuthCallback
 );
 
-authRouter.post('/auth/register', authController.register);
+authRouter.post(
+	'/auth/register',
+	validation(authSchema.register, 'body'),
+	authController.register
+);
 
 authRouter.post(
 	'/auth/send/passwordRecover',

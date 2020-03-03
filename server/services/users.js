@@ -93,7 +93,7 @@ const generateImgUrl = img => {
 const generateProfile = user => {
 	let imgUrl;
 	if (user.img) {
-		imgUrl = generateImgUrl(user.img);
+		imgUrl = user.img;
 	} else {
 		imgUrl = generateImgUrl('default.png');
 	}
