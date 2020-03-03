@@ -56,8 +56,7 @@ const uploadPassenger = (req, res, next) => {
 		next(err);
 	});
 	stream.on('finish', () => {
-		req.files.passenger[0].cloudStorageObject = gcsname;
-		req.files.passenger[0].cloudStoragePublicUrl = getPublicUrl(gcsname);
+		req.body.passenger = getPublicUrl(gcsname);
 		next();
 	});
 	stream.end(req.files.passenger[0].buffer);

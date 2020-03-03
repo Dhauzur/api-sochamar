@@ -1,4 +1,5 @@
 import Passengers from '../models/passengers';
+import { logError } from '../config/pino';
 
 /**
  * create a new passengers and return the passengers
@@ -18,10 +19,9 @@ const createOne = async (userId, req, res) => {
 			region: body.region,
 			comuna: body.comuna,
 			documents: body.documents,
+			passenger: body.passenger,
 		});
-		if (req.files.passenger) {
-			passengers.passenger = req.files.passenger[0].cloudStoragePublicUrl;
-		}
+
 		passengers.users.push(userId);
 		const passengersDB = await passengers.save();
 		res.json({
@@ -29,6 +29,7 @@ const createOne = async (userId, req, res) => {
 			passengers: passengersDB,
 		});
 	} catch (error) {
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -41,17 +42,8 @@ const createOne = async (userId, req, res) => {
  */
 const editOne = async (userId, req, res) => {
 	try {
-		let { body } = req;
 		let { id } = req.params;
-		if (req.files.passenger) {
-			body.passenger = req.files.passenger[0].originalname;
-		}
-		// create array links the documents to update
-		if (req.files.documents) {
-			body.documents = req.files.documents.map(
-				document => document.cloudStoragePublicUrl
-			);
-		}
+		let { body } = req;
 		const passengersDB = await Passengers.findByIdAndUpdate(
 			{ _id: id, users: { $in: userId } },
 			body,
@@ -62,6 +54,7 @@ const editOne = async (userId, req, res) => {
 			passengers: passengersDB,
 		});
 	} catch (error) {
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -82,6 +75,7 @@ const getAll = async (userId, res) => {
 			count,
 		});
 	} catch (error) {
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -100,6 +94,7 @@ const deleteOne = async (userId, req, res) => {
 			status: true,
 		});
 	} catch (error) {
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -117,6 +112,7 @@ const deleteAll = async (userId, res) => {
 			status: true,
 		});
 	} catch (error) {
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
