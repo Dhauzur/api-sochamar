@@ -2,7 +2,7 @@ import { Router } from 'express';
 import passport from 'passport';
 import passengersController from '../controllers/passengers';
 import multer from '../middleware/multer';
-import { uploadPassenger, uploadDocuments } from '../middleware/gcsPassengers';
+import { uploadPassenger, uploadDocuments } from '../middleware/gscPassengers';
 
 const passengersRouter = Router();
 // route for get all passengers

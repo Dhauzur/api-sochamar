@@ -1,5 +1,9 @@
-import { bucket, getPublicUrl } from '../config/gscConfig';
+import { bucket, getPublicUrl } from '../config/bucket';
 
+/**
+ * middlerware for save in google storage cloud
+ * handler single image only
+ */
 const storage = (req, res, next) => {
 	if (!req.file) return next();
 	const gcsname = `${req.file.originalname}`;

@@ -1,6 +1,10 @@
-import { bucket, getPublicUrl } from '../config/gscConfig';
+import { bucket, getPublicUrl } from '../config/bucket';
 import { isArray, isEmpty } from 'underscore';
 
+/**
+ * middlerware for save in google storage cloud
+ * handler for multiple images and documents
+ */
 const uploadDocuments = async (req, res, next) => {
 	if (
 		typeof req.files.documents === 'undefined' ||
