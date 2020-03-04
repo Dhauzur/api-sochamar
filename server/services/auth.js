@@ -77,7 +77,7 @@ const changeUserPassword = (user, newPassword, res) => {
 };
 
 const googleAuthCallback = (req, res) => {
-	const frontendUrL = 'http://localhost:8080/#/';
+	const frontendUrL = process.env.FRONTEND_URL;
 	const jwt = generateJwt(req.user);
 	//Esta es la unica manera segura de enviarle el jwt al front
 	//La otra forma era enviar un html con js incluido, pero el jwt se quedaba asignado en la ruta de la api.
