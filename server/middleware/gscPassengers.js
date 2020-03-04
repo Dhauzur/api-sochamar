@@ -16,7 +16,9 @@ const uploadDocuments = async (req, res, next) => {
 	for (let i = 0; i < req.files.documents.length; i++) {
 		pendingPromises.push(
 			new Promise((resolve, reject) => {
-				const gcsname = `${req.files.documents[i].originalname}`;
+				const gcsname = `${Date.now()}-${
+					req.files.documents[i].originalname
+				}`;
 				const file = bucket.file(gcsname);
 				const stream = file.createWriteStream({
 					metadata: {
@@ -29,7 +31,7 @@ const uploadDocuments = async (req, res, next) => {
 				});
 				stream.on('finish', () => {
 					resolve({
-						name: gcsname,
+						name: req.files.documents[i].originalname,
 						url: getPublicUrl(gcsname),
 					});
 				});
@@ -48,7 +50,7 @@ const uploadPassenger = (req, res, next) => {
 	)
 		return next();
 
-	const gcsname = `${req.files.passenger[0].originalname}`;
+	const gcsname = `${Date.now()}-${req.files.passenger[0].originalname}`;
 	const file = bucket.file(gcsname);
 	const stream = file.createWriteStream({
 		metadata: {

@@ -6,7 +6,7 @@ import { bucket, getPublicUrl } from '../config/bucket';
  */
 const storage = (req, res, next) => {
 	if (!req.file) return next();
-	const gcsname = `${req.file.originalname}`;
+	const gcsname = `${Date.now()}-${req.file.originalname}`;
 	const file = bucket.file(gcsname);
 	const stream = file.createWriteStream({
 		metadata: {
@@ -18,7 +18,7 @@ const storage = (req, res, next) => {
 		next(err);
 	});
 	stream.on('finish', () => {
-		req.file.cloudStorageObject = gcsname;
+		req.file.cloudStorageObject = req.file.originalname;
 		req.file.cloudStoragePublicUrl = getPublicUrl(gcsname);
 		next();
 	});
