@@ -14,7 +14,6 @@ const userController = {
 	},
 	updateAvatar(req, res) {
 		if (req.file) {
-			console.log(req.file);
 			const { user } = req;
 			const avatar = req.file.cloudStoragePublicUrl;
 			userService.updateAvatar(user._id, avatar, res);
