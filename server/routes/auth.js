@@ -10,7 +10,7 @@ const authRouter = Router();
 
 authRouter.post(
 	'/auth/login',
-	passport.authenticate('local'),
+	[validation(authSchema.login, 'body'), passport.authenticate('local')],
 	authController.generateJwt
 );
 

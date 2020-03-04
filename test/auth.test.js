@@ -10,12 +10,17 @@ describe('Rutas de auth', () => {
 		const emailInDb = {
 			name: 'prueba 1',
 			email: 'prueba@prueba.cl',
-			password: 'asd',
+			password: 'asddsfsd',
 		};
 		const newUser = {
 			name: 'prueba 1',
 			email: randomEmail,
-			password: 'asd',
+			password: 'asdfg',
+		};
+		const invalidSchema = {
+			name: 'p',
+			email: 'fffffffsd.cl',
+			password: 'as',
 		};
 		test('Deberia devolvernos codigo 409 si el correo ya existe', done => {
 			request(app)
@@ -35,11 +40,20 @@ describe('Rutas de auth', () => {
 					done();
 				});
 		});
-		test('Deberia devolvernos codigo 500 si no enviamos un body, recordar añadir joi', done => {
+		test('Deberia devolvernos codigo 422 si no enviamos un body', done => {
 			request(app)
 				.post('/api/v1/auth/register')
 				.then(response => {
-					expect(response.statusCode).toBe(500);
+					expect(response.statusCode).toBe(422);
+					done();
+				});
+		});
+		test('Deberia devolvernos codigo 422 si cumplimos con las reglas de joi', done => {
+			request(app)
+				.post('/api/v1/auth/register')
+				.send(invalidSchema)
+				.then(response => {
+					expect(response.statusCode).toBe(422);
 					done();
 				});
 		});
@@ -47,7 +61,7 @@ describe('Rutas de auth', () => {
 	describe('Login de usuario', () => {
 		const invalidUser = {
 			email: 'prueba@prueba.cl',
-			password: 'asd',
+			password: 'asdgggggggggggggg',
 		};
 		const validUser = {
 			email: 'unitTesting@prueba.cl',
