@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
-import upload from '../middleware/usersMulterConfig';
+import upload from '../middleware/multer';
+import storage from '../middleware/storage';
 import userController from '../controllers/users';
 
 const userRouter = Router();
@@ -18,7 +19,11 @@ userRouter.put(
 
 userRouter.patch(
 	'/user/avatar',
-	[passport.authenticate('jwt', { session: false }), upload.single('avatar')],
+	[
+		passport.authenticate('jwt', { session: false }),
+		upload.single('avatar'),
+		storage,
+	],
 	userController.updateAvatar
 );
 
