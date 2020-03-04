@@ -131,7 +131,7 @@ const updateAvatar = (id, img, res) => {
 			new: true,
 		}
 	)
-		.then(updated => res.json({ img: generateImgUrl(updated.img) }))
+		.then(updated => res.json({ img: updated.img }))
 		.catch(err => res.status(400).json(err));
 };
 

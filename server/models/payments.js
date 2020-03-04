@@ -8,6 +8,9 @@ let payments = new Schema({
 	idCompany: {
 		type: String,
 	},
+	idLodging: {
+		type: String,
+	},
 	startDate: {
 		type: String,
 	},
@@ -18,7 +21,7 @@ let payments = new Schema({
 		type: String,
 	},
 	voucher: {
-		type: String,
+		type: Object,
 	},
 	comments: {
 		type: String,

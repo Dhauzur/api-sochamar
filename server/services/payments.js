@@ -1,5 +1,6 @@
 import Payments from '../models/payments';
 import { pick } from 'underscore';
+import { logError } from '../config/pino';
 
 /**
  * create a new payment and return the payment
@@ -8,17 +9,22 @@ const createOne = async (req, res) => {
 	const { body } = req;
 	try {
 		let payments = new Payments({
+			idLodging: body.idLodging,
 			idCompany: body.idCompany,
 			startDate: body.startDate,
 			endDate: body.endDate,
 			mount: body.mount,
 		});
-		if (req.files.voucher) {
-			payments.voucher = req.files.voucher[0].originalname;
+		if (req.file) {
+			payments.voucher = {
+				url: req.file.cloudStoragePublicUrl,
+				name: req.file.cloudStorageObject,
+			};
 		}
 		const paymentDB = await payments.save();
 		return res.json({ status: true, payment: paymentDB });
 	} catch (error) {
+		logError(error.message);
 		return res.status(400).send({
 			status: false,
 			error: error.message,
@@ -30,22 +36,26 @@ const createOne = async (req, res) => {
  * edit a payment
  */
 const editOne = async (req, res) => {
-	console.log(req.files.voucher);
 	try {
 		const { id } = req.params;
 		let body = pick(req.body, [
 			'idCompany',
+			'idLodging',
 			'startDate',
 			'endDate',
 			'mount',
 		]);
 		body.comments = req.body.comments;
-		if (req.files.voucher) {
-			body.voucher = req.files.voucher[0].originalname;
+		if (req.file) {
+			body.voucher = {
+				url: req.file.cloudStoragePublicUrl,
+				name: req.file.cloudStorageObject,
+			};
 		}
 		await Payments.findByIdAndUpdate(id, body);
 		res.json({ status: true });
 	} catch (error) {
+		logError(error.message);
 		return res.status(400).send({
 			status: false,
 			error: error.message,
@@ -65,6 +75,7 @@ const getAll = async (req, res) => {
 			payments,
 		});
 	} catch (error) {
+		logError(error.message);
 		return res.status(400).send({
 			status: false,
 			error: error.message,
@@ -77,18 +88,17 @@ const getAll = async (req, res) => {
  */
 const deleteOne = async (req, res) => {
 	try {
-		let { id } = req.params;
+		const { id } = req.params;
 		await Payments.findByIdAndRemove(id);
 		res.json({
 			status: true,
 		});
 	} catch (error) {
-		if (error) {
-			return res.status(400).send({
-				status: false,
-				error: error.message,
-			});
-		}
+		logError(error.message);
+		return res.status(400).send({
+			status: false,
+			error: error.message,
+		});
 	}
 };
 

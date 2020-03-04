@@ -1,5 +1,7 @@
 import Lodging from '../models/lodging';
+import Company from '../models/company';
 import moment from 'moment';
+import { logError } from '../config/pino';
 
 const getAll = res => {
 	Lodging.find({}).exec((err, lodgings) => {
@@ -15,43 +17,58 @@ const getAll = res => {
 };
 
 //Ojo esto deberia ser updateOne
-const createOne = (req, res) => {
-	let body = req.body;
-	// let lodging = new Lodging({
-	//     id: body.id,
-	//     group: body.group,
-	//     start: moment(body.start).hours(16).format('YYYY-MM-DD'),
-	//     end: moment(body.end).hours(12).format('YYYY-MM-DD'),
-	//     service: body.service,
-	//     company: body.company,
-	// });
-	Lodging.findOneAndUpdate(
-		{
-			id: body.id,
-		},
-		{
-			group: body.group,
-			start: moment(body.start)
-				.hours(16)
-				.format('YYYY-MM-DD'),
-			end: moment(body.end)
-				.hours(12)
-				.format('YYYY-MM-DD'),
-			service: body.service,
-			company: body.company,
-			passengers: body.passengers,
-		},
-		{
-			upsert: true,
-		},
-		(err, lodgingDB) => {
-			if (err) return res.status(400).json({ ok: false, err });
-			res.json({
-				status: true,
-				lodging: lodgingDB,
+const createOne = async (req, res) => {
+	try {
+		let { body } = req;
+
+		// set mount total
+		let breakfast = 0,
+			lunch = 0,
+			dinner = 0,
+			lodging = 0;
+		let service = JSON.parse(body.service);
+		const responseDB = await Company.find({ _id: body.company });
+		const prices = responseDB[0].prices;
+		service.map(arr => {
+			arr.filter((item, index) => {
+				if (index === 0) breakfast = breakfast + item;
+				if (index === 1) lunch = lunch + item;
+				if (index === 2) dinner = dinner + item;
+				if (index === 3) lodging = lodging + item;
 			});
-		}
-	);
+		});
+		const mountTotal =
+			lodging * prices[3] +
+			dinner * prices[2] +
+			lunch * prices[1] +
+			breakfast * prices[0];
+
+		// save in database
+		const lodgingDB = await Lodging.findOneAndUpdate(
+			{ id: body.id },
+			{
+				group: body.group,
+				start: moment(body.start)
+					.hours(16)
+					.format('YYYY-MM-DD'),
+				end: moment(body.end)
+					.hours(12)
+					.format('YYYY-MM-DD'),
+				service: body.service,
+				company: body.company,
+				passengers: body.passengers,
+				mountTotal,
+			},
+			{ upsert: true }
+		);
+		res.json({
+			status: true,
+			lodging: lodgingDB,
+		});
+	} catch (error) {
+		logError(error.message);
+		res.status(400).json({ status: false, error: error.message });
+	}
 };
 
 const deleteAll = res => {

@@ -21,7 +21,6 @@ const strategy = new GoogleStrategy(
 				email: googleEmail,
 				img: profile.photos[0].value,
 				analyst: false,
-				password: 'adgajisokdjaklsd',
 				googleId: profile.id,
 			});
 			newUser
@@ -31,7 +30,6 @@ const strategy = new GoogleStrategy(
 		};
 
 		const updateOneUser = (user, profile) => {
-			user.email = googleEmail;
 			user.img = profile.photos[0].value;
 			user.googleId = profile.id;
 			return user

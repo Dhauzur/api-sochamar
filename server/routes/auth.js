@@ -28,6 +28,7 @@ authRouter.get(
 authRouter.get(
 	'/auth/google/callback',
 	passport.authenticate('google', {
+		session: false,
 		failureRedirect: process.env.FRONTEND_URL + '/login',
 	}),
 	authController.googleAuthCallback

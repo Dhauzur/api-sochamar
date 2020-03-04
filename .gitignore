@@ -112,3 +112,4 @@ dist
 .vscode
 package-lock.json
 !/uploads/default.png
+google-storage.json
