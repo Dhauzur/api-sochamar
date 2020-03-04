@@ -4,6 +4,7 @@
   "description": "Administracion de datos de sochamar",
   "main": "server.js",
   "scripts": {
+    "prestart": "node getJson",
     "start": "node -r esm server.js",
     "dev": "nodemon -r esm --inspect server.js",
     "test": "jest",
