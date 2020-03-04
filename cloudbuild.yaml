@@ -17,6 +17,9 @@ steps:
       - "PORT=${_PORT}"
       - "BUCKETNAME=${_BUCKETNAME}"
       - "PROJECT_ID=${_PROJECT_ID}"
+      - "GOOGLE_CLIENT_ID=${_GOOGLE_CLIENT_ID}"
+      - "GOOGLE_CLIENT_SECRET=${_GOOGLE_CLIENT_SECRET}"
+      - "GOOGLE_STRATEGY_CALLBACK=${_GOOGLE_STRATEGY_CALLBACK}"
   - name: "gcr.io/cloud-builders/gcloud"
     args: ["app", "deploy"]
 timeout: "1600s"
