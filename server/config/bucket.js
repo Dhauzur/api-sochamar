@@ -1,10 +1,6 @@
-import path from 'path';
 import { Storage } from '@google-cloud/storage';
 
-const projectId = process.env.PROJECT_ID;
-const keyFilename = path.join(__dirname, './google-storage.json');
-
-const gcs = new Storage({ projectId, keyFilename });
+const gcs = new Storage();
 
 const bucketName = process.env.BUCKETNAME;
 
