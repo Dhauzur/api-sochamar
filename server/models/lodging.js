@@ -16,7 +16,7 @@ let lodging = new Schema({
 	start: {
 		type: String,
 	},
-	company: {
+	place: {
 		type: String,
 	},
 	end: {

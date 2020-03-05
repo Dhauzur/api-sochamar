@@ -11,9 +11,9 @@ let rooms = new Schema({
 	numberPassangerMax: {
 		type: Number,
 	},
-	company: {
+	place: {
 		type: Schema.Types.ObjectID,
-		ref: 'company',
+		ref: 'place',
 	},
 });
 

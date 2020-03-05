@@ -1,64 +1,68 @@
 import Rooms from '../models/rooms';
-import companyService from './company';
+import placeService from './place';
+import { logError } from '../config/pino';
 
-const getAll = (userId, companyId, res) => {
-	/*Si no existe id de compañia, significa que el frontend esta usando 'Todas las compañias'*/
-	if (companyId === 'null') {
-		/*Entonces buscamos todas las compañias del usuario*/
-		const userCompanies = companyService.getCompaniesIds(userId);
-		/*Para luego devolver todos los cuartos que tengan esas ids*/
-		const findRoomsFromTheseCompanies = companies => {
-			Rooms.find({ company: { $in: companies } })
-				.then(rooms =>
-					res.json({
-						status: true,
-						rooms,
-					})
-				)
-				.catch(e => res.status(400).json({ ok: false, e }));
-		};
-		userCompanies.then(companies => findRoomsFromTheseCompanies(companies));
-	} else {
-		Rooms.find({ company: companyId })
-			.then(rooms =>
-				res.json({
-					status: true,
-					rooms,
-				})
-			)
-			.catch(e => res.status(400).json({ ok: false, e }));
+const getAll = async (userId, placeId, res) => {
+	try {
+		/*Si no existe id del lugar, significa que el frontend esta usando 'Todos los lugares'*/
+		if (placeId === 'null') {
+			const places = await placeService.getPlacesIds(userId);
+			const rooms = await Rooms.find({ place: { $in: places } });
+			res.json({
+				status: true,
+				rooms,
+			});
+		} else {
+			const rooms = await Rooms.find({ place: placeId });
+			res.json({
+				status: true,
+				rooms,
+			});
+		}
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({ status: false, error: error.message });
 	}
 };
 
-const createOne = (companyId, room, res) => {
-	let rooms = new Rooms(room);
-	rooms.company = companyId;
-	rooms.save((err, roomsDB) => {
-		if (err) return res.status(400).json({ ok: false, err });
+const createOne = async (placeId, room, res) => {
+	try {
+		let rooms = new Rooms(room);
+		rooms.place = placeId;
+		const roomsDB = await rooms.save();
 		res.json({
-			ok: true,
+			status: true,
 			rooms: roomsDB,
 		});
-	});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({ status: false, error: error.message });
+	}
 };
 
-const deleteOne = (companyId, roomId, res) => {
-	Rooms.findOneAndDelete(
-		{ _id: roomId, company: companyId },
-		{ projection: 'name' }
-	)
-		.then(room => res.json(room))
-		.catch(() => res.sendStatus(400));
+const deleteOne = async (placeId, roomId, res) => {
+	try {
+		await Rooms.findOneAndDelete(
+			{ _id: roomId, place: placeId },
+			{ projection: 'name' }
+		);
+		res.json({ status: true });
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({ status: false, error: error.message });
+	}
 };
 
-const deleteAll = (companyId, res) => {
-	Rooms.deleteMany({ company: companyId }, function(err, roomsDB) {
-		if (err) return res.status(400).json({ ok: false, err });
+const deleteAll = async (placeId, res) => {
+	try {
+		await Rooms.deleteMany({ place: placeId });
 		res.json({
 			deleteAll: true,
-			deletedCount: roomsDB.deletedCount,
 		});
-	});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({ status: false, error: error.message });
+	}
 };
 
 const roomsService = {

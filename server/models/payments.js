@@ -5,7 +5,7 @@ import { Schema, model } from 'mongoose';
  * create schema for a payments
  */
 let payments = new Schema({
-	idCompany: {
+	idPlace: {
 		type: String,
 	},
 	idLodging: {

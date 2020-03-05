@@ -10,7 +10,7 @@ const createOne = async (req, res) => {
 	try {
 		let payments = new Payments({
 			idLodging: body.idLodging,
-			idCompany: body.idCompany,
+			idPlace: body.idPlace,
 			startDate: body.startDate,
 			endDate: body.endDate,
 			mount: body.mount,
@@ -39,7 +39,7 @@ const editOne = async (req, res) => {
 	try {
 		const { id } = req.params;
 		let body = pick(req.body, [
-			'idCompany',
+			'idPlace',
 			'idLodging',
 			'startDate',
 			'endDate',
@@ -64,12 +64,12 @@ const editOne = async (req, res) => {
 };
 
 /**
- * get all payments of the company
+ * get all payments of the place
  */
 const getAll = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const payments = await Payments.find({ idCompany: id });
+		const payments = await Payments.find({ idPlace: id });
 		return res.json({
 			status: true,
 			payments,

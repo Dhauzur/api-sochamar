@@ -1,5 +1,5 @@
 import activitiesRoutes from './activities';
-import companyRoutes from './company';
+import placeRoutes from './place';
 import lodgingRoutes from './lodging';
 import roomsRoutes from './rooms';
 import reportsRoutes from './reports';
@@ -16,7 +16,7 @@ const apiVersion = '/api/v1';
 /*Con esto ya podemos olvidarnos de configurar las rutas en server.js o app.js*/
 /*esto mismo puede ser aplicado con las configuraciones de la app, ej: cors, etc*/
 export default app => {
-	app.use(apiVersion, companyRoutes);
+	app.use(apiVersion, placeRoutes);
 	app.use(apiVersion, activitiesRoutes);
 	app.use(apiVersion, lodgingRoutes);
 	app.use(apiVersion, roomsRoutes);

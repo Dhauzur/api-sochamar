@@ -1,5 +1,5 @@
 import Lodging from '../models/lodging';
-import Company from '../models/company';
+import Place from '../models/place';
 import moment from 'moment';
 import { logError } from '../config/pino';
 
@@ -27,7 +27,7 @@ const createOne = async (req, res) => {
 			dinner = 0,
 			lodging = 0;
 		let service = JSON.parse(body.service);
-		const responseDB = await Company.find({ _id: body.company });
+		const responseDB = await Place.find({ _id: body.place });
 		const prices = responseDB[0].prices;
 		service.map(arr => {
 			arr.filter((item, index) => {
@@ -55,7 +55,7 @@ const createOne = async (req, res) => {
 					.hours(12)
 					.format('YYYY-MM-DD'),
 				service: body.service,
-				company: body.company,
+				place: body.place,
 				passengers: body.passengers,
 				mountTotal,
 			},
@@ -81,9 +81,9 @@ const deleteAll = res => {
 	});
 };
 
-const deleteAllWithCompany = (req, res) => {
-	let company = req.params.company;
-	Lodging.deleteMany({ company }, function(err, lodging) {
+const deleteAllWithPlace = (req, res) => {
+	let place = req.params.place;
+	Lodging.deleteMany({ place }, function(err, lodging) {
 		if (err) return res.status(400).json({ ok: false, err });
 		res.json({
 			delete: true,
@@ -92,7 +92,7 @@ const deleteAllWithCompany = (req, res) => {
 	});
 };
 
-const deleteOneWithCompanyId = (req, res) => {
+const deleteOneWithPlaceId = (req, res) => {
 	let id = req.params.id;
 	Lodging.deleteMany({ id }, function(err, lodging) {
 		if (err) return res.status(400).json({ ok: false, err });
@@ -104,14 +104,14 @@ const deleteOneWithCompanyId = (req, res) => {
 };
 
 /**
- * search all lodgings for idcompany
+ * search all lodgings for idPlace
  */
-const getAllForCompany = async (req, res) => {
+const getAllForPlace = async (req, res) => {
 	try {
 		const lodgings = await Lodging.find({
-			company: req.params.id,
+			place: req.params.id,
 		});
-		const count = await Lodging.countDocuments({ company: req.params.id });
+		const count = await Lodging.countDocuments({ place: req.params.id });
 		res.json({
 			status: true,
 			count,
@@ -129,9 +129,9 @@ const lodgingService = {
 	getAll,
 	createOne,
 	deleteAll,
-	getAllForCompany,
-	deleteAllWithCompany,
-	deleteOneWithCompanyId,
+	getAllForPlace,
+	deleteAllWithPlace,
+	deleteOneWithPlaceId,
 };
 
 export default Object.freeze(lodgingService);
