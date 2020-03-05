@@ -24,4 +24,3 @@ process.env.GOOGLE_STRATEGY_CALLBACK =
 	process.env.GOOGLE_STRATEGY_CALLBACK ||
 	'http://localhost:3000/api/v1/auth/google/callback';
 process.env.BUCKETNAME = process.env.BUCKETNAME || 'bucket-plhain-staging';
-process.env.PROJECT_ID = process.env.PROJECT_ID || 'sochamar-staging-api';
