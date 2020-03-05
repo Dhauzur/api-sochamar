@@ -1,29 +1,29 @@
 import { Router } from 'express';
 import passport from 'passport';
-import roomsController from '../controllers/rooms';
+import periodsController from '../controllers/period';
 
-const roomsRouter = Router();
+const periodsRouter = Router();
 /* Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
 /* Los verbos de por si ya estan dando a entender la accion que se realiza sobre esta ruta*/
-roomsRouter.get(
-	'/rooms/:placeId',
+periodsRouter.get(
+	'/periods/:placeId',
 	passport.authenticate('jwt', { session: false }),
-	roomsController.getAll
+	periodsController.getAll
 );
-roomsRouter.post(
-	'/rooms',
+periodsRouter.post(
+	'/periods',
 	passport.authenticate('jwt', { session: false }),
-	roomsController.create
+	periodsController.create
 );
-roomsRouter.delete(
-	'/rooms/all',
+periodsRouter.delete(
+	'/periods/all',
 	passport.authenticate('jwt', { session: false }),
-	roomsController.deleteAll
+	periodsController.deleteAll
 );
-roomsRouter.delete(
-	'/rooms/one/:id',
+periodsRouter.delete(
+	'/periods/one/:id',
 	passport.authenticate('jwt', { session: false }),
-	roomsController.deleteOne
+	periodsController.deleteOne
 );
 
-export default roomsRouter;
+export default periodsRouter;
