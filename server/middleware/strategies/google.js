@@ -1,7 +1,6 @@
-import { logger } from '../../config/pino';
-
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+import { logError } from '../../config/pino';
 import User from '../../models/user';
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // Use the GoogleStrategy within Passport.
 //   Strategies in Passport require a `verify` function, which accept
@@ -13,11 +12,16 @@ const strategy = new GoogleStrategy(
 		clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 		callbackURL: process.env.GOOGLE_STRATEGY_CALLBACK,
 	},
-	function(accessToken, refreshToken, profile, done) {
-		logger.info('profile from google: ' + profile);
+	async function(accessToken, refreshToken, profile, done) {
+		/*Si algun error ocurre con mongoose, necesitamos retornar un done y ademas hacer log del error*/
+		const onStrategyError = (err, done) => {
+			logError(err);
+			return done(null, false);
+		};
+
 		const googleEmail = profile.emails[0].value;
-		logger.info('email from google account: ' + googleEmail);
-		const createOneUser = profile => {
+
+		const createOneUser = async profile => {
 			const newUser = new User({
 				name: profile.name.givenName,
 				lastName: profile.name.familyName,
@@ -26,43 +30,52 @@ const strategy = new GoogleStrategy(
 				analyst: false,
 				googleId: profile.id,
 			});
-			newUser
-				.save()
-				.then(user => done(null, user))
-				.catch(err => done(err, false));
+			return await newUser.save();
 		};
 
-		const updateOneUser = (user, profile) => {
+		const updateOneUser = async (user, profile) => {
 			user.img = profile.photos[0].value;
 			user.googleId = profile.id;
-			return user
-				.save()
-				.then(updatedUser => done(null, updatedUser))
-				.catch(err => done(err, false));
+			return await user.save();
 		};
 
 		const findOneWIthGoogleEmail = email => {
-			return User.findOne({ email: email })
-				.then(user => user)
-				.catch(err => done(err, false));
+			return User.findOne({ email: email });
+		};
+
+		const findOneWithGoogleId = googleId => {
+			return User.findOne({ googleId: googleId });
 		};
 		//Importante. Es posible que el correo exista en la db entonces nosotros buscamos si existe
 		//en caso de encontrar un usuario, actualizamos sus datos y añadimos la id de google profile
-		const found = findOneWIthGoogleEmail(googleEmail);
-		found.then(user => {
-			if (user) {
-				updateOneUser(user, profile);
-			} else {
-				//Si el usuario no existe con el correo, procedemos a buscar uno mediante su google id*/
-				User.findOne({ googleId: profile.id })
-					.then(user => {
-						/*Finalizando actualizando o creando el usuario correspondiente*/
-						if (!user) createOneUser(profile);
-						else updateOneUser(user, profile);
-					})
-					.catch(() => done(null, false));
+		const userFromEmail = await findOneWIthGoogleEmail(
+			googleEmail
+		).catch(err => onStrategyError(err, done));
+		if (userFromEmail) {
+			try {
+				const updatedUser = await updateOneUser(userFromEmail, profile);
+				return done(null, updatedUser);
+			} catch (e) {
+				logError(e);
+				return done(null, false);
 			}
-		});
+		} else {
+			try {
+				const userFromId = await findOneWithGoogleId(profile.id);
+				if (userFromId) {
+					const updatedUser = await updateOneUser(
+						userFromId,
+						profile
+					);
+					return done(null, updatedUser);
+				} else {
+					const newUser = await createOneUser(profile);
+					return done(null, newUser);
+				}
+			} catch (e) {
+				return onStrategyError(e, done);
+			}
+		}
 	}
 );
 
