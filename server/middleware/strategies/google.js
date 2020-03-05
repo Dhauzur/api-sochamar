@@ -1,3 +1,5 @@
+import { logger } from '../../config/pino';
+
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 import User from '../../models/user';
 
@@ -12,8 +14,9 @@ const strategy = new GoogleStrategy(
 		callbackURL: process.env.GOOGLE_STRATEGY_CALLBACK,
 	},
 	function(accessToken, refreshToken, profile, done) {
+		logger.info('profile from google: ' + profile);
 		const googleEmail = profile.emails[0].value;
-
+		logger.info('email from google account: ' + googleEmail);
 		const createOneUser = profile => {
 			const newUser = new User({
 				name: profile.name.givenName,
@@ -26,7 +29,7 @@ const strategy = new GoogleStrategy(
 			newUser
 				.save()
 				.then(user => done(null, user))
-				.catch(() => done(null, false));
+				.catch(err => done(err, false));
 		};
 
 		const updateOneUser = (user, profile) => {
@@ -35,13 +38,13 @@ const strategy = new GoogleStrategy(
 			return user
 				.save()
 				.then(updatedUser => done(null, updatedUser))
-				.catch(() => done(null, false));
+				.catch(err => done(err, false));
 		};
 
 		const findOneWIthGoogleEmail = email => {
 			return User.findOne({ email: email })
 				.then(user => user)
-				.catch(() => done(null, false));
+				.catch(err => done(err, false));
 		};
 		//Importante. Es posible que el correo exista en la db entonces nosotros buscamos si existe
 		//en caso de encontrar un usuario, actualizamos sus datos y añadimos la id de google profile
