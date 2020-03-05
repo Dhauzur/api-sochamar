@@ -13,6 +13,7 @@ const authSchema = {
 			.min(5)
 			.max(100)
 			.required(),
+		analyst: Joi.boolean(),
 	}),
 	login: Joi.object({
 		email: Joi.string()
