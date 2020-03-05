@@ -78,10 +78,11 @@ const changeUserPassword = (user, newPassword, res) => {
 
 const googleAuthCallback = (req, res) => {
 	const frontendUrL = process.env.FRONTEND_URL;
+	console.log(frontendUrL);
 	const jwt = generateJwt(req.user);
 	//Esta es la unica manera segura de enviarle el jwt al front
 	//La otra forma era enviar un html con js incluido, pero el jwt se quedaba asignado en la ruta de la api.
-	res.cookie('auth_token', jwt, { domain: frontendUrL });
+	res.cookie('auth_token', jwt, { domain: frontendUrL + '/#' });
 	res.redirect(frontendUrL);
 };
 
