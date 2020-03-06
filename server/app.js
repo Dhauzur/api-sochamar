@@ -12,7 +12,7 @@ import { logError, logger } from './config/pino';
 const app = express();
 
 app.use(cors());
-app.use(express.static(path.join(__dirname, '../uploads')));
+app.use(express.static(path.join(__dirname, 'static')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 

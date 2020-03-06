@@ -9,26 +9,18 @@ let validRoles = {
 let userSchema = new Schema({
 	name: {
 		type: String,
-		required: [true, 'El nombre es necesario'],
-		minlength: 5,
-		maxlength: 100,
 	},
 	lastName: {
 		type: String,
 		default: '',
-		maxlength: 100,
-		optional: true,
 	},
+	googleId: { type: String },
 	email: {
 		type: String,
 		unique: true,
-		required: [true, 'El correo es necesario'],
 	},
 	password: {
 		type: String,
-		required: [true, 'La contraseña es obligatoria'],
-		min: 5,
-		max: 100,
 	},
 	img: {
 		type: String,

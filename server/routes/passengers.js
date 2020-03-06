@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import passport from 'passport';
 import passengersController from '../controllers/passengers';
-import upload from '../middleware/passengersMulterConfig';
+import multer from '../middleware/multer';
+import { uploadPassenger, uploadDocuments } from '../middleware/gscPassengers';
 
 const passengersRouter = Router();
 // route for get all passengers
@@ -16,7 +17,7 @@ passengersRouter.post(
 	'/passengers/create',
 	[
 		passport.authenticate('jwt', { session: false }),
-		upload.fields([
+		multer.fields([
 			{
 				name: 'passenger',
 				maxCount: 1,
@@ -26,8 +27,10 @@ passengersRouter.post(
 				maxCount: 5,
 			},
 		]),
+		uploadPassenger,
+		uploadDocuments,
 	],
-	(req, res) => passengersController.create(req, res)
+	passengersController.create
 );
 
 // route for update a passenger
@@ -35,7 +38,7 @@ passengersRouter.put(
 	'/passengers/:id',
 	[
 		passport.authenticate('jwt', { session: false }),
-		upload.fields([
+		multer.fields([
 			{
 				name: 'passenger',
 				maxCount: 1,
@@ -45,8 +48,10 @@ passengersRouter.put(
 				maxCount: 5,
 			},
 		]),
+		uploadPassenger,
+		uploadDocuments,
 	],
-	(req, res) => passengersController.editOne(req, res)
+	passengersController.editOne
 );
 
 // delete a passenger

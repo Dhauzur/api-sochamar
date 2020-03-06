@@ -4,9 +4,10 @@
   "description": "Administracion de datos de sochamar",
   "main": "server.js",
   "scripts": {
-    "create-env": "printenv > .env",
+    "start": "node -r esm server.js",
     "dev": "nodemon -r esm --inspect server.js",
-    "start": "node -r esm server.js"
+    "test": "jest",
+    "create-env": "printenv > .env"
   },
   "repository": {
     "type": "git",
@@ -14,6 +15,8 @@
   },
   "author": "",
   "dependencies": {
+    "@google-cloud/storage": "^4.4.0",
+    "@hapi/joi": "^17.1.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -29,10 +32,11 @@
     "multer": "^1.4.2",
     "nodemailer": "^6.4.2",
     "passport": "^0.4.1",
+    "passport-google-oauth": "^2.0.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "pino": "^5.16.0",
-    "pino-pretty": "^3.6.0",
+    "pino-pretty": "^3.6.1",
     "underscore": "^1.9.1"
   },
   "license": "ISC",
@@ -41,10 +45,40 @@
   },
   "homepage": "https://github.com/Dhauzur/api-sochamar#readme",
   "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "babel-jest": "^25.1.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "jest": "^25.1.0",
     "nodemon": "^2.0.2",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "supertest": "^4.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    },
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "moduleNameMapper": {
+      "^anotherRoot/(.*)$": "<rootDir>/server/$1"
+    },
+    "transformIgnorePatterns": []
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ]
   }
 }
