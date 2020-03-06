@@ -5,7 +5,8 @@ const lodgingController = {
 		lodgingService.getAll(res);
 	},
 	create(req, res) {
-		lodgingService.createOne(req, res);
+		const { body } = req;
+		lodgingService.createOne(body, res);
 	},
 	deleteAll(req, res) {
 		lodgingService.deleteAll(res);

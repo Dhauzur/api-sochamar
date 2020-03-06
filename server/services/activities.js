@@ -19,14 +19,13 @@ const getAll = async res => {
 	}
 };
 
-const createOne = async (req, res) => {
+const createOne = async (activity, res) => {
 	try {
-		let { body } = req;
 		let activities = new Activities({
-			workPlace: body.workPlace,
-			whatWasDone: body.whatWasDone,
-			ncamas: body.ncamas,
-			date: body.date,
+			workPlace: activity.workPlace,
+			whatWasDone: activity.whatWasDone,
+			ncamas: activity.ncamas,
+			date: activity.date,
 		});
 		const activitiesDB = await activities.save();
 		res.json({

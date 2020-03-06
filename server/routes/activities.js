@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import passport from 'passport';
 import activitiesController from '../controllers/activities';
+import activitiesSchema from '../schemas/activities';
+import validation from '../middleware/validation';
 
 const activitiesRouter = Router();
 /*Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
@@ -13,7 +15,10 @@ activitiesRouter.get(
 /*Podemos cambiar el nombre a singular y borrar el /create*/
 activitiesRouter.post(
 	'/activities/create',
-	passport.authenticate('jwt', { session: false }),
+	[
+		passport.authenticate('jwt', { session: false }),
+		validation(activitiesSchema.create, 'body'),
+	],
 	activitiesController.create
 );
 activitiesRouter.delete(
