@@ -2,10 +2,10 @@ import uniqueValidator from 'mongoose-unique-validator';
 import { Schema, model } from 'mongoose';
 
 /**
- * create schema for a passenger
+ * create schema for a person
  */
-let passengers = new Schema({
-	passenger: {
+let persons = new Schema({
+	avatar: {
 		type: String,
 	},
 	documents: {
@@ -49,7 +49,6 @@ let passengers = new Schema({
 	],
 });
 
-passengers.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
+persons.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
 
-// export model passenger
-export default model('passengers', passengers);
+export default model('persons', persons);

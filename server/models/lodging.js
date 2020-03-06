@@ -25,7 +25,7 @@ let lodging = new Schema({
 	service: {
 		type: Array,
 	},
-	passengers: {
+	persons: {
 		type: Array,
 	},
 	mountTotal: {

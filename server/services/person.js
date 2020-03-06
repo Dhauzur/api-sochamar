@@ -1,32 +1,18 @@
-import Passengers from '../models/passengers';
+import Persons from '../models/person';
 import { logError } from '../config/pino';
 
 /**
- * create a new passengers and return the passengers
+ * create a new persons and return the persons
  */
 const createOne = async (userId, req, res) => {
 	try {
 		let { body } = req;
-		let passengers = new Passengers({
-			firstName: body.firstName,
-			lastName: body.lastName,
-			age: body.age,
-			birthdate: body.birthdate,
-			state: body.state,
-			appointment: body.appointment,
-			function: body.function,
-			phone: body.phone,
-			region: body.region,
-			comuna: body.comuna,
-			documents: body.documents,
-			passenger: body.passenger,
-		});
-
-		passengers.users.push(userId);
-		const passengersDB = await passengers.save();
+		let persons = new Persons(body);
+		persons.users.push(userId);
+		const personsDB = await persons.save();
 		res.json({
 			status: true,
-			passengers: passengersDB,
+			persons: personsDB,
 		});
 	} catch (error) {
 		logError(error.message);
@@ -38,20 +24,20 @@ const createOne = async (userId, req, res) => {
 };
 
 /**
- * edit a passengers
+ * edit a persons
  */
 const editOne = async (userId, req, res) => {
 	try {
 		let { id } = req.params;
 		let { body } = req;
-		const passengersDB = await Passengers.findByIdAndUpdate(
+		const personsDB = await Persons.findByIdAndUpdate(
 			{ _id: id, users: { $in: userId } },
 			body,
 			{ new: true, runValidators: true }
 		);
 		res.json({
 			status: true,
-			passengers: passengersDB,
+			persons: personsDB,
 		});
 	} catch (error) {
 		logError(error.message);
@@ -63,15 +49,15 @@ const editOne = async (userId, req, res) => {
 };
 
 /**
- * get all passengers and the count
+ * get all persons and the count
  */
 const getAll = async (userId, res) => {
 	try {
-		const passengers = await Passengers.find({ users: { $in: userId } });
-		const count = await Passengers.countDocuments({});
+		const persons = await Persons.find({ users: { $in: userId } });
+		const count = await Persons.countDocuments({});
 		res.json({
 			status: true,
-			passengers,
+			persons,
 			count,
 		});
 	} catch (error) {
@@ -84,12 +70,12 @@ const getAll = async (userId, res) => {
 };
 
 /**
- * delete a passenger
+ * delete a person
  */
 const deleteOne = async (userId, req, res) => {
 	try {
 		const { id } = req.params;
-		await Passengers.findByIdAndRemove({ _id: id, users: { $in: userId } });
+		await Persons.findByIdAndRemove({ _id: id, users: { $in: userId } });
 		res.json({
 			status: true,
 		});
@@ -103,11 +89,11 @@ const deleteOne = async (userId, req, res) => {
 };
 
 /**
- * delete all passengers
+ * delete all persons
  */
 const deleteAll = async (userId, res) => {
 	try {
-		await Passengers.deleteMany({ users: { $in: userId } });
+		await Persons.deleteMany({ users: { $in: userId } });
 		res.json({
 			status: true,
 		});
@@ -120,7 +106,7 @@ const deleteAll = async (userId, res) => {
 	}
 };
 
-const passengersService = {
+const personsService = {
 	createOne,
 	getAll,
 	editOne,
@@ -128,4 +114,4 @@ const passengersService = {
 	deleteAll,
 };
 
-export default Object.freeze(passengersService);
+export default Object.freeze(personsService);

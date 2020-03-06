@@ -81,7 +81,7 @@ const createOne = async (req, res) => {
 					.format('YYYY-MM-DD'),
 				service: body.service,
 				place: body.place,
-				passengers: body.passengers,
+				persons: body.persons,
 				mountTotal: await mountTotal(body),
 			},
 			{ upsert: true }

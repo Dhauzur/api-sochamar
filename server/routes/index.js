@@ -2,7 +2,7 @@ import activitiesRoutes from './activities';
 import authRoutes from './auth';
 import configRoutes from './config';
 import lodgingRoutes from './lodging';
-import passengersRoutes from './passengers';
+import personRoutes from './person';
 import paymentsRoutes from './payments';
 import periodsRoutes from './period';
 import placeRoutes from './place';
@@ -16,7 +16,7 @@ export default app => {
 	app.use(apiVersion, authRoutes);
 	app.use(apiVersion, configRoutes);
 	app.use(apiVersion, lodgingRoutes);
-	app.use(apiVersion, passengersRoutes);
+	app.use(apiVersion, personRoutes);
 	app.use(apiVersion, paymentsRoutes);
 	app.use(apiVersion, periodsRoutes);
 	app.use(apiVersion, placeRoutes);

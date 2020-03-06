@@ -84,7 +84,7 @@ const getAll = async (req, res) => {
 };
 
 /**
- * delete a passenger
+ * delete a person
  */
 const deleteOne = async (req, res) => {
 	try {
@@ -102,11 +102,11 @@ const deleteOne = async (req, res) => {
 	}
 };
 
-const passengersService = {
+const personsService = {
 	createOne,
 	getAll,
 	editOne,
 	deleteOne,
 };
 
-export default Object.freeze(passengersService);
+export default Object.freeze(personsService);
