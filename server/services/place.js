@@ -78,9 +78,9 @@ const deleteAll = async (userId, res) => {
 	}
 };
 
-const getPlacesIds = userId => {
+const getPlacesIds = async userId => {
 	try {
-		const place = Place.find({ users: { $in: userId } });
+		const place = await Place.find({ users: { $in: userId } });
 		return place.map(place => place._id);
 	} catch (error) {
 		logError(error.message);

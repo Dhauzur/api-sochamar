@@ -6,11 +6,13 @@ const getAll = async (userId, placeId, res) => {
 	try {
 		/*Si no existe id del lugar, significa que el frontend esta usando 'Todos los lugares'*/
 		if (placeId === 'null') {
-			const places = await placeService.getPlacesIds(userId);
-			const periods = await Periods.find({ place: { $in: places } });
+			const userPlaces = await placeService.getPlacesIds(userId);
+			const periods = async userPlaces =>
+				await Periods.find({ place: { $in: userPlaces } });
+			const allPeriodsUser = await periods(userPlaces);
 			res.json({
 				status: true,
-				periods,
+				periods: allPeriodsUser,
 			});
 		} else {
 			const periods = await Periods.find({ place: placeId });
