@@ -46,7 +46,7 @@ const deleteAll = async res => {
 	try {
 		await Activities.deleteMany({});
 		res.json({
-			deleteAll: true,
+			status: true,
 		});
 	} catch (error) {
 		logError(error.message);
