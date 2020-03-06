@@ -1,34 +1,34 @@
 import { Router } from 'express';
 import passport from 'passport';
-import companyController from '../controllers/company';
+import placeController from '../controllers/place';
 
-const companyRouter = Router();
+const placeRouter = Router();
 /*Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
 /*Los verbos de por si ya estan dando a entender la accion que se realiza sobre esta ruta*/
-companyRouter.get(
-	'/company',
+placeRouter.get(
+	'/place',
 	passport.authenticate('jwt', { session: false }),
-	companyController.getAll
+	placeController.getAll
 );
-companyRouter.get(
-	'/company/:id',
+placeRouter.get(
+	'/place/:id',
 	passport.authenticate('jwt', { session: false }),
-	companyController.getOne
+	placeController.getOne
 );
-companyRouter.post(
-	'/company',
+placeRouter.post(
+	'/place',
 	passport.authenticate('jwt', { session: false }),
-	companyController.create
+	placeController.create
 );
-companyRouter.delete(
-	'/company/all',
+placeRouter.delete(
+	'/place/all',
 	passport.authenticate('jwt', { session: false }),
-	companyController.deleteAll
+	placeController.deleteAll
 );
-companyRouter.delete(
-	'/company/one/:id',
+placeRouter.delete(
+	'/place/one/:id',
 	passport.authenticate('jwt', { session: false }),
-	companyController.deleteOne
+	placeController.deleteOne
 );
 
-export default companyRouter;
+export default placeRouter;
