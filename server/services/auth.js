@@ -81,7 +81,7 @@ const googleAuthCallback = (req, res) => {
 	const jwt = generateJwt(req.user);
 	//Esta es la unica manera segura de enviarle el jwt al front
 	//La otra forma era enviar un html con js incluido, pero el jwt se quedaba asignado en la ruta de la api.
-	res.redirect(frontendUrL + '#/?token=' + jwt);
+	res.redirect(frontendUrL + '/?token=' + jwt);
 };
 
 const authService = {

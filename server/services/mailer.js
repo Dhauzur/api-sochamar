@@ -2,7 +2,7 @@ import '../config/config.js';
 import sender from '../mailer/index';
 const from = 'pruebanodemailersochamar@gmail.com';
 const createPasswordRecoveryHtml = (token, url) => {
-	const recoveryUrl = url + '#/passwordReset?token=' + token;
+	const recoveryUrl = url + '/passwordReset?token=' + token;
 	return `
 <p>Usted ha enviado una solicitud de cambio de contraseña. Presione aqui para recuperar contraseña.</p>
 <a href="${recoveryUrl}" target="_blank">Recuperar Contraseña</a>
