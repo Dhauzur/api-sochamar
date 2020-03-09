@@ -7,7 +7,7 @@ const activitiesSchema = {
 		ncamas: Joi.number()
 			.integer()
 			.required(),
-		state: Joi.boolean(),
+		date: Joi.date(),
 	}),
 };
 

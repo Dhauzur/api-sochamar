@@ -19,13 +19,9 @@ const getAll = async res => {
 	}
 };
 
-const createOne = async (req, res) => {
+const createOne = async (report, res) => {
 	try {
-		let body = req.body;
-		let reports = new Report({
-			member: body.member,
-			whatWasDone: body.whatWasDone,
-		});
+		let reports = new Report(report);
 		const reportsDB = await reports.save();
 		res.json({
 			status: true,
