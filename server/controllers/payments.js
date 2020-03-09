@@ -5,16 +5,18 @@ import paymentsService from '../services/payments';
  */
 const paymentsController = {
 	create(req, res) {
-		const { body, file } = req;
-		paymentsService.createOne(body, file, res);
+		const { file } = req;
+		const payment = req.body;
+		paymentsService.createOne(payment, file, res);
 	},
 	getAll(req, res) {
 		paymentsService.getAll(req, res);
 	},
 	editOne(req, res) {
 		const { id } = req.params;
-		const { body, file } = req;
-		paymentsService.editOne(id, body, body.comments, file, res);
+		const { file } = req;
+		const payment = req.body;
+		paymentsService.editOne(id, payment, payment.comments, file, res);
 	},
 	deleteOne(req, res) {
 		paymentsService.deleteOne(req, res);

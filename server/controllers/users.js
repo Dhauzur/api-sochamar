@@ -6,9 +6,10 @@ const userController = {
 		userService.getProfile(user._id, res);
 	},
 	updateProfile(req, res) {
-		const { user, body } = req;
+		const { user } = req;
+		const profile = req.body;
 		//If the request doesnt have a file we
-		userService.updateProfile(user._id, body, res);
+		userService.updateProfile(user._id, profile, res);
 	},
 	updateAvatar(req, res) {
 		if (req.file) {

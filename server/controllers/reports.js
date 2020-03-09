@@ -5,8 +5,8 @@ const reportsController = {
 		reportsService.getAll(res);
 	},
 	create(req, res) {
-		const { body } = req;
-		reportsService.createOne(body, res);
+		const report = req.body;
+		reportsService.createOne(report, res);
 	},
 	deleteAll(req, res) {
 		reportsService.deleteAll(res);

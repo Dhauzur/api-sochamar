@@ -5,17 +5,19 @@ import personsService from '../services/person';
  */
 const personsController = {
 	create(req, res) {
-		const { user, body } = req;
-		personsService.createOne(user._id, body, res);
+		const { user } = req;
+		const person = req.body;
+		personsService.createOne(user._id, person, res);
 	},
 	getAll(req, res) {
 		const { user } = req;
 		personsService.getAll(user._id, res);
 	},
 	editOne(req, res) {
-		const { user, body } = req;
+		const { user } = req;
 		const { id } = req.params;
-		personsService.editOne(user._id, body, id, res);
+		const person = req.body;
+		personsService.editOne(user._id, person, id, res);
 	},
 	deleteAll(req, res) {
 		const { user } = req;
