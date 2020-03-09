@@ -2,20 +2,20 @@ import Joi from '@hapi/joi';
 
 const paymentsSchema = {
 	create: Joi.object({
-		idPlace: Joi.String().required(),
-		idLodging: Joi.String().required(),
-		startDate: Joi.String().required(),
-		endDate: Joi.String().required(),
-		mount: Joi.String().required(),
+		idPlace: Joi.string().required(),
+		idLodging: Joi.string().required(),
+		startDate: Joi.string().required(),
+		endDate: Joi.string().required(),
+		mount: Joi.string().required(),
 		voucher: Joi.object().required(),
-		comments: Joi.String().required(),
+		comments: Joi.string().required(),
 	}),
 	update: Joi.object({
-		idPlace: Joi.String().required(),
-		idLodging: Joi.String().required(),
-		startDate: Joi.String(),
-		endDate: Joi.String(),
-		mount: Joi.String(),
+		idPlace: Joi.string().required(),
+		idLodging: Joi.string().required(),
+		startDate: Joi.string(),
+		endDate: Joi.string(),
+		mount: Joi.string(),
 	}),
 };
 

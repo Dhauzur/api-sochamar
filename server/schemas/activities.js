@@ -4,7 +4,9 @@ const activitiesSchema = {
 	create: Joi.object({
 		workPlace: Joi.string().required(),
 		whatWasDone: Joi.array().required(),
-		ncamas: Joi.integer().required(),
+		ncamas: Joi.number()
+			.integer()
+			.required(),
 		state: Joi.boolean(),
 	}),
 };

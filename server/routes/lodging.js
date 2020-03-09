@@ -2,7 +2,7 @@ import { Router } from 'express';
 import passport from 'passport';
 import lodgingController from '../controllers/lodging';
 import validation from '../middleware/validation';
-import lodgingSchema from '../schema/lodging';
+import lodgingSchema from '../schemas/lodging';
 
 const lodgingRouter = Router();
 

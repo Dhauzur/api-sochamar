@@ -1,5 +1,4 @@
 import User from '../models/user';
-import { pick } from 'underscore';
 import { logError } from '../config/pino';
 import bcrypt from 'bcrypt';
 
@@ -17,27 +16,6 @@ const getAll = res => {
 					Users,
 					cuantos: conteo,
 				});
-			});
-		}
-	);
-};
-
-const editOne = (req, res) => {
-	let id = req.params.id;
-	let body = pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
-	User.findByIdAndUpdate(
-		id,
-		body,
-		{ new: true, runValidators: true },
-		(err, UserDB) => {
-			if (err)
-				return res.status(400).json({
-					ok: false,
-					err,
-				});
-			res.json({
-				ok: true,
-				User: UserDB,
 			});
 		}
 	);
@@ -155,7 +133,6 @@ const updatePassword = (id, password, res) => {
 const UsersService = {
 	getAll,
 	deleteAll,
-	editOne,
 	deleteOne,
 	getProfile,
 	updateProfile,
