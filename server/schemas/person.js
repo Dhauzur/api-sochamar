@@ -3,7 +3,7 @@ import Joi from '@hapi/joi';
 const personSchema = {
 	create: Joi.object({
 		avatar: Joi.string(),
-		documents: Joi.array().required(),
+		documents: Joi.array().items(Joi.binary()),
 		firstName: Joi.string().required(),
 		lastName: Joi.string().required(),
 		birthdate: Joi.string().required(),
@@ -17,7 +17,7 @@ const personSchema = {
 	}),
 	update: Joi.object({
 		avatar: Joi.string(),
-		documents: Joi.array(),
+		documents: Joi.array().items(Joi.binary()),
 		firstName: Joi.string(),
 		lastName: Joi.string(),
 		birthdate: Joi.string(),
