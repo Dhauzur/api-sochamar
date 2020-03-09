@@ -1,7 +1,7 @@
 import uniqueValidator from 'mongoose-unique-validator';
 import { Schema, model } from 'mongoose';
 
-let rooms = new Schema({
+let periods = new Schema({
 	id: {
 		type: String,
 	},
@@ -11,11 +11,11 @@ let rooms = new Schema({
 	numberPassangerMax: {
 		type: Number,
 	},
-	company: {
+	place: {
 		type: Schema.Types.ObjectID,
-		ref: 'company',
+		ref: 'place',
 	},
 });
 
-rooms.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
-export default model('rooms', rooms);
+periods.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
+export default model('periods', periods);

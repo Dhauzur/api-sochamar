@@ -1,7 +1,7 @@
 import paymentsService from '../services/payments';
 
 /**
- * controller for passengers
+ * controller for payments
  */
 const paymentsController = {
 	create(req, res) {

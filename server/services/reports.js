@@ -1,51 +1,58 @@
 import Report from '../models/reports';
+import { logError } from '../config/pino';
 
-const getAll = res => {
-	Report.find(null).exec((err, reports) => {
-		if (err)
-			return res.status(400).json({
-				status: false,
-				err,
-			});
-
-		Report.countDocuments(null, (err, length) => {
-			res.json({
-				status: true,
-				reports: reports.reverse(),
-				length,
-			});
+const getAll = async res => {
+	try {
+		const reports = await Report.find(null);
+		const length = await Report.countDocuments(null);
+		res.json({
+			status: true,
+			reports: reports.reverse(),
+			length,
 		});
-	});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).send({
+			status: false,
+			error: error.message,
+		});
+	}
 };
 
-const createOne = (req, res) => {
-	let body = req.body;
-	let reports = new Report({
-		member: body.member,
-		whatWasDone: body.whatWasDone,
-	});
-	reports.save((err, reportsDB) => {
-		if (err) {
-			return res.status(400).json({
-				status: false,
-				err,
-			});
-		}
+const createOne = async (req, res) => {
+	try {
+		let body = req.body;
+		let reports = new Report({
+			member: body.member,
+			whatWasDone: body.whatWasDone,
+		});
+		const reportsDB = await reports.save();
 		res.json({
 			status: true,
 			reports: reportsDB,
 		});
-	});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).send({
+			status: false,
+			error: error.message,
+		});
+	}
 };
 
-const deleteAll = res => {
-	Report.deleteMany({}, function(err, reports) {
-		if (err) return res.status(400).json({ ok: false, err });
+const deleteAll = async res => {
+	try {
+		await Report.deleteMany({});
 		res.json({
-			deleteAll: true,
-			deletedCount: reports.deletedCount,
+			status: true,
 		});
-	});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).send({
+			status: false,
+			error: error.message,
+		});
+	}
 };
 
 const reportService = {

@@ -43,29 +43,29 @@ const uploadDocuments = async (req, res, next) => {
 	next();
 };
 
-const uploadPassenger = (req, res, next) => {
+const uploadAvatar = (req, res, next) => {
 	if (
-		typeof req.files.passenger === 'undefined' ||
-		(isArray(req.files.passenger) && isEmpty(req.files.passenger))
+		typeof req.files.avatar === 'undefined' ||
+		(isArray(req.files.avatar) && isEmpty(req.files.avatar))
 	)
 		return next();
 
-	const gcsname = `${Date.now()}-${req.files.passenger[0].originalname}`;
+	const gcsname = `${Date.now()}-${req.files.avatar[0].originalname}`;
 	const file = bucket.file(gcsname);
 	const stream = file.createWriteStream({
 		metadata: {
-			contentType: req.files.passenger[0].mimetype,
+			contentType: req.files.avatar[0].mimetype,
 		},
 	});
 	stream.on('error', err => {
-		req.files.passenger[0].cloudStorageError = err;
+		req.files.avatar[0].cloudStorageError = err;
 		next(err);
 	});
 	stream.on('finish', () => {
-		req.body.passenger = getPublicUrl(gcsname);
+		req.body.avatar = getPublicUrl(gcsname);
 		next();
 	});
-	stream.end(req.files.passenger[0].buffer);
+	stream.end(req.files.avatar[0].buffer);
 };
 
-export { uploadPassenger, uploadDocuments };
+export { uploadAvatar, uploadDocuments };

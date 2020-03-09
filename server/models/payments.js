@@ -5,7 +5,7 @@ import { Schema, model } from 'mongoose';
  * create schema for a payments
  */
 let payments = new Schema({
-	idCompany: {
+	idPlace: {
 		type: String,
 	},
 	idLodging: {
@@ -30,5 +30,4 @@ let payments = new Schema({
 
 payments.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
 
-// export model passenger
 export default model('payments', payments);

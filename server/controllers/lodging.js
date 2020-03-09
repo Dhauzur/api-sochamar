@@ -10,14 +10,14 @@ const lodgingController = {
 	deleteAll(req, res) {
 		lodgingService.deleteAll(res);
 	},
-	getAllForCompany(req, res) {
-		lodgingService.getAllForCompany(req, res);
+	getAllForPlace(req, res) {
+		lodgingService.getAllForPlace(req, res);
 	},
-	deleteAllWithCompany(req, res) {
-		lodgingService.deleteAllWithCompany(req, res);
+	deleteAllWithPlace(req, res) {
+		lodgingService.deleteAllWithPlace(req, res);
 	},
-	deleteOneWithCompanyId(req, res) {
-		lodgingService.deleteOneWithCompanyId(req, res);
+	deleteOneWithPlaceId(req, res) {
+		lodgingService.deleteOneWithPlaceId(req, res);
 	},
 };
 
