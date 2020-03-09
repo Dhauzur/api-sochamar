@@ -19,15 +19,9 @@ const getAll = async res => {
 	}
 };
 
-const createOne = async (req, res) => {
+const createOne = async (activity, res) => {
 	try {
-		let { body } = req;
-		let activities = new Activities({
-			workPlace: body.workPlace,
-			whatWasDone: body.whatWasDone,
-			ncamas: body.ncamas,
-			date: body.date,
-		});
+		let activities = new Activities(activity);
 		const activitiesDB = await activities.save();
 		res.json({
 			status: true,

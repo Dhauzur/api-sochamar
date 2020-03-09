@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import passport from 'passport';
 import lodgingController from '../controllers/lodging';
+import validation from '../middleware/validation';
+import lodgingSchema from '../schemas/lodging';
 
 const lodgingRouter = Router();
-/*Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
-/*Los verbos de por si ya estan dando a entender la accion que se realiza sobre esta ruta*/
+
 lodgingRouter.delete(
 	'/lodging/delete/place/:id',
 	passport.authenticate('jwt', { session: false }),
@@ -32,7 +33,10 @@ lodgingRouter.get(
 );
 lodgingRouter.post(
 	'/lodging',
-	passport.authenticate('jwt', { session: false }),
+	[
+		passport.authenticate('jwt', { session: false }),
+		validation(lodgingSchema.create, 'body'),
+	],
 	lodgingController.create
 );
 

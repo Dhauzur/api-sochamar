@@ -9,7 +9,8 @@ const periodController = {
 	create(req, res) {
 		const { placeId } = req.body;
 		delete req.body.placeId;
-		periodService.createOne(placeId, req.body, res);
+		const period = req.body;
+		periodService.createOne(placeId, period, res);
 	},
 	deleteOne(req, res) {
 		const { id } = req.params;

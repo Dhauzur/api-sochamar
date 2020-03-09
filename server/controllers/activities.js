@@ -5,7 +5,8 @@ const activitiesController = {
 		activitiesService.getAll(res);
 	},
 	create(req, res) {
-		activitiesService.createOne(req, res);
+		const place = req.body;
+		activitiesService.createOne(place, res);
 	},
 	deleteAll(req, res) {
 		activitiesService.deleteAll(res);

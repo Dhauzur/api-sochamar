@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import passport from 'passport';
 import placeController from '../controllers/place';
+import validation from '../middleware/validation';
+import placeSchema from '../schemas/place';
 
 const placeRouter = Router();
 /*Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
@@ -17,7 +19,10 @@ placeRouter.get(
 );
 placeRouter.post(
 	'/place',
-	passport.authenticate('jwt', { session: false }),
+	[
+		passport.authenticate('jwt', { session: false }),
+		validation(placeSchema.register, 'body'),
+	],
 	placeController.create
 );
 placeRouter.delete(

@@ -3,6 +3,8 @@ import passport from 'passport';
 import personsController from '../controllers/person';
 import multer from '../middleware/multer';
 import { uploadAvatar, uploadDocuments } from '../middleware/gscPerson';
+import personSchema from '../schemas/person';
+import validation from '../middleware/validation';
 
 const personsRouter = Router();
 // route for get all persons
@@ -27,6 +29,7 @@ personsRouter.post(
 				maxCount: 5,
 			},
 		]),
+		validation(personSchema.create, 'body'),
 		uploadAvatar,
 		uploadDocuments,
 	],
@@ -38,6 +41,7 @@ personsRouter.put(
 	'/persons/:id',
 	[
 		passport.authenticate('jwt', { session: false }),
+		validation(personSchema.update, 'body'),
 		multer.fields([
 			{
 				name: 'avatar',

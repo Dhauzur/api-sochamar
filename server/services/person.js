@@ -4,10 +4,9 @@ import { logError } from '../config/pino';
 /**
  * create a new persons and return the persons
  */
-const createOne = async (userId, req, res) => {
+const createOne = async (userId, person, res) => {
 	try {
-		let { body } = req;
-		let persons = new Persons(body);
+		let persons = new Persons(person);
 		persons.users.push(userId);
 		const personsDB = await persons.save();
 		res.json({
@@ -26,13 +25,11 @@ const createOne = async (userId, req, res) => {
 /**
  * edit a persons
  */
-const editOne = async (userId, req, res) => {
+const editOne = async (userId, req, person, personId, res) => {
 	try {
-		let { id } = req.params;
-		let { body } = req;
 		const personsDB = await Persons.findByIdAndUpdate(
-			{ _id: id, users: { $in: userId } },
-			body,
+			{ _id: personId, users: { $in: userId } },
+			person,
 			{ new: true, runValidators: true }
 		);
 		res.json({
@@ -72,10 +69,12 @@ const getAll = async (userId, res) => {
 /**
  * delete a person
  */
-const deleteOne = async (userId, req, res) => {
+const deleteOne = async (userId, personId, res) => {
 	try {
-		const { id } = req.params;
-		await Persons.findByIdAndRemove({ _id: id, users: { $in: userId } });
+		await Persons.findByIdAndRemove({
+			_id: personId,
+			users: { $in: userId },
+		});
 		res.json({
 			status: true,
 		});

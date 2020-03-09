@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import passport from 'passport';
 import periodsController from '../controllers/period';
+import periodSchema from '../schemas/period';
+import validation from '../middleware/validation';
 
 const periodsRouter = Router();
 /* Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
@@ -12,7 +14,10 @@ periodsRouter.get(
 );
 periodsRouter.post(
 	'/periods',
-	passport.authenticate('jwt', { session: false }),
+	[
+		passport.authenticate('jwt', { session: false }),
+		validation(periodSchema.create, 'body'),
+	],
 	periodsController.create
 );
 periodsRouter.delete(

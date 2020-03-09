@@ -3,16 +3,16 @@ import Place from '../models/place';
 import moment from 'moment';
 import { logError } from '../config/pino';
 
-const mountTotal = async body => {
+const mountTotal = async (service, place) => {
 	// set mount total
 	let breakfast = 0,
 		lunch = 0,
 		dinner = 0,
 		lodging = 0;
-	let service = JSON.parse(body.service);
-	const responseDB = await Place.find({ _id: body.place });
+	let parsedService = JSON.parse(service);
+	const responseDB = await Place.find({ _id: place });
 	const prices = responseDB[0].prices;
-	service.map(arr => {
+	parsedService.map(arr => {
 		arr.filter((item, index) => {
 			if (index === 0) breakfast = breakfast + item;
 			if (index === 1) lunch = lunch + item;
@@ -66,23 +66,22 @@ const getAllForPlace = async (req, res) => {
 	}
 };
 
-const createOne = async (req, res) => {
+const createOne = async (lodging, res) => {
 	try {
-		const { body } = req;
 		const lodgingDB = await Lodging.findOneAndUpdate(
-			{ id: body.id },
+			{ id: lodging.id },
 			{
-				group: body.group,
-				start: moment(body.start)
+				group: lodging.group,
+				start: moment(lodging.start)
 					.hours(16)
 					.format('YYYY-MM-DD'),
-				end: moment(body.end)
+				end: moment(lodging.end)
 					.hours(12)
 					.format('YYYY-MM-DD'),
-				service: body.service,
-				place: body.place,
-				persons: body.persons,
-				mountTotal: await mountTotal(body),
+				service: lodging.service,
+				place: lodging.place,
+				persons: lodging.persons,
+				mountTotal: await mountTotal(lodging.service, lodging.place),
 			},
 			{ upsert: true }
 		);

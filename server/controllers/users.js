@@ -1,4 +1,3 @@
-import { pick } from 'underscore';
 import userService from '../services/users';
 
 const userController = {
@@ -8,7 +7,7 @@ const userController = {
 	},
 	updateProfile(req, res) {
 		const { user } = req;
-		const profile = pick(req.body, ['name', 'lastName']);
+		const profile = req.body;
 		//If the request doesnt have a file we
 		userService.updateProfile(user._id, profile, res);
 	},

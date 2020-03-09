@@ -1,10 +1,9 @@
 import authService from '../services/auth';
-import { pick } from 'underscore';
 
 const authController = {
 	register(req, res) {
-		const user = pick(req.body, ['name', 'email', 'password', 'analyst']);
-		return authService.register(user, res);
+		const { body } = req;
+		return authService.register(body, res);
 	},
 	generateJwt(req, res) {
 		/*We dont need to .pick here, because user is attached from the local middleware*/
