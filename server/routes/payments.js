@@ -17,8 +17,8 @@ paymentsRouter.post(
 	'/payments/create',
 	[
 		passport.authenticate('jwt', { session: false }),
-		validation(paymentsSchema.create, 'body'),
 		multer.single('voucher'),
+		validation(paymentsSchema.create, 'body'),
 		storage,
 	],
 	(req, res) => paymentsController.create(req, res)
@@ -28,8 +28,8 @@ paymentsRouter.put(
 	'/payments/:id',
 	[
 		passport.authenticate('jwt', { session: false }),
-		validation(paymentsSchema.update, 'body'),
 		multer.single('voucher'),
+		validation(paymentsSchema.update, 'body'),
 		storage,
 	],
 	(req, res) => paymentsController.editOne(req, res)
