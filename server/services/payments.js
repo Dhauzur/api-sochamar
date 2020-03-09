@@ -6,13 +6,7 @@ import { logError } from '../config/pino';
  */
 const createOne = async (payment, file, res) => {
 	try {
-		let payments = new Payments({
-			idLodging: payment.idLodging,
-			idPlace: payment.idPlace,
-			startDate: payment.startDate,
-			endDate: payment.endDate,
-			mount: payment.mount,
-		});
+		let payments = new Payments(payment);
 		if (file) {
 			payments.voucher = {
 				url: file.cloudStoragePublicUrl,
