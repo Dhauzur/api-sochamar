@@ -2,15 +2,21 @@ import placeServices from '../services/placeServices';
 
 const placeServicesController = {
 	getAll(req, res) {
-		placeServices.getAll(res);
+		const { placeId } = req.params;
+		placeServices.getAll(placeId, res);
+	},
+	getOne(req, res) {
+		const { id } = req.params;
+		placeServices.getOne(id, res);
 	},
 	createOne(req, res) {
 		const service = req.body;
-		placeServices.createOne(1, service, res);
+		placeServices.createOne(service, res);
 	},
 	updateOne(req, res) {
+		const { id } = req.params;
 		const service = req.body;
-		placeServices.updateOne(1, service, res);
+		placeServices.updateOne(id, service, res);
 	},
 	deleteOne(req, res) {
 		const report = req.body;

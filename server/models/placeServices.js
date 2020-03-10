@@ -2,6 +2,10 @@ import uniqueValidator from 'mongoose-unique-validator';
 import { Schema, model } from 'mongoose';
 
 let placeServices = new Schema({
+	placeId: {
+		type: Schema.Types.ObjectID,
+		ref: 'place',
+	},
 	name: {
 		type: String,
 	},

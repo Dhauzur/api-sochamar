@@ -21,6 +21,12 @@ let place = new Schema({
 			ref: 'User',
 		},
 	],
+	services: [
+		{
+			type: Schema.Types.ObjectID,
+			ref: 'placeServices',
+		},
+	],
 });
 
 place.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });

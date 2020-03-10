@@ -7,13 +7,19 @@ import validation from '../middleware/validation';
 const placeServicesRouter = Router();
 
 placeServicesRouter.get(
-	'/placeServices',
+	'/placeServices/:placeId',
 	passport.authenticate('jwt', { session: false }),
 	placeServicesController.getAll
 );
 
+placeServicesRouter.get(
+	'/placeService/:id',
+	passport.authenticate('jwt', { session: false }),
+	placeServicesController.getOne
+);
+
 placeServicesRouter.post(
-	'/placeServices',
+	'/placeService',
 	[
 		passport.authenticate('jwt', { session: false }),
 		validation(placeServicesSchema.create, 'body'),
@@ -22,7 +28,7 @@ placeServicesRouter.post(
 );
 
 placeServicesRouter.put(
-	'/placeServices/:id',
+	'/placeService/:id',
 	[
 		passport.authenticate('jwt', { session: false }),
 		validation(placeServicesSchema.update, 'body'),
@@ -31,7 +37,7 @@ placeServicesRouter.put(
 );
 
 placeServicesRouter.delete(
-	'/placeServices/:id',
+	'/placeService/:id',
 	[passport.authenticate('jwt', { session: false })],
 	placeServicesController.deleteOne
 );
