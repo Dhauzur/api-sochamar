@@ -42,10 +42,4 @@ placeServicesRouter.delete(
 	placeServicesController.deleteOne
 );
 
-placeServicesRouter.delete(
-	'/placeServices/delete/all',
-	passport.authenticate('jwt', { session: false }),
-	placeServicesController.deleteAll
-);
-
 export default placeServicesRouter;

@@ -4,7 +4,6 @@ import { logError } from '../config/pino';
 import { errorResponse } from '../utils/responses/errorResponse';
 import { createdResponse } from '../utils/responses/createdResponse';
 import { getResponse } from '../utils/responses/getResponse';
-import Payments from '../models/payments';
 
 const createOne = async (service, res) => {
 	const newService = new PlaceServices(service);
@@ -30,7 +29,9 @@ const updateOne = async (id, service, res) => {
 };
 const getAll = async (placeId, res) => {
 	try {
-		const placeServices = await PlaceServices.find({ placeId });
+		const placeServices = await PlaceServices.find({ placeId }).select(
+			'-__v'
+		);
 		getResponse('placeServices', placeServices, res);
 	} catch (e) {
 		logError(e);
@@ -58,7 +59,6 @@ const deleteOne = async (id, res) => {
 		errorResponse(error, res);
 	}
 };
-const deleteAll = async (placeId, res) => {};
 
 const placeServicesService = {
 	getAll,
@@ -66,7 +66,6 @@ const placeServicesService = {
 	updateOne,
 	deleteOne,
 	createOne,
-	deleteAll,
 };
 
 export default Object.freeze(placeServicesService);

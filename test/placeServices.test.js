@@ -126,7 +126,6 @@ describe('GET /placeService/:placeId', () => {
 
 describe("PUT /placeService/:placeId'", () => {
 	const invalidData = {
-		placeId: 1,
 		name: 1,
 		price: 'd',
 	};

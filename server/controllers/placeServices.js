@@ -22,9 +22,6 @@ const placeServicesController = {
 		const { id } = req.params;
 		placeServices.deleteOne(id, res);
 	},
-	deleteAll(req, res) {
-		placeServices.deleteAll(res);
-	},
 };
 
 export default Object.freeze(placeServicesController);
