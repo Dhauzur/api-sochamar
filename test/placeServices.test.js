@@ -113,7 +113,7 @@ describe('GET /placeService/:placeId', () => {
 				done();
 			});
 	});
-	test('Deberia devolvernos codigo 409 si no existe el registro con esa id', done => {
+	test('Deberia devolvernos codigo 409 si no existe el documento con esa id', done => {
 		request(app)
 			.get('/api/v1/placeService/' + placeIdinDB)
 			.set('Authorization', `Bearer ${token}`)
@@ -124,7 +124,7 @@ describe('GET /placeService/:placeId', () => {
 	});
 });
 
-describe('PUT /placeService', () => {
+describe("PUT /placeService/:placeId'", () => {
 	const invalidData = {
 		placeId: 1,
 		name: 1,
@@ -168,6 +168,27 @@ describe('PUT /placeService', () => {
 			.send(validData)
 			.then(response => {
 				expect(response.statusCode).toBe(201);
+				done();
+			});
+	});
+});
+
+describe("DELETE /placeService/:placeId'", () => {
+	test('Deberia devolvernos codigo 200 si el documento fue borrado', done => {
+		request(app)
+			.delete('/api/v1/placeService/' + placeServiceId)
+			.set('Authorization', `Bearer ${token}`)
+			.then(response => {
+				expect(response.statusCode).toBe(200);
+				done();
+			});
+	});
+	test('Deberia devolvernos codigo 409 si buscamos este documento borrado', done => {
+		request(app)
+			.get('/api/v1/placeService/' + placeServiceId)
+			.set('Authorization', `Bearer ${token}`)
+			.then(response => {
+				expect(response.statusCode).toBe(409);
 				done();
 			});
 	});

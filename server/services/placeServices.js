@@ -4,6 +4,7 @@ import { logError } from '../config/pino';
 import { errorResponse } from '../utils/responses/errorResponse';
 import { createdResponse } from '../utils/responses/createdResponse';
 import { getResponse } from '../utils/responses/getResponse';
+import Payments from '../models/payments';
 
 const createOne = async (service, res) => {
 	const newService = new PlaceServices(service);
@@ -46,7 +47,17 @@ const getOne = async (id, res) => {
 		errorResponse(e, res);
 	}
 };
-const deleteOne = async (serviceId, res) => {};
+const deleteOne = async (id, res) => {
+	try {
+		await PlaceServices.findByIdAndRemove(id);
+		res.status(200).json({
+			status: true,
+		});
+	} catch (error) {
+		logError(error.message);
+		errorResponse(error, res);
+	}
+};
 const deleteAll = async (placeId, res) => {};
 
 const placeServicesService = {

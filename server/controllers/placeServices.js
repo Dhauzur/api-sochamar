@@ -19,8 +19,8 @@ const placeServicesController = {
 		placeServices.updateOne(id, service, res);
 	},
 	deleteOne(req, res) {
-		const report = req.body;
-		placeServices.deleteOne(report, res);
+		const { id } = req.params;
+		placeServices.deleteOne(id, res);
 	},
 	deleteAll(req, res) {
 		placeServices.deleteAll(res);
