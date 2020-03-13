@@ -1,6 +1,13 @@
 import uniqueValidator from 'mongoose-unique-validator';
 import { Schema, model } from 'mongoose';
-
+let service = new Schema({
+	name: {
+		type: String,
+	},
+	price: {
+		type: Number,
+	},
+});
 let place = new Schema({
 	id: {
 		type: String,
@@ -21,12 +28,7 @@ let place = new Schema({
 			ref: 'User',
 		},
 	],
-	services: [
-		{
-			type: Schema.Types.ObjectID,
-			ref: 'placeServices',
-		},
-	],
+	services: [service],
 });
 
 place.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });

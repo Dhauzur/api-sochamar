@@ -66,6 +66,52 @@ const deleteOne = async (userId, placeId, res) => {
 	}
 };
 
+const createService = async (userId, placeId, service, res) => {
+	try {
+		const place = await Place.findOne({
+			_id: placeId,
+			users: { $in: userId },
+		});
+		place.services.push(service);
+		await place.save();
+		res.sendStatus(201);
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({ status: false, error: error.message });
+	}
+};
+
+const updateService = async (userId, placeId, serviceId, service, res) => {
+	try {
+		const place = await Place.findOne({
+			_id: placeId,
+			users: { $in: userId },
+		});
+		const foundService = place.services.id({ _id: serviceId });
+		foundService.set(service);
+		await place.save();
+		res.sendStatus(200);
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({ status: false, error: error.message });
+	}
+};
+
+const deleteService = async (userId, placeId, serviceId, res) => {
+	try {
+		const place = await Place.findOne({
+			_id: placeId,
+			users: { $in: userId },
+		});
+		place.services.id({ _id: serviceId }).remove();
+		await place.save();
+		res.sendStatus(200);
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({ status: false, error: error.message });
+	}
+};
+
 const deleteAll = async (userId, res) => {
 	try {
 		Place.deleteMany({ users: { $in: userId } });
@@ -92,6 +138,9 @@ const placeService = {
 	getAll,
 	createOne,
 	deleteOne,
+	createService,
+	updateService,
+	deleteService,
 	deleteAll,
 	getPlacesIds,
 };

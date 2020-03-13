@@ -4,7 +4,20 @@ const placeSchema = {
 	register: Joi.object({
 		name: Joi.string().required(),
 		rut: Joi.string().required(),
-		prices: Joi.array(),
+		services: Joi.array().items(
+			Joi.object({
+				name: Joi.string().required(),
+				price: Joi.number().required(),
+			})
+		),
+	}),
+	addService: Joi.object({
+		name: Joi.string().required(),
+		price: Joi.number().required(),
+	}),
+	updateService: Joi.object({
+		name: Joi.string(),
+		price: Joi.number(),
 	}),
 };
 
