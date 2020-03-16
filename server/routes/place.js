@@ -45,6 +45,12 @@ placeRouter.put(
 );
 
 placeRouter.delete(
+	'/place/:id/service/:serviceId',
+	passport.authenticate('jwt', { session: false }),
+	placeController.deleteService
+);
+
+placeRouter.delete(
 	'/place/all',
 	passport.authenticate('jwt', { session: false }),
 	placeController.deleteAll

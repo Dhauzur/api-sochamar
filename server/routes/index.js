@@ -8,7 +8,6 @@ import periodsRoutes from './period';
 import placeRoutes from './place';
 import reportsRoutes from './reports';
 import userRoutes from './user';
-import placeServicesRouter from './placeServices';
 
 const apiVersion = '/api/v1';
 
@@ -23,5 +22,4 @@ export default app => {
 	app.use(apiVersion, placeRoutes);
 	app.use(apiVersion, reportsRoutes);
 	app.use(apiVersion, userRoutes);
-	app.use(apiVersion, placeServicesRouter);
 };

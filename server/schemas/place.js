@@ -16,6 +16,7 @@ const placeSchema = {
 		price: Joi.number().required(),
 	}),
 	updateService: Joi.object({
+		_id: Joi.string(),
 		name: Joi.string(),
 		price: Joi.number(),
 	}),

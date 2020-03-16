@@ -27,6 +27,11 @@ const placeController = {
 		const service = req.body;
 		placeService.updateService(user._id, id, serviceId, service, res);
 	},
+	deleteService(req, res) {
+		const { user } = req;
+		const { id, serviceId } = req.params;
+		placeService.deleteService(user._id, id, serviceId, res);
+	},
 	deleteAll(req, res) {
 		const { user } = req;
 		placeService.deleteAll(user._id, res);
