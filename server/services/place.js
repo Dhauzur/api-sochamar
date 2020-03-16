@@ -72,9 +72,13 @@ const createService = async (userId, placeId, service, res) => {
 			_id: placeId,
 			users: { $in: userId },
 		});
+
+		const nameExist = checkIfServiceNameExist(place.services, service.name);
+		if (nameExist) return res.sendStatus(409);
+
 		place.services.push(service);
 		await place.save();
-		res.sendStatus(201);
+		return res.sendStatus(201);
 	} catch (error) {
 		logError(error.message);
 		return res.status(400).json({ status: false, error: error.message });
@@ -90,7 +94,7 @@ const updateService = async (userId, placeId, serviceId, service, res) => {
 		const foundService = place.services.id({ _id: serviceId });
 		foundService.set(service);
 		await place.save();
-		res.sendStatus(200);
+		return res.sendStatus(200);
 	} catch (error) {
 		logError(error.message);
 		return res.status(400).json({ status: false, error: error.message });
@@ -105,11 +109,17 @@ const deleteService = async (userId, placeId, serviceId, res) => {
 		});
 		place.services.id({ _id: serviceId }).remove();
 		await place.save();
-		res.sendStatus(200);
+		return res.sendStatus(200);
 	} catch (error) {
 		logError(error.message);
 		return res.status(400).json({ status: false, error: error.message });
 	}
+};
+
+const checkIfServiceNameExist = (services, name) => {
+	const found = services.find(service => service.name === name);
+	if (found) return true;
+	else return false;
 };
 
 const deleteAll = async (userId, res) => {
