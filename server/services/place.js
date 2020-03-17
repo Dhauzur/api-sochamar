@@ -1,6 +1,7 @@
 import Place from '../models/place';
 import Lodging from '../models/lodging';
 import { logError } from '../config/pino';
+import { createdResponse } from '../utils/responses/createdResponse';
 
 const getOne = async (userId, placeId, res) => {
 	try {
@@ -77,10 +78,13 @@ const createService = async (userId, placeId, service, res) => {
 		if (nameExist) return res.sendStatus(409);
 
 		place.services.push(service);
-		await place.save();
-		return res.sendStatus(201);
+		const savedPlace = await place.save();
+		//Nuestro nuevo servicio siempre se encontrara en la ultima posición del arreglo
+		const lastIndex = savedPlace.services.length - 1;
+		const newService = savedPlace.services[lastIndex];
+		createdResponse('service', newService, res);
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({ status: false, error: error.message });
 	}
 };
