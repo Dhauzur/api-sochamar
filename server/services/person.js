@@ -25,7 +25,7 @@ const createOne = async (userId, person, res) => {
 /**
  * edit a persons
  */
-const editOne = async (userId, req, person, personId, res) => {
+const editOne = async (userId, person, personId, res) => {
 	try {
 		const personsDB = await Persons.findByIdAndUpdate(
 			{ _id: personId, users: { $in: userId } },

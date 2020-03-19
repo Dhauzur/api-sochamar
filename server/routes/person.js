@@ -41,7 +41,6 @@ personsRouter.put(
 	'/persons/:id',
 	[
 		passport.authenticate('jwt', { session: false }),
-		validation(personSchema.update, 'body'),
 		multer.fields([
 			{
 				name: 'avatar',
@@ -52,6 +51,7 @@ personsRouter.put(
 				maxCount: 5,
 			},
 		]),
+		validation(personSchema.update, 'body'),
 		uploadAvatar,
 		uploadDocuments,
 	],
