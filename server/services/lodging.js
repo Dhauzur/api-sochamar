@@ -119,7 +119,7 @@ const deleteAllWithPlace = async (req, res) => {
 const deleteOneWithPlaceId = async (req, res) => {
 	try {
 		const { id } = req.params;
-		Lodging.deleteMany({ id });
+		await Lodging.deleteMany({ id });
 		res.json({ status: true });
 	} catch (error) {
 		logError(error.message);

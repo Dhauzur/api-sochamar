@@ -18,7 +18,7 @@ const personSchema = {
 	update: Joi.object({
 		avatar: Joi.string(),
 		documents: Joi.array(),
-		firstName: Joi.string(),
+		firstName: Joi.string().required(),
 		lastName: Joi.string(),
 		birthdate: Joi.string(),
 		state: Joi.string(),
