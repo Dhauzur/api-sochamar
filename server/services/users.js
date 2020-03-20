@@ -61,19 +61,11 @@ const deleteAll = res => {
 		});
 	});
 };
-/*After we find our target user, we dont need the entire data*/
-/*GenerateProfile is going to return a profile object based in our user*/
-const generateImgUrl = img => {
-	const apiUrl = process.env.API_URL;
-	return apiUrl + img;
-};
 
 const generateProfile = user => {
 	let imgUrl;
 	if (user.img) {
 		imgUrl = user.img;
-	} else {
-		imgUrl = generateImgUrl('default.png');
 	}
 	return {
 		name: user.name,
