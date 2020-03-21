@@ -5,8 +5,7 @@ import validation from '../middleware/validation';
 import placeSchema from '../schemas/place';
 
 const placeRouter = Router();
-/*Ojo, aca podemos optimizar los nombres de ruta quitando cosas como /create o /delete/all*/
-/*Los verbos de por si ya estan dando a entender la accion que se realiza sobre esta ruta*/
+
 placeRouter.get(
 	'/place',
 	passport.authenticate('jwt', { session: false }),
@@ -17,6 +16,7 @@ placeRouter.get(
 	passport.authenticate('jwt', { session: false }),
 	placeController.getOne
 );
+
 placeRouter.post(
 	'/place',
 	[
@@ -25,6 +25,31 @@ placeRouter.post(
 	],
 	placeController.create
 );
+
+placeRouter.post(
+	'/place/:id/service',
+	[
+		passport.authenticate('jwt', { session: false }),
+		validation(placeSchema.addService, 'body'),
+	],
+	placeController.createService
+);
+
+placeRouter.put(
+	'/place/:id/service/:serviceId',
+	[
+		passport.authenticate('jwt', { session: false }),
+		validation(placeSchema.updateService, 'body'),
+	],
+	placeController.updateService
+);
+
+placeRouter.delete(
+	'/place/:id/service/:serviceId',
+	passport.authenticate('jwt', { session: false }),
+	placeController.deleteService
+);
+
 placeRouter.delete(
 	'/place/all',
 	passport.authenticate('jwt', { session: false }),

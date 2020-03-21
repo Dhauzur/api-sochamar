@@ -1,6 +1,7 @@
 import Place from '../models/place';
 import Lodging from '../models/lodging';
 import { logError } from '../config/pino';
+import { createdResponse } from '../utils/responses/createdResponse';
 
 const getOne = async (userId, placeId, res) => {
 	try {
@@ -66,6 +67,65 @@ const deleteOne = async (userId, placeId, res) => {
 	}
 };
 
+const createService = async (userId, placeId, service, res) => {
+	try {
+		const place = await Place.findOne({
+			_id: placeId,
+			users: { $in: userId },
+		});
+
+		const nameExist = checkIfServiceNameExist(place.services, service.name);
+		if (nameExist) return res.sendStatus(409);
+
+		place.services.push(service);
+		const savedPlace = await place.save();
+		//Nuestro nuevo servicio siempre se encontrara en la ultima posición del arreglo
+		const lastIndex = savedPlace.services.length - 1;
+		const newService = savedPlace.services[lastIndex];
+		createdResponse('service', newService, res);
+	} catch (error) {
+		logError(error);
+		return res.status(400).json({ status: false, error: error.message });
+	}
+};
+
+const updateService = async (userId, placeId, serviceId, service, res) => {
+	try {
+		const place = await Place.findOne({
+			_id: placeId,
+			users: { $in: userId },
+		});
+		const foundService = place.services.id({ _id: serviceId });
+		foundService.set(service);
+		await place.save();
+		return res.sendStatus(200);
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({ status: false, error: error.message });
+	}
+};
+
+const deleteService = async (userId, placeId, serviceId, res) => {
+	try {
+		const place = await Place.findOne({
+			_id: placeId,
+			users: { $in: userId },
+		});
+		place.services.id({ _id: serviceId }).remove();
+		await place.save();
+		return res.sendStatus(200);
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({ status: false, error: error.message });
+	}
+};
+
+const checkIfServiceNameExist = (services, name) => {
+	const found = services.find(service => service.name === name);
+	if (found) return true;
+	else return false;
+};
+
 const deleteAll = async (userId, res) => {
 	try {
 		Place.deleteMany({ users: { $in: userId } });
@@ -92,6 +152,9 @@ const placeService = {
 	getAll,
 	createOne,
 	deleteOne,
+	createService,
+	updateService,
+	deleteService,
 	deleteAll,
 	getPlacesIds,
 };

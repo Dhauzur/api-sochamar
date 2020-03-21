@@ -15,6 +15,23 @@ const placeController = {
 		const place = req.body;
 		placeService.createOne(user._id, place, res);
 	},
+	createService(req, res) {
+		const { user } = req;
+		const { id } = req.params;
+		const service = req.body;
+		placeService.createService(user._id, id, service, res);
+	},
+	updateService(req, res) {
+		const { user } = req;
+		const { id, serviceId } = req.params;
+		const service = req.body;
+		placeService.updateService(user._id, id, serviceId, service, res);
+	},
+	deleteService(req, res) {
+		const { user } = req;
+		const { id, serviceId } = req.params;
+		placeService.deleteService(user._id, id, serviceId, res);
+	},
 	deleteAll(req, res) {
 		const { user } = req;
 		placeService.deleteAll(user._id, res);
