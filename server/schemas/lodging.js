@@ -10,6 +10,7 @@ const lodgingSchema = {
 		service: Joi.string(),
 		persons: Joi.array().allow(null),
 		mountTotal: Joi.number(),
+		content: Joi.string(),
 	}),
 };
 

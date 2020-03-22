@@ -81,6 +81,7 @@ const createOne = async (lodging, res) => {
 				service: lodging.service,
 				place: lodging.place,
 				persons: lodging.persons,
+				content: lodging.content,
 				mountTotal: await mountTotal(lodging.service, lodging.place),
 			},
 			{ upsert: true }
