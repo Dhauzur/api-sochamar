@@ -22,7 +22,7 @@ let lodging = new Schema({
 	end: {
 		type: String,
 	},
-	service: {
+	days: {
 		type: Array,
 	},
 	persons: {

@@ -3,6 +3,7 @@ import Place from '../models/place';
 import moment from 'moment';
 import { logError } from '../config/pino';
 
+//arreglar cuando ya este definido todo dlo de services
 const mountTotal = async (service, place) => {
 	// set mount total
 	let breakfast = 0,
@@ -78,11 +79,12 @@ const createOne = async (lodging, res) => {
 				end: moment(lodging.end)
 					.hours(12)
 					.format('YYYY-MM-DD'),
-				service: lodging.service,
+				days: lodging.days,
 				place: lodging.place,
 				persons: lodging.persons,
 				content: lodging.content,
-				mountTotal: await mountTotal(lodging.service, lodging.place),
+				//editado mientras, AJUSTAR LA FUNCION DE MOUNTTOTAL
+				mountTotal: 90000,
 			},
 			{ upsert: true }
 		);
