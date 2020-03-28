@@ -18,8 +18,8 @@ paymentsRouter.post(
 	[
 		passport.authenticate('jwt', { session: false }),
 		multer.single('voucher'),
-		validation(paymentsSchema.create, 'body'),
 		storage,
+		validation(paymentsSchema.create, 'body'),
 	],
 	paymentsController.create
 );
