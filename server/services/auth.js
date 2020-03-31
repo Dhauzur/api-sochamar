@@ -46,7 +46,7 @@ const register = async (user, res) => {
 		return res.status(201).json({ token: generateJwt(user), user });
 	} catch (error) {
 		logError(error.message);
-		res.status(409).json({
+		return res.status(409).json({
 			status: false,
 			error,
 		});
