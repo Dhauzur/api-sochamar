@@ -1,11 +1,6 @@
 import uniqueValidator from 'mongoose-unique-validator';
 import { Schema, model } from 'mongoose';
 
-let validRoles = {
-	values: ['ADMIN_ROLE', 'USER_ROLE'],
-	message: '{VALUE} no es un rol válido',
-};
-
 let userSchema = new Schema({
 	name: {
 		type: String,
@@ -26,11 +21,6 @@ let userSchema = new Schema({
 		type: String,
 		required: false,
 	},
-	role: {
-		type: String,
-		default: 'USER_ROLE',
-		enum: validRoles,
-	},
 	state: {
 		type: Boolean,
 		default: true,
@@ -42,6 +32,11 @@ let userSchema = new Schema({
 	analyst: {
 		type: Boolean,
 		default: false,
+	},
+	role: {
+		type: String,
+		default: 'admin',
+		enum: ['person', 'admin'],
 	},
 });
 
