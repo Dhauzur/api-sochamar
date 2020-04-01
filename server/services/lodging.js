@@ -1,33 +1,25 @@
 import Lodging from '../models/lodging';
-import Place from '../models/place';
 import moment from 'moment';
 import { logError } from '../config/pino';
 
-//arreglar cuando ya este definido todo dlo de services
-const mountTotal = async (service, place) => {
-	// set mount total
-	let breakfast = 0,
-		lunch = 0,
-		dinner = 0,
-		lodging = 0;
-	let parsedService = JSON.parse(service);
-	const responseDB = await Place.find({ _id: place });
-	const prices = responseDB[0].prices;
-	parsedService.map(arr => {
-		arr.filter((item, index) => {
-			if (index === 0) breakfast = breakfast + item;
-			if (index === 1) lunch = lunch + item;
-			if (index === 2) dinner = dinner + item;
-			if (index === 3) lodging = lodging + item;
+const mountTotal = days => {
+	let totalAmount = 0;
+	//services cost and quantity are saved in lodging.days property
+	const getDayTotal = services => {
+		let iterationPrice = 0;
+		services.forEach(service => {
+			let serviceTotal = service.price * service.quantity;
+			iterationPrice = iterationPrice + serviceTotal;
 		});
+		return iterationPrice;
+	};
+	//for every day a dayTotal must be created then it sum with totalAmount
+	days.forEach(day => {
+		const dayTotal = getDayTotal(day.services);
+		totalAmount = totalAmount + dayTotal;
 	});
-	const mountTotal =
-		lodging * prices[3] +
-		dinner * prices[2] +
-		lunch * prices[1] +
-		breakfast * prices[0];
 
-	return mountTotal;
+	return totalAmount;
 };
 
 const getAll = async res => {
@@ -83,8 +75,7 @@ const createOne = async (lodging, res) => {
 				place: lodging.place,
 				persons: lodging.persons,
 				content: lodging.content,
-				//editado mientras, AJUSTAR LA FUNCION DE MOUNTTOTAL
-				mountTotal: 90000,
+				mountTotal: mountTotal(lodging.days),
 			},
 			{ upsert: true }
 		);
