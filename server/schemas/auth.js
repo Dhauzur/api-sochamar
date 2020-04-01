@@ -9,6 +9,7 @@ const authSchema = {
 		email: Joi.string()
 			.email()
 			.required(),
+		role: Joi.string().required(),
 		password: Joi.string()
 			.min(5)
 			.max(100)

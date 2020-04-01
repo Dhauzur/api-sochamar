@@ -3,6 +3,7 @@ import passport from 'passport';
 import lodgingController from '../controllers/lodging';
 import validation from '../middleware/validation';
 import lodgingSchema from '../schemas/lodging';
+import grantAccess from '../middleware/strategies/rbac';
 
 const lodgingRouter = Router();
 
@@ -23,12 +24,16 @@ lodgingRouter.delete(
 );
 lodgingRouter.get(
 	'/lodgings',
-	passport.authenticate('jwt', { session: false }),
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readAny', 'lodging'),
+	],
 	lodgingController.getAll
 );
 lodgingRouter.get(
 	'/lodgings/place/:id',
 	passport.authenticate('jwt', { session: false }),
+	grantAccess('readAny', 'lodging'),
 	lodgingController.getAllForPlace
 );
 lodgingRouter.post(

@@ -5,12 +5,14 @@ import multer from '../middleware/multer';
 import { uploadAvatar, uploadDocuments } from '../middleware/gscPerson';
 import personSchema from '../schemas/person';
 import validation from '../middleware/validation';
+import grantAccess from '../middleware/strategies/rbac';
 
 const personsRouter = Router();
 // route for get all persons
 personsRouter.get(
 	'/persons',
 	passport.authenticate('jwt', { session: false }),
+	grantAccess('readOwn', 'person'),
 	personsController.getAll
 );
 
@@ -19,6 +21,7 @@ personsRouter.post(
 	'/persons/create',
 	[
 		passport.authenticate('jwt', { session: false }),
+		grantAccess('createOwn', 'person'),
 		multer.fields([
 			{
 				name: 'avatar',
@@ -41,6 +44,7 @@ personsRouter.put(
 	'/persons/:id',
 	[
 		passport.authenticate('jwt', { session: false }),
+		grantAccess('updateOwn', 'person'),
 		multer.fields([
 			{
 				name: 'avatar',
@@ -62,12 +66,14 @@ personsRouter.put(
 personsRouter.delete(
 	'/persons/:id',
 	passport.authenticate('jwt', { session: false }),
+	grantAccess('deleteAny', 'person'),
 	personsController.deleteOne
 );
 
 // delete all persons
 personsRouter.delete(
 	'/persons/delete/all',
+	grantAccess('deleteAny', 'person'),
 	passport.authenticate('jwt', { session: false }),
 	personsController.deleteAll
 );

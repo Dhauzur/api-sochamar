@@ -4,6 +4,7 @@ const userSchema = {
 	updateProfile: Joi.object({
 		name: Joi.string(),
 		lastName: Joi.string(),
+		role: Joi.string(),
 	}),
 	updatePassword: Joi.object({
 		password: Joi.string()

@@ -71,6 +71,7 @@ const generateProfile = user => {
 		name: user.name,
 		lastName: user.lastName,
 		img: imgUrl,
+		role: user.role,
 		analyst: user.analyst,
 	};
 };
