@@ -34,7 +34,7 @@ const editOne = async (userId, person, personId, res) => {
 		);
 		res.json({
 			status: true,
-			persons: personsDB,
+			person: personsDB,
 		});
 	} catch (error) {
 		logError(error.message);
@@ -72,7 +72,6 @@ const getAll = async (userId, res) => {
 const getOne = async (id, res) => {
 	try {
 		const person = await Persons.findById(id);
-		console.log(person);
 
 		res.json({
 			status: true,

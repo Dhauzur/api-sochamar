@@ -6,6 +6,7 @@ const userSchema = {
 		lastName: Joi.string(),
 		role: Joi.string(),
 		idPerson: Joi.optional(),
+		img: Joi.optional(),
 	}),
 	updatePassword: Joi.object({
 		password: Joi.string()
