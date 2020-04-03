@@ -38,6 +38,10 @@ let userSchema = new Schema({
 		default: 'admin',
 		enum: ['person', 'admin'],
 	},
+	idPerson: {
+		type: String,
+		required: false,
+	},
 });
 
 userSchema.methods.toJSON = function() {

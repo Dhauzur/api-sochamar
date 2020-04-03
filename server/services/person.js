@@ -11,7 +11,7 @@ const createOne = async (userId, person, res) => {
 		const personsDB = await persons.save();
 		res.json({
 			status: true,
-			persons: personsDB,
+			person: personsDB,
 		});
 	} catch (error) {
 		logError(error.message);
@@ -67,6 +67,27 @@ const getAll = async (userId, res) => {
 };
 
 /**
+ * get one person
+ */
+const getOne = async (id, res) => {
+	try {
+		const person = await Persons.findById(id);
+		console.log(person);
+
+		res.json({
+			status: true,
+			person,
+		});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
+};
+
+/**
  * delete a person
  */
 const deleteOne = async (userId, personId, res) => {
@@ -108,6 +129,7 @@ const deleteAll = async (userId, res) => {
 const personsService = {
 	createOne,
 	getAll,
+	getOne,
 	editOne,
 	deleteOne,
 	deleteAll,

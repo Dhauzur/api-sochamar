@@ -13,6 +13,10 @@ const personsController = {
 		const { user } = req;
 		personsService.getAll(user._id, res);
 	},
+	getOne(req, res) {
+		const { id } = req.params;
+		personsService.getOne(id, res);
+	},
 	editOne(req, res) {
 		const { user } = req;
 		const { id } = req.params;

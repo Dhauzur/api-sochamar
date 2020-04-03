@@ -16,6 +16,13 @@ personsRouter.get(
 	personsController.getAll
 );
 
+personsRouter.get(
+	'/person/:id',
+	passport.authenticate('jwt', { session: false }),
+	grantAccess('readOwn', 'person'),
+	personsController.getOne
+);
+
 // route create a person
 personsRouter.post(
 	'/persons/create',
