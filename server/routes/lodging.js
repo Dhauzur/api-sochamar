@@ -9,17 +9,26 @@ const lodgingRouter = Router();
 
 lodgingRouter.delete(
 	'/lodging/delete/place/:id',
-	passport.authenticate('jwt', { session: false }),
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('deleteAny', 'lodging'),
+	],
 	lodgingController.deleteOneWithPlaceId
 );
 lodgingRouter.delete(
 	'/lodging/delete/all',
-	passport.authenticate('jwt', { session: false }),
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('deleteAny', 'lodging'),
+	],
 	lodgingController.deleteAll
 );
 lodgingRouter.delete(
 	'/lodging/delete/places/:place',
-	passport.authenticate('jwt', { session: false }),
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('deleteAny', 'lodging'),
+	],
 	lodgingController.deleteAllWithPlace
 );
 lodgingRouter.get(
@@ -32,14 +41,17 @@ lodgingRouter.get(
 );
 lodgingRouter.get(
 	'/lodgings/place/:id',
-	passport.authenticate('jwt', { session: false }),
-	grantAccess('readAny', 'lodging'),
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readAny', 'lodging'),
+	],
 	lodgingController.getAllForPlace
 );
 lodgingRouter.post(
 	'/lodging',
 	[
 		passport.authenticate('jwt', { session: false }),
+		grantAccess('createAny', 'lodging'),
 		validation(lodgingSchema.create, 'body'),
 	],
 	lodgingController.create

@@ -27,7 +27,32 @@ const roles = () => {
 		.readAny('person')
 		.createAny('person')
 		.deleteAny('person')
-		.updateAny('person');
+		.updateAny('person')
+
+		.readAny('activities')
+		.createAny('activities')
+		.deleteAny('activities')
+		.updateAny('activities')
+
+		.readAny('payments')
+		.createAny('payments')
+		.deleteAny('payments')
+		.updateAny('payments')
+
+		.readAny('periods')
+		.createAny('periods')
+		.deleteAny('periods')
+		.updateAny('periods')
+
+		.readAny('place')
+		.createAny('place')
+		.deleteAny('place')
+		.updateAny('place')
+
+		.readAny('room')
+		.createAny('room')
+		.deleteAny('room')
+		.updateAny('room');
 	return accessControl;
 };
 
