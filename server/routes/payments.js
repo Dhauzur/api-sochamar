@@ -18,21 +18,19 @@ paymentsRouter.post(
 	[
 		passport.authenticate('jwt', { session: false }),
 		multer.single('voucher'),
-		validation(paymentsSchema.create, 'body'),
 		storage,
+		validation(paymentsSchema.create, 'body'),
 	],
-	(req, res) => paymentsController.create(req, res)
+	paymentsController.create
 );
 
 paymentsRouter.put(
 	'/payments/:id',
 	[
 		passport.authenticate('jwt', { session: false }),
-		multer.single('voucher'),
 		validation(paymentsSchema.update, 'body'),
-		storage,
 	],
-	(req, res) => paymentsController.editOne(req, res)
+	paymentsController.editOne
 );
 
 paymentsRouter.delete(
