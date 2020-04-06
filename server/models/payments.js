@@ -24,7 +24,7 @@ let payments = new Schema({
 		type: Object,
 	},
 	comments: {
-		type: String,
+		type: Array,
 	},
 });
 

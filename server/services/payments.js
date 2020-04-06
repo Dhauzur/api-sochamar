@@ -27,16 +27,9 @@ const createOne = async (payment, file, res) => {
 /**
  * edit a payment
  */
-const editOne = async (paymentId, payment, comments, file, res) => {
+const editOne = async (paymentId, comments, res) => {
 	try {
-		payment.comments = comments;
-		if (file) {
-			payment.voucher = {
-				url: file.cloudStoragePublicUrl,
-				name: file.cloudStorageObject,
-			};
-		}
-		await Payments.findByIdAndUpdate(paymentId, payment);
+		await Payments.findByIdAndUpdate(paymentId, comments);
 		res.json({ status: true });
 	} catch (error) {
 		logError(error.message);
