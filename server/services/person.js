@@ -4,10 +4,9 @@ import { logError } from '../config/pino';
 /**
  * create a new persons and return the persons
  */
-const createOne = async (userId, person, res) => {
+const createOne = async (person, res) => {
 	try {
 		let persons = new Persons(person);
-		persons.users.push(userId);
 		const personsDB = await persons.save();
 		res.json({
 			status: true,
@@ -25,10 +24,10 @@ const createOne = async (userId, person, res) => {
 /**
  * edit a persons
  */
-const editOne = async (userId, person, personId, res) => {
+const editOne = async (person, personId, res) => {
 	try {
 		const personsDB = await Persons.findByIdAndUpdate(
-			{ _id: personId, users: { $in: userId } },
+			{ _id: personId },
 			person,
 			{ new: true, runValidators: true }
 		);
@@ -46,7 +45,7 @@ const editOne = async (userId, person, personId, res) => {
 };
 
 /**
- * get all persons and the count
+ * get all persons
  */
 const getAll = async (userId, res) => {
 	try {
@@ -56,6 +55,27 @@ const getAll = async (userId, res) => {
 			status: true,
 			persons,
 			count,
+		});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
+};
+
+/**
+ * get all persons added a company
+ */
+const getPersonsCompany = async (idCompany, res) => {
+	try {
+		const persons = await Persons.find({
+			idCompany: { $in: idCompany },
+		});
+		res.json({
+			status: true,
+			persons,
 		});
 	} catch (error) {
 		logError(error.message);
@@ -128,6 +148,7 @@ const deleteAll = async (userId, res) => {
 const personsService = {
 	createOne,
 	getAll,
+	getPersonsCompany,
 	getOne,
 	editOne,
 	deleteOne,

@@ -5,23 +5,25 @@ import personsService from '../services/person';
  */
 const personsController = {
 	create(req, res) {
-		const { user } = req;
 		const person = req.body;
-		personsService.createOne(user._id, person, res);
+		personsService.createOne(person, res);
 	},
 	getAll(req, res) {
 		const { user } = req;
 		personsService.getAll(user._id, res);
+	},
+	getPersonsCompany(req, res) {
+		const { idCompany } = req.params;
+		personsService.getPersonsCompany(idCompany, res);
 	},
 	getOne(req, res) {
 		const { id } = req.params;
 		personsService.getOne(id, res);
 	},
 	editOne(req, res) {
-		const { user } = req;
 		const { id } = req.params;
 		const person = req.body;
-		personsService.editOne(user._id, person, id, res);
+		personsService.editOne(person, id, res);
 	},
 	deleteAll(req, res) {
 		const { user } = req;

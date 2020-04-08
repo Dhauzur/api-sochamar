@@ -41,12 +41,9 @@ let persons = new Schema({
 	comuna: {
 		type: String,
 	},
-	users: [
-		{
-			type: Schema.Types.ObjectID,
-			ref: 'User',
-		},
-	],
+	idCompany: {
+		type: String,
+	},
 });
 
 persons.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });

@@ -68,6 +68,7 @@ const generateProfile = user => {
 		imgUrl = user.img;
 	}
 	return {
+		_id: user._id,
 		name: user.name,
 		lastName: user.lastName,
 		img: imgUrl,

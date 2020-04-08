@@ -17,6 +17,13 @@ personsRouter.get(
 );
 
 personsRouter.get(
+	'/persons/:idCompany',
+	passport.authenticate('jwt', { session: false }),
+	grantAccess('readOwn', 'person'),
+	personsController.getPersonsCompany
+);
+
+personsRouter.get(
 	'/person/:id',
 	passport.authenticate('jwt', { session: false }),
 	grantAccess('readOwn', 'person'),
