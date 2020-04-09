@@ -123,20 +123,32 @@ const getOne = async (id, res) => {
 };
 
 /**
- * get persons by email if exist
+ * Patch persons by email if exist
  * @param {string} email
  * @param {Object} res
  * @returns {Object}
  */
-const getPersonByEmail = async (email, res) => {
+const patchRequest = async (data, res) => {
 	try {
 		// check if the email exists
-		const person = await Persons.findOne({ email });
-		if (!person)
+		const person = await Persons.findOne({
+			email: { $in: data.email },
+		});
+
+		if (!person) {
 			return res.status(400).send(`Este usuario usuario no se encuentra
 			en nuestra base de datos, 
 			puede agregarlo
-		 	manualmente o perdirle que se registre como persona`);
+			 manualmente o perdirle que se registre como persona`);
+		}
+		if (person.request.includes(data.newRequest.toLowerCase())) {
+			logError('Ya ha enviadp la solicitud');
+			return res
+				.status(400)
+				.send(`Ya haz enviado una solicitud a este usuario`);
+		}
+		person.request.push(data.newRequest.toLowerCase());
+		await person.save();
 		res.json({
 			status: true,
 			person,
@@ -200,7 +212,7 @@ const personsService = {
 	getAll,
 	getPersonsCompany,
 	getOne,
-	getPersonByEmail,
+	patchRequest,
 	editOne,
 	deleteOne,
 	deleteAll,

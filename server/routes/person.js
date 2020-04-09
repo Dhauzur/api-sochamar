@@ -11,30 +11,38 @@ const personsRouter = Router();
 // route for get all persons
 personsRouter.get(
 	'/persons',
-	passport.authenticate('jwt', { session: false }),
-	grantAccess('readOwn', 'person'),
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readOwn', 'person'),
+	],
 	personsController.getAll
 );
 
 personsRouter.get(
 	'/persons/:idCompany',
-	passport.authenticate('jwt', { session: false }),
-	grantAccess('readOwn', 'person'),
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readOwn', 'person'),
+	],
 	personsController.getPersonsCompany
 );
 
 personsRouter.get(
 	'/person/:id',
-	passport.authenticate('jwt', { session: false }),
-	grantAccess('readOwn', 'person'),
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readOwn', 'person'),
+	],
 	personsController.getOne
 );
 
-personsRouter.get(
-	'/person/:email',
-	passport.authenticate('jwt', { session: false }),
-	grantAccess('readOwn', 'person'),
-	personsController.getPersonByEmail
+personsRouter.patch(
+	'/person/patchRequest',
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readOwn', 'person'),
+	],
+	personsController.patchRequest
 );
 
 // route create a person
@@ -86,16 +94,20 @@ personsRouter.put(
 // delete a person
 personsRouter.delete(
 	'/persons/:id',
-	passport.authenticate('jwt', { session: false }),
-	grantAccess('deleteAny', 'person'),
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('deleteAny', 'person'),
+	],
 	personsController.deleteOne
 );
 
 // delete all persons
 personsRouter.delete(
 	'/persons/delete/all',
-	grantAccess('deleteAny', 'person'),
-	passport.authenticate('jwt', { session: false }),
+	[
+		grantAccess('deleteAny', 'person'),
+		passport.authenticate('jwt', { session: false }),
+	],
 	personsController.deleteAll
 );
 
