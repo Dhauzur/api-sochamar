@@ -50,6 +50,9 @@ let persons = new Schema({
 	idCompany: {
 		type: String,
 	},
+	request: {
+		type: Array,
+	},
 });
 
 persons.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });

@@ -34,6 +34,7 @@ const personSchema = {
 		email: Joi.string(),
 		rut: Joi.string(),
 		idCompany: Joi.string(),
+		request: Joi.array(),
 	}),
 };
 
