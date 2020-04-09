@@ -3,6 +3,8 @@ import passport from 'passport';
 import paymentsController from '../controllers/payments';
 import multer from '../middleware/multer';
 import storage from '../middleware/storage';
+import validation from '../middleware/validation';
+import paymentsSchema from '../schemas/payments';
 
 const paymentsRouter = express.Router();
 paymentsRouter.get(
@@ -17,18 +19,18 @@ paymentsRouter.post(
 		passport.authenticate('jwt', { session: false }),
 		multer.single('voucher'),
 		storage,
+		validation(paymentsSchema.create, 'body'),
 	],
-	(req, res) => paymentsController.create(req, res)
+	paymentsController.create
 );
 
 paymentsRouter.put(
 	'/payments/:id',
 	[
 		passport.authenticate('jwt', { session: false }),
-		multer.single('voucher'),
-		storage,
+		validation(paymentsSchema.update, 'body'),
 	],
-	(req, res) => paymentsController.editOne(req, res)
+	paymentsController.editOne
 );
 
 paymentsRouter.delete(

@@ -1,5 +1,4 @@
 import User from '../models/user';
-import { pick } from 'underscore';
 import { logError } from '../config/pino';
 import bcrypt from 'bcrypt';
 
@@ -17,27 +16,6 @@ const getAll = res => {
 					Users,
 					cuantos: conteo,
 				});
-			});
-		}
-	);
-};
-
-const editOne = (req, res) => {
-	let id = req.params.id;
-	let body = pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
-	User.findByIdAndUpdate(
-		id,
-		body,
-		{ new: true, runValidators: true },
-		(err, UserDB) => {
-			if (err)
-				return res.status(400).json({
-					ok: false,
-					err,
-				});
-			res.json({
-				ok: true,
-				User: UserDB,
 			});
 		}
 	);
@@ -83,19 +61,11 @@ const deleteAll = res => {
 		});
 	});
 };
-/*After we find our target user, we dont need the entire data*/
-/*GenerateProfile is going to return a profile object based in our user*/
-const generateImgUrl = img => {
-	const apiUrl = process.env.API_URL;
-	return apiUrl + img;
-};
 
 const generateProfile = user => {
 	let imgUrl;
 	if (user.img) {
 		imgUrl = user.img;
-	} else {
-		imgUrl = generateImgUrl('default.png');
 	}
 	return {
 		name: user.name,
@@ -155,7 +125,6 @@ const updatePassword = (id, password, res) => {
 const UsersService = {
 	getAll,
 	deleteAll,
-	editOne,
 	deleteOne,
 	getProfile,
 	updateProfile,

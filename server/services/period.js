@@ -1,4 +1,4 @@
-import Rooms from '../models/rooms';
+import Periods from '../models/period';
 import placeService from './place';
 import { logError } from '../config/pino';
 
@@ -7,18 +7,18 @@ const getAll = async (userId, placeId, res) => {
 		/*Si no existe id del lugar, significa que el frontend esta usando 'Todos los lugares'*/
 		if (placeId === 'null') {
 			const userPlaces = await placeService.getPlacesIds(userId);
-			const rooms = async userPlaces =>
-				await Rooms.find({ place: { $in: userPlaces } });
-			const allRoomsUser = await rooms(userPlaces);
+			const periods = async userPlaces =>
+				await Periods.find({ place: { $in: userPlaces } });
+			const allPeriodsUser = await periods(userPlaces);
 			res.json({
 				status: true,
-				rooms: allRoomsUser,
+				periods: allPeriodsUser,
 			});
 		} else {
-			const rooms = await Rooms.find({ place: placeId });
+			const periods = await Periods.find({ place: placeId });
 			res.json({
 				status: true,
-				rooms,
+				periods,
 			});
 		}
 	} catch (error) {
@@ -27,14 +27,14 @@ const getAll = async (userId, placeId, res) => {
 	}
 };
 
-const createOne = async (placeId, room, res) => {
+const createOne = async (placeId, period, res) => {
 	try {
-		let rooms = new Rooms(room);
-		rooms.place = placeId;
-		const roomsDB = await rooms.save();
+		let periods = new Periods(period);
+		periods.place = placeId;
+		const periodsDB = await periods.save();
 		res.json({
 			status: true,
-			rooms: roomsDB,
+			periods: periodsDB,
 		});
 	} catch (error) {
 		logError(error.message);
@@ -42,10 +42,10 @@ const createOne = async (placeId, room, res) => {
 	}
 };
 
-const deleteOne = async (placeId, roomId, res) => {
+const deleteOne = async (placeId, periodId, res) => {
 	try {
-		await Rooms.findOneAndDelete(
-			{ _id: roomId, place: placeId },
+		await Periods.findOneAndDelete(
+			{ _id: periodId, place: placeId },
 			{ projection: 'name' }
 		);
 		res.json({ status: true });
@@ -57,7 +57,7 @@ const deleteOne = async (placeId, roomId, res) => {
 
 const deleteAll = async (placeId, res) => {
 	try {
-		await Rooms.deleteMany({ place: placeId });
+		await Periods.deleteMany({ place: placeId });
 		res.json({
 			deleteAll: true,
 		});
@@ -67,11 +67,11 @@ const deleteAll = async (placeId, res) => {
 	}
 };
 
-const roomsService = {
+const periodService = {
 	getAll,
 	createOne,
 	deleteOne,
 	deleteAll,
 };
 
-export default Object.freeze(roomsService);
+export default Object.freeze(periodService);

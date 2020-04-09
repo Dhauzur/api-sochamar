@@ -16,20 +16,23 @@ let lodging = new Schema({
 	start: {
 		type: String,
 	},
-	company: {
+	place: {
 		type: String,
 	},
 	end: {
 		type: String,
 	},
-	service: {
+	days: {
 		type: Array,
 	},
-	passengers: {
+	persons: {
 		type: Array,
 	},
 	mountTotal: {
 		type: Number,
+	},
+	content: {
+		type: String,
 	},
 });
 

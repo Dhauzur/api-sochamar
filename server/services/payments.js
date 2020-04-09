@@ -1,24 +1,16 @@
 import Payments from '../models/payments';
-import { pick } from 'underscore';
 import { logError } from '../config/pino';
 
 /**
  * create a new payment and return the payment
  */
-const createOne = async (req, res) => {
-	const { body } = req;
+const createOne = async (payment, file, res) => {
 	try {
-		let payments = new Payments({
-			idLodging: body.idLodging,
-			idCompany: body.idCompany,
-			startDate: body.startDate,
-			endDate: body.endDate,
-			mount: body.mount,
-		});
-		if (req.file) {
+		let payments = new Payments(payment);
+		if (file) {
 			payments.voucher = {
-				url: req.file.cloudStoragePublicUrl,
-				name: req.file.cloudStorageObject,
+				url: file.cloudStoragePublicUrl,
+				name: file.cloudStorageObject,
 			};
 		}
 		const paymentDB = await payments.save();
@@ -35,24 +27,9 @@ const createOne = async (req, res) => {
 /**
  * edit a payment
  */
-const editOne = async (req, res) => {
+const editOne = async (paymentId, comments, res) => {
 	try {
-		const { id } = req.params;
-		let body = pick(req.body, [
-			'idCompany',
-			'idLodging',
-			'startDate',
-			'endDate',
-			'mount',
-		]);
-		body.comments = req.body.comments;
-		if (req.file) {
-			body.voucher = {
-				url: req.file.cloudStoragePublicUrl,
-				name: req.file.cloudStorageObject,
-			};
-		}
-		await Payments.findByIdAndUpdate(id, body);
+		await Payments.findByIdAndUpdate(paymentId, comments);
 		res.json({ status: true });
 	} catch (error) {
 		logError(error.message);
@@ -64,12 +41,12 @@ const editOne = async (req, res) => {
 };
 
 /**
- * get all payments of the company
+ * get all payments of the place
  */
 const getAll = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const payments = await Payments.find({ idCompany: id });
+		const payments = await Payments.find({ idPlace: id });
 		return res.json({
 			status: true,
 			payments,
@@ -84,7 +61,7 @@ const getAll = async (req, res) => {
 };
 
 /**
- * delete a passenger
+ * delete a person
  */
 const deleteOne = async (req, res) => {
 	try {
@@ -102,11 +79,11 @@ const deleteOne = async (req, res) => {
 	}
 };
 
-const passengersService = {
+const personsService = {
 	createOne,
 	getAll,
 	editOne,
 	deleteOne,
 };
 
-export default Object.freeze(passengersService);
+export default Object.freeze(personsService);

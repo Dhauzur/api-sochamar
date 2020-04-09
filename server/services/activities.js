@@ -1,53 +1,54 @@
 import Activities from '../models/activities';
+import { logError } from '../config/pino';
 
-const getAll = res => {
-	Activities.find(null).exec((err, activities) => {
-		if (err)
-			return res.status(400).json({
-				status: false,
-				err,
-			});
-
-		Activities.countDocuments(null, (err, length) => {
-			res.json({
-				status: true,
-				activities: activities.reverse(),
-				length,
-			});
+const getAll = async res => {
+	try {
+		const activities = await Activities.find(null);
+		const length = await Activities.countDocuments(null);
+		res.json({
+			status: true,
+			activities: activities.reverse(),
+			length,
 		});
-	});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).send({
+			status: false,
+			error: error.message,
+		});
+	}
 };
 
-const createOne = (req, res) => {
-	let body = req.body;
-	let activities = new Activities({
-		workPlace: body.workPlace,
-		whatWasDone: body.whatWasDone,
-		ncamas: body.ncamas,
-		date: body.date,
-	});
-	activities.save((err, activitiesDB) => {
-		if (err) {
-			return res.status(400).json({
-				status: false,
-				err,
-			});
-		}
+const createOne = async (activity, res) => {
+	try {
+		let activities = new Activities(activity);
+		const activitiesDB = await activities.save();
 		res.json({
 			status: true,
 			activities: activitiesDB,
 		});
-	});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).send({
+			status: false,
+			error: error.message,
+		});
+	}
 };
 
-const deleteAll = res => {
-	Activities.deleteMany({}, function(err, activities) {
-		if (err) return res.status(400).json({ ok: false, err });
+const deleteAll = async res => {
+	try {
+		await Activities.deleteMany({});
 		res.json({
-			deleteAll: true,
-			deletedCount: activities.deletedCount,
+			status: true,
 		});
-	});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).send({
+			status: false,
+			error: error.message,
+		});
+	}
 };
 
 const activitiesService = {

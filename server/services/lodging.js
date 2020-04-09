@@ -1,69 +1,35 @@
 import Lodging from '../models/lodging';
-import Company from '../models/company';
 import moment from 'moment';
 import { logError } from '../config/pino';
 
-const getAll = res => {
-	Lodging.find({}).exec((err, lodgings) => {
-		if (err) return res.status(400).json({ ok: false, err });
-		Lodging.countDocuments({}, (err, length) => {
-			res.json({
-				status: true,
-				lodgings,
-				length,
-			});
+const mountTotal = days => {
+	let totalAmount = 0;
+	//services cost and quantity are saved in lodging.days property
+	const getDayTotal = services => {
+		let iterationPrice = 0;
+		services.forEach(service => {
+			let serviceTotal = service.price * service.quantity;
+			iterationPrice = iterationPrice + serviceTotal;
 		});
+		return iterationPrice;
+	};
+	//for every day a dayTotal must be created then it sum with totalAmount
+	days.forEach(day => {
+		const dayTotal = getDayTotal(day.services);
+		totalAmount = totalAmount + dayTotal;
 	});
+
+	return totalAmount;
 };
 
-//Ojo esto deberia ser updateOne
-const createOne = async (req, res) => {
+const getAll = async res => {
 	try {
-		let { body } = req;
-
-		// set mount total
-		let breakfast = 0,
-			lunch = 0,
-			dinner = 0,
-			lodging = 0;
-		let service = JSON.parse(body.service);
-		const responseDB = await Company.find({ _id: body.company });
-		const prices = responseDB[0].prices;
-		service.map(arr => {
-			arr.filter((item, index) => {
-				if (index === 0) breakfast = breakfast + item;
-				if (index === 1) lunch = lunch + item;
-				if (index === 2) dinner = dinner + item;
-				if (index === 3) lodging = lodging + item;
-			});
-		});
-		const mountTotal =
-			lodging * prices[3] +
-			dinner * prices[2] +
-			lunch * prices[1] +
-			breakfast * prices[0];
-
-		// save in database
-		const lodgingDB = await Lodging.findOneAndUpdate(
-			{ id: body.id },
-			{
-				group: body.group,
-				start: moment(body.start)
-					.hours(16)
-					.format('YYYY-MM-DD'),
-				end: moment(body.end)
-					.hours(12)
-					.format('YYYY-MM-DD'),
-				service: body.service,
-				company: body.company,
-				passengers: body.passengers,
-				mountTotal,
-			},
-			{ upsert: true }
-		);
+		const lodgings = await Lodging.find({});
+		const length = await Lodging.countDocuments({});
 		res.json({
 			status: true,
-			lodging: lodgingDB,
+			lodgings,
+			length,
 		});
 	} catch (error) {
 		logError(error.message);
@@ -71,47 +37,15 @@ const createOne = async (req, res) => {
 	}
 };
 
-const deleteAll = res => {
-	Lodging.deleteMany({}, function(err, lodging) {
-		if (err) return res.status(400).json({ ok: false, err });
-		res.json({
-			delete: true,
-			deletedCount: lodging.deletedCount,
-		});
-	});
-};
-
-const deleteAllWithCompany = (req, res) => {
-	let company = req.params.company;
-	Lodging.deleteMany({ company }, function(err, lodging) {
-		if (err) return res.status(400).json({ ok: false, err });
-		res.json({
-			delete: true,
-			deletedCount: lodging.deletedCount,
-		});
-	});
-};
-
-const deleteOneWithCompanyId = (req, res) => {
-	let id = req.params.id;
-	Lodging.deleteMany({ id }, function(err, lodging) {
-		if (err) return res.status(400).json({ ok: false, err });
-		res.json({
-			delete: true,
-			deletedCount: lodging.deletedCount,
-		});
-	});
-};
-
 /**
- * search all lodgings for idcompany
+ * search all lodgings for idPlace
  */
-const getAllForCompany = async (req, res) => {
+const getAllForPlace = async (req, res) => {
 	try {
 		const lodgings = await Lodging.find({
-			company: req.params.id,
+			place: req.params.id,
 		});
-		const count = await Lodging.countDocuments({ company: req.params.id });
+		const count = await Lodging.countDocuments({ place: req.params.id });
 		res.json({
 			status: true,
 			count,
@@ -125,13 +59,75 @@ const getAllForCompany = async (req, res) => {
 	}
 };
 
+const createOne = async (lodging, res) => {
+	try {
+		const lodgingDB = await Lodging.findOneAndUpdate(
+			{ id: lodging.id },
+			{
+				group: lodging.group,
+				start: moment(lodging.start)
+					.hours(16)
+					.format('YYYY-MM-DD'),
+				end: moment(lodging.end)
+					.hours(12)
+					.format('YYYY-MM-DD'),
+				days: lodging.days,
+				place: lodging.place,
+				persons: lodging.persons,
+				content: lodging.content,
+				mountTotal: mountTotal(lodging.days),
+			},
+			{ upsert: true }
+		);
+		res.json({
+			status: true,
+			lodging: lodgingDB,
+		});
+	} catch (error) {
+		logError(error.message);
+		res.status(400).json({ status: false, error: error.message });
+	}
+};
+
+const deleteAll = async res => {
+	try {
+		await Lodging.deleteMany({});
+		res.json({ status: true });
+	} catch (error) {
+		logError(error.message);
+		res.status(400).json({ status: false, error: error.message });
+	}
+};
+
+const deleteAllWithPlace = async (req, res) => {
+	try {
+		const { place } = req.params;
+		await Lodging.deleteMany({ place });
+		res.json({ status: true });
+	} catch (error) {
+		logError(error.message);
+		res.status(400).json({ status: false, error: error.message });
+	}
+};
+
+const deleteOneWithPlaceId = async (req, res) => {
+	try {
+		const { id } = req.params;
+		await Lodging.deleteMany({ id });
+		res.json({ status: true });
+	} catch (error) {
+		logError(error.message);
+		res.status(400).json({ status: false, error: error.message });
+	}
+};
+
 const lodgingService = {
 	getAll,
 	createOne,
 	deleteAll,
-	getAllForCompany,
-	deleteAllWithCompany,
-	deleteOneWithCompanyId,
+	getAllForPlace,
+	deleteAllWithPlace,
+	deleteOneWithPlaceId,
 };
 
 export default Object.freeze(lodgingService);

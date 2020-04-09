@@ -1,29 +1,27 @@
 import activitiesRoutes from './activities';
-import companyRoutes from './company';
-import lodgingRoutes from './lodging';
-import roomsRoutes from './rooms';
-import reportsRoutes from './reports';
-import userRoutes from './user';
-import configRoutes from './config';
-import passengersRoutes from './passengers';
-import paymentsRoutes from './payments';
 import authRoutes from './auth';
+import configRoutes from './config';
+import lodgingRoutes from './lodging';
+import paymentsRoutes from './payments';
+import periodsRoutes from './period';
+import personRoutes from './person';
+import placeRoutes from './place';
+import reportsRoutes from './reports';
+import roomsRoutes from './room';
+import userRoutes from './user';
 
-/*Podemos usar esto tambien, generalmente es buena practica vesionar la api*/
 const apiVersion = '/api/v1';
 
-/*Exportamos una funcion anonima que requiere de app*/
-/*Con esto ya podemos olvidarnos de configurar las rutas en server.js o app.js*/
-/*esto mismo puede ser aplicado con las configuraciones de la app, ej: cors, etc*/
 export default app => {
-	app.use(apiVersion, companyRoutes);
 	app.use(apiVersion, activitiesRoutes);
-	app.use(apiVersion, lodgingRoutes);
-	app.use(apiVersion, roomsRoutes);
-	app.use(apiVersion, reportsRoutes);
-	app.use(apiVersion, userRoutes);
-	app.use(apiVersion, configRoutes);
-	app.use(apiVersion, passengersRoutes);
-	app.use(apiVersion, paymentsRoutes);
 	app.use(apiVersion, authRoutes);
+	app.use(apiVersion, configRoutes);
+	app.use(apiVersion, lodgingRoutes);
+	app.use(apiVersion, paymentsRoutes);
+	app.use(apiVersion, periodsRoutes);
+	app.use(apiVersion, personRoutes);
+	app.use(apiVersion, placeRoutes);
+	app.use(apiVersion, reportsRoutes);
+	app.use(apiVersion, roomsRoutes);
+	app.use(apiVersion, userRoutes);
 };
