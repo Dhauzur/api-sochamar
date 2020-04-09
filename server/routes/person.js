@@ -30,6 +30,13 @@ personsRouter.get(
 	personsController.getOne
 );
 
+personsRouter.get(
+	'/person/:email',
+	passport.authenticate('jwt', { session: false }),
+	grantAccess('readOwn', 'person'),
+	personsController.getPersonByEmail
+);
+
 // route create a person
 personsRouter.post(
 	'/persons/create',

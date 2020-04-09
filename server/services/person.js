@@ -2,7 +2,10 @@ import Persons from '../models/person';
 import { logError } from '../config/pino';
 
 /**
- * create a new persons and return the persons
+ * Create new persons
+ * @param {Object} person
+ * @param {Object} res
+ * @returns {Object}
  */
 const createOne = async (person, res) => {
 	try {
@@ -22,7 +25,11 @@ const createOne = async (person, res) => {
 };
 
 /**
- * edit a persons
+ * Edit a person by id
+ * @param {Object} Person
+ * @param {string} PersonId
+ * @param {Object} res
+ * @returns {Object}
  */
 const editOne = async (person, personId, res) => {
 	try {
@@ -45,7 +52,10 @@ const editOne = async (person, personId, res) => {
 };
 
 /**
- * get all persons
+ * Get all persons
+ * @param {string} userId
+ * @param {Object} res
+ * @returns {Object}
  */
 const getAll = async (userId, res) => {
 	try {
@@ -66,7 +76,10 @@ const getAll = async (userId, res) => {
 };
 
 /**
- * get all persons added a company
+ * get all persons attach a company
+ * @param {string} idCompany
+ * @param {Object} res
+ * @returns {Object}
  */
 const getPersonsCompany = async (idCompany, res) => {
 	try {
@@ -88,6 +101,9 @@ const getPersonsCompany = async (idCompany, res) => {
 
 /**
  * get one person
+ * @param {string} id
+ * @param {Object} res
+ * @returns {Object} person
  */
 const getOne = async (id, res) => {
 	try {
@@ -107,7 +123,39 @@ const getOne = async (id, res) => {
 };
 
 /**
- * delete a person
+ * get persons by email if exist
+ * @param {string} email
+ * @param {Object} res
+ * @returns {Object}
+ */
+const getPersonByEmail = async (email, res) => {
+	try {
+		// check if the email exists
+		const person = await Persons.findOne({ email });
+		if (!person)
+			return res.status(400).send(`Este usuario usuario no se encuentra
+			en nuestra base de datos, 
+			puede agregarlo
+		 	manualmente o perdirle que se registre como persona`);
+		res.json({
+			status: true,
+			person,
+		});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
+};
+
+/**
+ * Delete person by id
+ * @param {string} userId
+ * @param {string} personId
+ * @param {Object} res
+ * @returns {Object}
  */
 const deleteOne = async (userId, personId, res) => {
 	try {
@@ -128,7 +176,9 @@ const deleteOne = async (userId, personId, res) => {
 };
 
 /**
- * delete all persons
+ * Delete all persons
+ * @param {string} userId
+ * @returns {Object}
  */
 const deleteAll = async (userId, res) => {
 	try {
@@ -150,6 +200,7 @@ const personsService = {
 	getAll,
 	getPersonsCompany,
 	getOne,
+	getPersonByEmail,
 	editOne,
 	deleteOne,
 	deleteAll,

@@ -20,6 +20,10 @@ const personsController = {
 		const { id } = req.params;
 		personsService.getOne(id, res);
 	},
+	getPersonByEmail(req, res) {
+		const { email } = req.params;
+		personsService.getPersonByEmail(email, res);
+	},
 	editOne(req, res) {
 		const { id } = req.params;
 		const person = req.body;
