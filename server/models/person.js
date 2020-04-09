@@ -17,6 +17,12 @@ let persons = new Schema({
 	lastName: {
 		type: String,
 	},
+	email: {
+		type: String,
+	},
+	rut: {
+		type: Number,
+	},
 	birthdate: {
 		type: String,
 	},
