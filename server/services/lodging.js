@@ -1,6 +1,7 @@
 import Lodging from '../models/lodging';
 import moment from 'moment';
-import { logError } from '../config/pino';
+import { logError, logInfo } from '../config/pino';
+import { infoMessages } from '../utils/logger/infoMessages';
 
 const mountTotal = days => {
 	let totalAmount = 0;
@@ -22,7 +23,7 @@ const mountTotal = days => {
 	return totalAmount;
 };
 
-const getAll = async res => {
+const getAll = async (user, res) => {
 	try {
 		const lodgings = await Lodging.find({});
 		const length = await Lodging.countDocuments({});
@@ -40,12 +41,21 @@ const getAll = async res => {
 /**
  * search all lodgings for idPlace
  */
-const getAllForPlace = async (req, res) => {
+const getAllForPlace = async (user, req, res) => {
 	try {
 		const lodgings = await Lodging.find({
 			place: req.params.id,
 		});
 		const count = await Lodging.countDocuments({ place: req.params.id });
+		logInfo(
+			infoMessages(
+				user.email,
+				'obtuvo',
+				'todos los',
+				'lodging',
+				'con placeId'
+			)
+		);
 		res.json({
 			status: true,
 			count,
@@ -59,7 +69,7 @@ const getAllForPlace = async (req, res) => {
 	}
 };
 
-const createOne = async (lodging, res) => {
+const createOne = async (user, lodging, res) => {
 	try {
 		const lodgingDB = await Lodging.findOneAndUpdate(
 			{ id: lodging.id },
@@ -89,7 +99,7 @@ const createOne = async (lodging, res) => {
 	}
 };
 
-const deleteAll = async res => {
+const deleteAll = async (user, res) => {
 	try {
 		await Lodging.deleteMany({});
 		res.json({ status: true });
@@ -99,7 +109,7 @@ const deleteAll = async res => {
 	}
 };
 
-const deleteAllWithPlace = async (req, res) => {
+const deleteAllWithPlace = async (user, req, res) => {
 	try {
 		const { place } = req.params;
 		await Lodging.deleteMany({ place });
@@ -110,7 +120,7 @@ const deleteAllWithPlace = async (req, res) => {
 	}
 };
 
-const deleteOneWithPlaceId = async (req, res) => {
+const deleteOneWithPlaceId = async (user, req, res) => {
 	try {
 		const { id } = req.params;
 		await Lodging.deleteMany({ id });

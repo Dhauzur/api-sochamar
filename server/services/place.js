@@ -1,14 +1,16 @@
 import Place from '../models/place';
 import Lodging from '../models/lodging';
-import { logError } from '../config/pino';
+import { logError, logInfo } from '../config/pino';
 import { createdResponse } from '../utils/responses/createdResponse';
+import { infoMessages } from '../utils/logger/infoMessages';
 
-const getOne = async (userId, placeId, res) => {
+const getOne = async (user, placeId, res) => {
 	try {
 		const place = await Place.findOne({
 			_id: placeId,
-			users: { $in: userId },
+			users: { $in: user._id },
 		});
+		logInfo(infoMessages(user.email, 'obtuvo', 'place'));
 		res.json({
 			status: true,
 			place,
@@ -19,10 +21,11 @@ const getOne = async (userId, placeId, res) => {
 	}
 };
 
-const getAll = async (userId, res) => {
+const getAll = async (user, res) => {
 	try {
-		const place = await Place.find({ users: { $in: userId } });
+		const place = await Place.find({ users: { $in: user._id } });
 		const length = await Place.countDocuments({});
+		logInfo(infoMessages(user.email, 'obtuvo', 'todos los', 'place'));
 		res.json({
 			status: true,
 			place,
@@ -34,11 +37,12 @@ const getAll = async (userId, res) => {
 	}
 };
 
-const createOne = async (userId, place, res) => {
+const createOne = async (user, place, res) => {
 	try {
 		const newPlace = new Place(place);
-		newPlace.users.push(userId);
+		newPlace.users.push(user._id);
 		const placeDB = await newPlace.save();
+		logInfo(infoMessages(user.email, 'registro', 'un', 'place'));
 		res.json({
 			status: true,
 			place: placeDB,
@@ -49,14 +53,15 @@ const createOne = async (userId, place, res) => {
 	}
 };
 
-const deleteOne = async (userId, placeId, res) => {
+const deleteOne = async (user, placeId, res) => {
 	try {
 		const place = await Place.findOne({
 			_id: placeId,
-			users: { $in: userId },
+			users: { $in: user._id },
 		});
 		await Place.deleteOne({ _id: placeId });
 		const lodging = await Lodging.deleteMany({ place: placeId });
+		logInfo(infoMessages(user.email, 'elimino', 'un', 'place'));
 		res.json({
 			delete: place.name,
 			lodgins: lodging.deletedCount,
@@ -67,11 +72,11 @@ const deleteOne = async (userId, placeId, res) => {
 	}
 };
 
-const createService = async (userId, placeId, service, res) => {
+const createService = async (user, placeId, service, res) => {
 	try {
 		const place = await Place.findOne({
 			_id: placeId,
-			users: { $in: userId },
+			users: { $in: user._id },
 		});
 
 		const nameExist = checkIfServiceNameExist(place.services, service.name);
@@ -82,6 +87,7 @@ const createService = async (userId, placeId, service, res) => {
 		//Nuestro nuevo servicio siempre se encontrara en la ultima posición del arreglo
 		const lastIndex = savedPlace.services.length - 1;
 		const newService = savedPlace.services[lastIndex];
+		logInfo(infoMessages(user.email, 'registro', 'un', 'place Service'));
 		createdResponse('service', newService, res);
 	} catch (error) {
 		logError(error);
@@ -89,15 +95,16 @@ const createService = async (userId, placeId, service, res) => {
 	}
 };
 
-const updateService = async (userId, placeId, serviceId, service, res) => {
+const updateService = async (user, placeId, serviceId, service, res) => {
 	try {
 		const place = await Place.findOne({
 			_id: placeId,
-			users: { $in: userId },
+			users: { $in: user._id },
 		});
 		const foundService = place.services.id({ _id: serviceId });
 		foundService.set(service);
 		await place.save();
+		logInfo(infoMessages(user.email, 'actualizo', 'un', 'place Service'));
 		return res.sendStatus(200);
 	} catch (error) {
 		logError(error.message);
@@ -105,14 +112,15 @@ const updateService = async (userId, placeId, serviceId, service, res) => {
 	}
 };
 
-const deleteService = async (userId, placeId, serviceId, res) => {
+const deleteService = async (user, placeId, serviceId, res) => {
 	try {
 		const place = await Place.findOne({
 			_id: placeId,
-			users: { $in: userId },
+			users: { $in: user._id },
 		});
 		place.services.id({ _id: serviceId }).remove();
 		await place.save();
+		logInfo(infoMessages(user.email, 'elimino', 'un', 'place Service'));
 		return res.sendStatus(200);
 	} catch (error) {
 		logError(error.message);
@@ -126,9 +134,10 @@ const checkIfServiceNameExist = (services, name) => {
 	else return false;
 };
 
-const deleteAll = async (userId, res) => {
+const deleteAll = async (user, res) => {
 	try {
-		Place.deleteMany({ users: { $in: userId } });
+		await Place.deleteMany({ users: { $in: user._id } });
+		logInfo(infoMessages(user.email, 'elimino', 'todo los', 'place'));
 		res.json({
 			status: true,
 		});
@@ -138,9 +147,9 @@ const deleteAll = async (userId, res) => {
 	}
 };
 
-const getPlacesIds = async userId => {
+const getPlacesIds = async user => {
 	try {
-		const place = await Place.find({ users: { $in: userId } });
+		const place = await Place.find({ users: { $in: user._id } });
 		return place.map(place => place._id);
 	} catch (error) {
 		logError(error.message);

@@ -9,3 +9,5 @@ export const logger = pino({
 });
 
 export const logError = err => logger.error(err);
+
+export const logInfo = info => logger.info(info);

@@ -2,23 +2,29 @@ import lodgingService from '../services/lodging';
 
 const lodgingController = {
 	getAll(req, res) {
-		lodgingService.getAll(res);
+		const { user } = req;
+		lodgingService.getAll(user, res);
 	},
 	create(req, res) {
+		const { user } = req;
 		const lodging = req.body;
-		lodgingService.createOne(lodging, res);
+		lodgingService.createOne(user, lodging, res);
 	},
 	deleteAll(req, res) {
-		lodgingService.deleteAll(res);
+		const { user } = req;
+		lodgingService.deleteAll(user, res);
 	},
 	getAllForPlace(req, res) {
-		lodgingService.getAllForPlace(req, res);
+		const { user } = req;
+		lodgingService.getAllForPlace(user, req, res);
 	},
 	deleteAllWithPlace(req, res) {
-		lodgingService.deleteAllWithPlace(req, res);
+		const { user } = req;
+		lodgingService.deleteAllWithPlace(user, req, res);
 	},
 	deleteOneWithPlaceId(req, res) {
-		lodgingService.deleteOneWithPlaceId(req, res);
+		const { user } = req;
+		lodgingService.deleteOneWithPlaceId(user, req, res);
 	},
 };
 
