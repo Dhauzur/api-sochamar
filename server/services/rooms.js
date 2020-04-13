@@ -1,21 +1,40 @@
 import Rooms from '../models/rooms';
 import placeService from './place';
-import { logError } from '../config/pino';
+import { logError, logInfo } from '../config/pino';
+import { infoMessages } from '../utils/logger/infoMessages';
 
-const getAll = async (userId, placeId, res) => {
+const getAll = async (user, placeId, res) => {
 	try {
 		/*Si no existe id del lugar, significa que el frontend esta usando 'Todos los lugares'*/
 		if (placeId === 'null') {
-			const userPlaces = await placeService.getPlacesIds(userId);
+			const userPlaces = await placeService.getPlacesIds(user._id);
 			const rooms = async userPlaces =>
 				await Rooms.find({ place: { $in: userPlaces } });
 			const allRoomsUser = await rooms(userPlaces);
+			logInfo(
+				infoMessages(
+					user.email,
+					'obtuvo',
+					'todos',
+					'rooms',
+					`de ${user.email}`
+				)
+			);
 			res.json({
 				status: true,
 				rooms: allRoomsUser,
 			});
 		} else {
 			const rooms = await Rooms.find({ place: placeId });
+			logInfo(
+				infoMessages(
+					user.email,
+					'obtuvo',
+					'todos',
+					'rooms',
+					'con placeId'
+				)
+			);
 			res.json({
 				status: true,
 				rooms,
@@ -27,11 +46,12 @@ const getAll = async (userId, placeId, res) => {
 	}
 };
 
-const createOne = async (placeId, room, res) => {
+const createOne = async (user, placeId, room, res) => {
 	try {
 		let rooms = new Rooms(room);
 		rooms.place = placeId;
 		const roomsDB = await rooms.save();
+		logInfo(infoMessages(user.email, 'registro', 'un', 'rooms'));
 		res.json({
 			status: true,
 			rooms: roomsDB,
@@ -42,12 +62,13 @@ const createOne = async (placeId, room, res) => {
 	}
 };
 
-const deleteOne = async (placeId, roomId, res) => {
+const deleteOne = async (user, placeId, roomId, res) => {
 	try {
 		await Rooms.findOneAndDelete(
 			{ _id: roomId, place: placeId },
 			{ projection: 'name' }
 		);
+		logInfo(infoMessages(user.email, 'elimino', 'un', 'rooms'));
 		res.json({ status: true });
 	} catch (error) {
 		logError(error.message);
@@ -55,9 +76,10 @@ const deleteOne = async (placeId, roomId, res) => {
 	}
 };
 
-const deleteAll = async (placeId, res) => {
+const deleteAll = async (user, placeId, res) => {
 	try {
 		await Rooms.deleteMany({ place: placeId });
+		logInfo(infoMessages(user.email, 'elimino', 'todos los', 'rooms'));
 		res.json({
 			deleteAll: true,
 		});

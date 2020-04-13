@@ -1,21 +1,40 @@
 import Periods from '../models/period';
 import placeService from './place';
-import { logError } from '../config/pino';
+import { logError, logInfo } from '../config/pino';
+import { infoMessages } from '../utils/logger/infoMessages';
 
-const getAll = async (userId, placeId, res) => {
+const getAll = async (user, placeId, res) => {
 	try {
 		/*Si no existe id del lugar, significa que el frontend esta usando 'Todos los lugares'*/
 		if (placeId === 'null') {
-			const userPlaces = await placeService.getPlacesIds(userId);
+			const userPlaces = await placeService.getPlacesIds(user._id);
 			const periods = async userPlaces =>
 				await Periods.find({ place: { $in: userPlaces } });
 			const allPeriodsUser = await periods(userPlaces);
+			logInfo(
+				infoMessages(
+					user.email,
+					'obtuvo',
+					'todos los',
+					'period',
+					`de ${user.email}`
+				)
+			);
 			res.json({
 				status: true,
 				periods: allPeriodsUser,
 			});
 		} else {
 			const periods = await Periods.find({ place: placeId });
+			logInfo(
+				infoMessages(
+					user.email,
+					'obtuvo',
+					'todos los',
+					'period',
+					'con placeId'
+				)
+			);
 			res.json({
 				status: true,
 				periods,
@@ -27,11 +46,12 @@ const getAll = async (userId, placeId, res) => {
 	}
 };
 
-const createOne = async (placeId, period, res) => {
+const createOne = async (user, placeId, period, res) => {
 	try {
 		let periods = new Periods(period);
 		periods.place = placeId;
 		const periodsDB = await periods.save();
+		logInfo(infoMessages(user.email, 'registro', 'un', 'period'));
 		res.json({
 			status: true,
 			periods: periodsDB,
@@ -42,12 +62,13 @@ const createOne = async (placeId, period, res) => {
 	}
 };
 
-const deleteOne = async (placeId, periodId, res) => {
+const deleteOne = async (user, placeId, periodId, res) => {
 	try {
 		await Periods.findOneAndDelete(
 			{ _id: periodId, place: placeId },
 			{ projection: 'name' }
 		);
+		logInfo(infoMessages(user.email, 'elimino', 'un', 'periodpayment'));
 		res.json({ status: true });
 	} catch (error) {
 		logError(error.message);
@@ -55,9 +76,10 @@ const deleteOne = async (placeId, periodId, res) => {
 	}
 };
 
-const deleteAll = async (placeId, res) => {
+const deleteAll = async (user, placeId, res) => {
 	try {
 		await Periods.deleteMany({ place: placeId });
+		logInfo(infoMessages(user.email, 'elimino', 'todos los', 'period'));
 		res.json({
 			deleteAll: true,
 		});

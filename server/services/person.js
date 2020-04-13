@@ -1,14 +1,16 @@
 import Persons from '../models/person';
-import { logError } from '../config/pino';
+import { logError, logInfo } from '../config/pino';
+import { infoMessages } from '../utils/logger/infoMessages';
 
 /**
  * create a new persons and return the persons
  */
-const createOne = async (userId, person, res) => {
+const createOne = async (user, person, res) => {
 	try {
 		let persons = new Persons(person);
-		persons.users.push(userId);
+		persons.users.push(user._id);
 		const personsDB = await persons.save();
+		logInfo(infoMessages(user.email, 'registro', 'un', 'person'));
 		res.json({
 			status: true,
 			persons: personsDB,
@@ -25,13 +27,14 @@ const createOne = async (userId, person, res) => {
 /**
  * edit a persons
  */
-const editOne = async (userId, person, personId, res) => {
+const editOne = async (user, person, personId, res) => {
 	try {
 		const personsDB = await Persons.findByIdAndUpdate(
-			{ _id: personId, users: { $in: userId } },
+			{ _id: personId, users: { $in: user._id } },
 			person,
 			{ new: true, runValidators: true }
 		);
+		logInfo(infoMessages(user.email, 'actualizo', 'un', 'person'));
 		res.json({
 			status: true,
 			persons: personsDB,
@@ -48,10 +51,11 @@ const editOne = async (userId, person, personId, res) => {
 /**
  * get all persons and the count
  */
-const getAll = async (userId, res) => {
+const getAll = async (user, res) => {
 	try {
-		const persons = await Persons.find({ users: { $in: userId } });
+		const persons = await Persons.find({ users: { $in: user._id } });
 		const count = await Persons.countDocuments({});
+		logInfo(infoMessages(user.email, 'obtuvo', 'todos los', 'person'));
 		res.json({
 			status: true,
 			persons,
@@ -69,12 +73,13 @@ const getAll = async (userId, res) => {
 /**
  * delete a person
  */
-const deleteOne = async (userId, personId, res) => {
+const deleteOne = async (user, personId, res) => {
 	try {
 		await Persons.findByIdAndRemove({
 			_id: personId,
-			users: { $in: userId },
+			users: { $in: user._id },
 		});
+		logInfo(infoMessages(user.email, 'elimino', 'un', 'person'));
 		res.json({
 			status: true,
 		});
@@ -90,9 +95,10 @@ const deleteOne = async (userId, personId, res) => {
 /**
  * delete all persons
  */
-const deleteAll = async (userId, res) => {
+const deleteAll = async (user, res) => {
 	try {
-		await Persons.deleteMany({ users: { $in: userId } });
+		await Persons.deleteMany({ users: { $in: user._id } });
+		logInfo(infoMessages(user.email, 'elimino', 'todos los', 'person'));
 		res.json({
 			status: true,
 		});

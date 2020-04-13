@@ -3,6 +3,8 @@ import bcrypt from 'bcrypt';
 import User from '../models/user';
 import mailerService from './mailer';
 import { sign } from 'jsonwebtoken';
+import { logInfo } from '../config/pino';
+import { actionInfo } from '../utils/logger/infoMessages';
 
 const generateJwt = user => {
 	const payload = {
@@ -56,6 +58,7 @@ const register = (user, res) => {
 };
 
 const sendPasswordRecover = (email, res) => {
+	logInfo(actionInfo(email, 'solicito una recuperación de contraseña'));
 	getUserByEmail(email).then(user => {
 		if (!user) {
 			return res.sendStatus(404);
@@ -68,6 +71,7 @@ const sendPasswordRecover = (email, res) => {
 };
 
 const changeUserPassword = (user, newPassword, res) => {
+	logInfo(actionInfo(user.email, 'cambio su contraseña'));
 	User.findByIdAndUpdate(user._id, {
 		password: bcrypt.hashSync(newPassword, 10),
 	})

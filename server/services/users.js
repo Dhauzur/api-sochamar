@@ -1,6 +1,7 @@
 import User from '../models/user';
-import { logError } from '../config/pino';
+import { logError, logInfo } from '../config/pino';
 import bcrypt from 'bcrypt';
+import { infoMessages } from '../utils/logger/infoMessages';
 
 const getAll = res => {
 	User.find({ estado: true }, 'nombre email role estado google img').exec(
@@ -84,8 +85,9 @@ const getProfile = (id, res) => {
 	User.findById(id).then(user => sendProfile(user, res));
 };
 
-const updateProfile = (id, profile, res) => {
-	User.findByIdAndUpdate(id, profile, {
+const updateProfile = (user, profile, res) => {
+	logInfo(infoMessages(user.email, 'actualizo', 'su', 'profile'));
+	User.findByIdAndUpdate(user._id, profile, {
 		new: true,
 		runValidators: true,
 	})
@@ -93,9 +95,10 @@ const updateProfile = (id, profile, res) => {
 		.catch(err => res.status(400).json(err));
 };
 
-const updateAvatar = (id, img, res) => {
+const updateAvatar = (user, img, res) => {
+	logInfo(infoMessages(user.email, 'actualizo', 'su', 'avatar'));
 	User.findByIdAndUpdate(
-		id,
+		user._id,
 		{ img },
 		{
 			new: true,
@@ -113,7 +116,9 @@ const updatePassword = (id, password, res) => {
 
 		user.password = bcrypt.hashSync(password, 10);
 		user.save()
-			.then(() => res.sendStatus(200))
+			.then(() => {
+				res.sendStatus(200);
+			})
 			.catch(e => res.status(400).send(e));
 	};
 
