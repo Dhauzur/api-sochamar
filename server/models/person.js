@@ -21,7 +21,7 @@ let persons = new Schema({
 		type: String,
 	},
 	rut: {
-		type: Number,
+		type: String,
 	},
 	birthdate: {
 		type: String,
