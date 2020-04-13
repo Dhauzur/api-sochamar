@@ -1,6 +1,6 @@
 import Persons from '../models/person';
 import { logError } from '../config/pino';
-
+import { findIndex } from 'underscore';
 /**
  * Create new persons
  * @param {Object} person
@@ -135,21 +135,42 @@ const patchRequest = async (data, res) => {
 			email: { $in: data.email },
 		});
 
+		/**
+		 * Return error when persons no exist in the db
+		 */
 		if (!person) {
-			return res.status(400).send(`Este usuario usuario no se encuentra
-			en nuestra base de datos, 
-			puede agregarlo
-			 manualmente o perdirle que se registre como persona`);
+			return res.status(400).send(`Este usuario no existe`);
 		}
-		if (person.request.includes(data.newRequest.toLowerCase())) {
-			logError('Ya ha enviadp la solicitud');
+		/**
+		 * Return error when try duplicate the request
+		 */
+		const isDuplicated = person.request.some(
+			request => request.idCompany === data.newRequest
+		);
+		if (isDuplicated && !data.cancel) {
 			return res
 				.status(400)
 				.send(`Ya haz enviado una solicitud a este usuario`);
 		}
-		person.request.push(data.newRequest.toLowerCase());
+		if (data.cancel) {
+			/**
+			 * Calcel a request, return status 200
+			 */
+			person.request.splice(
+				findIndex(person.request, { idCompany: data.newRequest }),
+				1
+			);
+		} else {
+			/**
+			 * update person, push new request.
+			 */
+			person.request.push({
+				idCompany: data.newRequest,
+				name: data.companyName,
+			});
+		}
 		await person.save();
-		res.json({
+		return res.json({
 			status: true,
 			person,
 		});
