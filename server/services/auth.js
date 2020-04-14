@@ -28,8 +28,8 @@ const generatePasswordRecoverJwt = user => {
 	});
 };
 
-const getUserByEmail = email => {
-	return User.findOne({ email: email });
+const getUserByEmail = async email => {
+	return await User.findOne({ email: email });
 };
 
 const register = async (user, res) => {
@@ -44,6 +44,7 @@ const register = async (user, res) => {
 	try {
 		const user = await newUser.save();
 		mailerService.sendNewAccountMessage(user.email);
+		logInfo(actionInfo(user.email, 'se registro con exito'));
 		return res.status(201).json({ token: generateJwt(user), user });
 	} catch (error) {
 		logError(error.message);
@@ -54,27 +55,30 @@ const register = async (user, res) => {
 	}
 };
 
-const sendPasswordRecover = (email, res) => {
-	logInfo(actionInfo(email, 'solicito una recuperación de contraseña'));
-	getUserByEmail(email).then(user => {
-		if (!user) {
-			return res.sendStatus(404);
-		} else {
-			const token = generatePasswordRecoverJwt(user);
-			mailerService.sendPasswordRecover(email, token);
-			return res.sendStatus(200);
-		}
-	});
+const sendPasswordRecover = async (email, res) => {
+	const user = getUserByEmail(email);
+	if (!user) {
+		return res.sendStatus(404);
+	} else {
+		const token = generatePasswordRecoverJwt(user);
+		mailerService.sendPasswordRecover(email, token);
+		logInfo(actionInfo(email, 'solicito una recuperación de contraseña'));
+		return res.sendStatus(200);
+	}
 };
 
-const changeUserPassword = (user, newPassword, res) => {
-	logInfo(actionInfo(user.email, 'cambio su contraseña'));
-	User.findByIdAndUpdate(user._id, {
-		password: bcrypt.hashSync(newPassword, 10),
-	})
-		.then(() => res.sendStatus(200))
-		.catch(() => res.sendStatus(404));
-	/*We handle the possible not found User error*/
+const changeUserPassword = async (user, newPassword, res) => {
+	try {
+		await User.findByIdAndUpdate(user._id, {
+			password: bcrypt.hashSync(newPassword, 10),
+		});
+		logInfo(actionInfo(user.email, 'cambio su contraseña'));
+		res.sendStatus(200);
+	} catch (e) {
+		/*We handle the possible not found User error*/
+		logError(e.message);
+		res.sendStatus(404);
+	}
 };
 
 const googleAuthCallback = (req, res) => {

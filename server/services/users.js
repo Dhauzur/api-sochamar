@@ -137,7 +137,7 @@ const updatePassword = async (user, password, res) => {
 		if (isEqual) return res.sendStatus(409);
 		else await changeActualPassword(user);
 	} catch (e) {
-		logError(e);
+		logError(e.message);
 		errorResponse(e, res);
 	}
 };
