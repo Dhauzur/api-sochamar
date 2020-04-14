@@ -17,6 +17,12 @@ let persons = new Schema({
 	lastName: {
 		type: String,
 	},
+	email: {
+		type: String,
+	},
+	rut: {
+		type: String,
+	},
 	birthdate: {
 		type: String,
 	},
@@ -41,12 +47,12 @@ let persons = new Schema({
 	comuna: {
 		type: String,
 	},
-	users: [
-		{
-			type: Schema.Types.ObjectID,
-			ref: 'User',
-		},
-	],
+	idCompany: {
+		type: String,
+	},
+	request: {
+		type: Array,
+	},
 });
 
 persons.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });

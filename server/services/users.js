@@ -1,7 +1,9 @@
 import User from '../models/user';
 import { logError, logInfo } from '../config/pino';
 import bcrypt from 'bcrypt';
-import { infoMessages } from '../utils/logger/infoMessages';
+import { actionInfo } from '../utils/logger/infoMessages';
+import { errorResponse } from '../utils/responses/errorResponse';
+import { createdResponse } from '../utils/responses/createdResponse';
 
 const getAll = res => {
 	User.find({ estado: true }, 'nombre email role estado google img').exec(
@@ -69,9 +71,13 @@ const generateProfile = user => {
 		imgUrl = user.img;
 	}
 	return {
+		_id: user._id,
+		email: user.email,
 		name: user.name,
 		lastName: user.lastName,
 		img: imgUrl,
+		role: user.role,
+		idPerson: user.idPerson,
 		analyst: user.analyst,
 	};
 };
@@ -81,50 +87,59 @@ const sendProfile = (user, res) => {
 	return res.json(profile);
 };
 
-const getProfile = (id, res) => {
-	User.findById(id).then(user => sendProfile(user, res));
+const getProfile = async (id, res) => {
+	const user = await User.findById(id);
+	sendProfile(user, res);
 };
 
-const updateProfile = (user, profile, res) => {
-	logInfo(infoMessages(user.email, 'actualizo', 'su', 'profile'));
-	User.findByIdAndUpdate(user._id, profile, {
-		new: true,
-		runValidators: true,
-	})
-		.then(updated => sendProfile(updated, res))
-		.catch(err => res.status(400).json(err));
-};
-
-const updateAvatar = (user, img, res) => {
-	logInfo(infoMessages(user.email, 'actualizo', 'su', 'avatar'));
-	User.findByIdAndUpdate(
-		user._id,
-		{ img },
-		{
+const updateProfile = async (user, profile, res) => {
+	try {
+		const updated = await User.findByIdAndUpdate(user._id, profile, {
 			new: true,
-		}
-	)
-		.then(updated => res.json({ img: updated.img }))
-		.catch(err => res.status(400).json(err));
+			runValidators: true,
+		});
+		logInfo(actionInfo(user.email, 'actualizo su perfil'));
+		sendProfile(updated, res);
+	} catch (e) {
+		logError(e.message);
+		res.status(400).json(e);
+	}
 };
 
-const updatePassword = (id, password, res) => {
-	const changeActualPassword = user => {
+const updateAvatar = async (user, img, res) => {
+	try {
+		const updated = await User.findByIdAndUpdate(
+			user._id,
+			{ img },
+			{
+				new: true,
+			}
+		);
+		logInfo(actionInfo(user.email, 'actualizo su avatar'));
+		createdResponse(img, updated.img, res);
+	} catch (e) {
+		logError(e.message);
+		errorResponse(e, res);
+	}
+};
+
+const updatePassword = async (user, password, res) => {
+	const changeActualPassword = async user => {
+		user.password = bcrypt.hashSync(password, 10);
+		await user.save();
+		logInfo(actionInfo(user.email, 'actualizo su contraseña'));
+		res.sendStatus(200);
+	};
+	try {
+		const user = await User.findById(user._id);
 		const isEqual = bcrypt.compareSync(password, user.password);
 		//if the password is the same, we cancel the update with this
 		if (isEqual) return res.sendStatus(409);
-
-		user.password = bcrypt.hashSync(password, 10);
-		user.save()
-			.then(() => {
-				res.sendStatus(200);
-			})
-			.catch(e => res.status(400).send(e));
-	};
-
-	User.findById(id)
-		.then(user => changeActualPassword(user))
-		.catch(logError);
+		else await changeActualPassword(user);
+	} catch (e) {
+		logError(e);
+		errorResponse(e, res);
+	}
 };
 
 const UsersService = {

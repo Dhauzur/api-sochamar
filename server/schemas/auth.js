@@ -3,12 +3,13 @@ import Joi from '@hapi/joi';
 const authSchema = {
 	register: Joi.object({
 		name: Joi.string()
-			.min(5)
+			.min(3)
 			.max(100)
 			.required(),
 		email: Joi.string()
 			.email()
 			.required(),
+		role: Joi.string().required(),
 		password: Joi.string()
 			.min(5)
 			.max(100)

@@ -1,19 +1,22 @@
 import Persons from '../models/person';
 import { logError, logInfo } from '../config/pino';
-import { infoMessages } from '../utils/logger/infoMessages';
-
+import { findIndex } from 'underscore';
+import { actionInfo, infoMessages } from '../utils/logger/infoMessages';
 /**
- * create a new persons and return the persons
+ * Create new persons
+ * @param user
+ * @param {Object} person
+ * @param {Object} res
+ * @returns {Object}
  */
 const createOne = async (user, person, res) => {
 	try {
 		let persons = new Persons(person);
-		persons.users.push(user._id);
 		const personsDB = await persons.save();
 		logInfo(infoMessages(user.email, 'registro', 'un', 'person'));
 		res.json({
 			status: true,
-			persons: personsDB,
+			person: personsDB,
 		});
 	} catch (error) {
 		logError(error.message);
@@ -25,19 +28,24 @@ const createOne = async (user, person, res) => {
 };
 
 /**
- * edit a persons
+ * Edit a person by id
+ * @param user
+ * @param person
+ * @param personId
+ * @param {Object} res
+ * @returns {Object}
  */
 const editOne = async (user, person, personId, res) => {
 	try {
 		const personsDB = await Persons.findByIdAndUpdate(
-			{ _id: personId, users: { $in: user._id } },
+			{ _id: personId },
 			person,
 			{ new: true, runValidators: true }
 		);
 		logInfo(infoMessages(user.email, 'actualizo', 'un', 'person'));
 		res.json({
 			status: true,
-			persons: personsDB,
+			person: personsDB,
 		});
 	} catch (error) {
 		logError(error.message);
@@ -49,7 +57,10 @@ const editOne = async (user, person, personId, res) => {
 };
 
 /**
- * get all persons and the count
+ * Get all persons
+ * @param user
+ * @param {Object} res
+ * @returns {Object}
  */
 const getAll = async (user, res) => {
 	try {
@@ -71,7 +82,130 @@ const getAll = async (user, res) => {
 };
 
 /**
- * delete a person
+ * get all persons attach a company
+ * @param user
+ * @param {string} idCompany
+ * @param {Object} res
+ * @returns {Object}
+ */
+const getPersonsCompany = async (user, idCompany, res) => {
+	try {
+		const persons = await Persons.find({
+			idCompany: { $in: idCompany },
+		});
+		logInfo(
+			infoMessages(user.email, 'obtuvo', 'un', 'person', 'con companyId')
+		);
+		res.json({
+			status: true,
+			persons,
+		});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
+};
+
+/**
+ * get one person
+ * @param user
+ * @param {string} id
+ * @param {Object} res
+ * @returns {Object} person
+ */
+const getOne = async (user, id, res) => {
+	try {
+		const person = await Persons.findById(id);
+		logInfo(infoMessages(user.email, 'obtuvo', 'un', 'person'));
+		res.json({
+			status: true,
+			person,
+		});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
+};
+
+/**
+ * Patch persons by email if exist
+ * @param user
+ * @param data
+ * @param {Object} res
+ * @returns {Object}
+ */
+const patchRequest = async (user, data, res) => {
+	try {
+		// check if the email exists
+		const person = await Persons.findOne({
+			email: { $in: data.email },
+		});
+
+		/**
+		 * Return error when persons no exist in the db
+		 */
+		if (!person) {
+			return res.status(400).send(`Este usuario no existe`);
+		}
+		/**
+		 * Return error when try duplicate the request
+		 */
+		const isDuplicated = person.request.some(
+			request => request.idCompany === data.newRequest
+		);
+		if (isDuplicated && !data.cancel) {
+			return res
+				.status(400)
+				.send(`Ya haz enviado una solicitud a este usuario`);
+		}
+		if (data.cancel) {
+			/**
+			 * Calcel a request, return status 200
+			 */
+			logInfo(
+				actionInfo(person.email, 'declino su solicitud de company')
+			);
+			person.request.splice(
+				findIndex(person.request, { idCompany: data.newRequest }),
+				1
+			);
+		} else {
+			/**
+			 * update person, push new request.
+			 */
+			logInfo(actionInfo(person.email, 'acepto su solicitud de company'));
+			person.request.push({
+				idCompany: data.newRequest,
+				name: data.companyName,
+			});
+		}
+		await person.save();
+		return res.json({
+			status: true,
+			person,
+		});
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
+};
+
+/**
+ * Delete person by id
+ * @param user
+ * @param {string} userId
+ * @param {string} personId
+ * @param {Object} res
+ * @returns {Object}
  */
 const deleteOne = async (user, personId, res) => {
 	try {
@@ -79,7 +213,9 @@ const deleteOne = async (user, personId, res) => {
 			_id: personId,
 			users: { $in: user._id },
 		});
-		logInfo(infoMessages(user.email, 'elimino', 'un', 'person'));
+		logInfo(
+			infoMessages(user.email, 'elimino', 'un', 'person', 'con personId')
+		);
 		res.json({
 			status: true,
 		});
@@ -93,7 +229,10 @@ const deleteOne = async (user, personId, res) => {
 };
 
 /**
- * delete all persons
+ * Delete all persons
+ * @returns {Object}
+ * @param user
+ * @param res
  */
 const deleteAll = async (user, res) => {
 	try {
@@ -114,6 +253,9 @@ const deleteAll = async (user, res) => {
 const personsService = {
 	createOne,
 	getAll,
+	getPersonsCompany,
+	getOne,
+	patchRequest,
 	editOne,
 	deleteOne,
 	deleteAll,
