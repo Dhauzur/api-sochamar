@@ -14,6 +14,9 @@ const personSchema = {
 		age: Joi.string(),
 		region: Joi.string(),
 		comuna: Joi.string(),
+		email: Joi.string(),
+		rut: Joi.string(),
+		idCompany: Joi.string(),
 	}),
 	update: Joi.object({
 		avatar: Joi.string(),
@@ -28,6 +31,10 @@ const personSchema = {
 		age: Joi.string(),
 		region: Joi.string(),
 		comuna: Joi.string(),
+		email: Joi.string(),
+		rut: Joi.string(),
+		idCompany: Joi.string(),
+		request: Joi.array(),
 	}),
 };
 

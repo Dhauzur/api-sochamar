@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import User from '../models/user';
 import mailerService from './mailer';
 import { sign } from 'jsonwebtoken';
+import { logError } from '../config/pino';
 
 const generateJwt = user => {
 	const payload = {
@@ -30,7 +31,7 @@ const getUserByEmail = email => {
 	return User.findOne({ email: email });
 };
 
-const register = (user, res) => {
+const register = async (user, res) => {
 	const newUser = new User({
 		name: user.name,
 		email: user.email,
@@ -39,20 +40,17 @@ const register = (user, res) => {
 		analyst: user.analyst,
 	});
 
-	const sendEmailAndApiResponse = user => {
+	try {
+		const user = await newUser.save();
 		mailerService.sendNewAccountMessage(user.email);
 		return res.status(201).json({ token: generateJwt(user), user });
-	};
-
-	return newUser
-		.save()
-		.then(user => sendEmailAndApiResponse(user))
-		.catch(e =>
-			res.status(409).json({
-				ok: false,
-				e,
-			})
-		);
+	} catch (error) {
+		logError(error.message);
+		return res.status(409).json({
+			status: false,
+			error,
+		});
+	}
 };
 
 const sendPasswordRecover = (email, res) => {

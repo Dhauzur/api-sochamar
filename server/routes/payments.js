@@ -5,11 +5,15 @@ import multer from '../middleware/multer';
 import storage from '../middleware/storage';
 import validation from '../middleware/validation';
 import paymentsSchema from '../schemas/payments';
+import grantAccess from '../middleware/strategies/rbac';
 
 const paymentsRouter = express.Router();
 paymentsRouter.get(
 	'/payments/:id',
-	passport.authenticate('jwt', { session: false }),
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readAny', 'payments'),
+	],
 	paymentsController.getAll
 );
 
@@ -17,6 +21,7 @@ paymentsRouter.post(
 	'/payments/create',
 	[
 		passport.authenticate('jwt', { session: false }),
+		grantAccess('createAny', 'payments'),
 		multer.single('voucher'),
 		storage,
 		validation(paymentsSchema.create, 'body'),
@@ -28,6 +33,7 @@ paymentsRouter.put(
 	'/payments/:id',
 	[
 		passport.authenticate('jwt', { session: false }),
+		grantAccess('updateAny', 'payments'),
 		validation(paymentsSchema.update, 'body'),
 	],
 	paymentsController.editOne
@@ -35,7 +41,10 @@ paymentsRouter.put(
 
 paymentsRouter.delete(
 	'/payments/:id',
-	passport.authenticate('jwt', { session: false }),
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('deleteAny', 'payments'),
+	],
 	paymentsController.deleteOne
 );
 

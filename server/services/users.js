@@ -68,9 +68,13 @@ const generateProfile = user => {
 		imgUrl = user.img;
 	}
 	return {
+		_id: user._id,
+		email: user.email,
 		name: user.name,
 		lastName: user.lastName,
 		img: imgUrl,
+		role: user.role,
+		idPerson: user.idPerson,
 		analyst: user.analyst,
 	};
 };
@@ -84,13 +88,17 @@ const getProfile = (id, res) => {
 	User.findById(id).then(user => sendProfile(user, res));
 };
 
-const updateProfile = (id, profile, res) => {
-	User.findByIdAndUpdate(id, profile, {
-		new: true,
-		runValidators: true,
-	})
-		.then(updated => sendProfile(updated, res))
-		.catch(err => res.status(400).json(err));
+const updateProfile = async (id, profile, res) => {
+	try {
+		const updated = await User.findByIdAndUpdate(id, profile, {
+			new: true,
+			runValidators: true,
+		});
+		sendProfile(updated, res);
+	} catch (error) {
+		logError(error.message);
+		res.status(400).json(error);
+	}
 };
 
 const updateAvatar = (id, img, res) => {

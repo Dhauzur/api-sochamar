@@ -29,7 +29,7 @@ authRouter.get(
 	'/auth/google/callback',
 	passport.authenticate('google', {
 		session: false,
-		failureRedirect: process.env.FRONTEND_URL + '/login',
+		failureRedirect: process.env.FRONTEND_URL + '/auth',
 	}),
 	authController.googleAuthCallback
 );
