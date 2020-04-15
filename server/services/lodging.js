@@ -54,6 +54,7 @@ const getAllForPlace = async (user, req, res) => {
 				'obtuvo',
 				'todos los',
 				'lodging',
+				undefined,
 				'con placeId'
 			)
 		);
@@ -90,7 +91,9 @@ const createOne = async (user, lodging, res) => {
 			},
 			{ upsert: true }
 		);
-		logInfo(infoMessages(user.email, 'registro', 'un', 'lodging'));
+		logInfo(
+			infoMessages(user.email, 'registro', 'un', 'lodging', lodgingDB)
+		);
 		res.json({
 			status: true,
 			lodging: lodgingDB,
@@ -122,6 +125,7 @@ const deleteAllWithPlace = async (user, req, res) => {
 				'elimino',
 				'todos los',
 				'lodging',
+				undefined,
 				'con placeId'
 			)
 		);
@@ -135,9 +139,16 @@ const deleteAllWithPlace = async (user, req, res) => {
 const deleteOneWithPlaceId = async (user, req, res) => {
 	try {
 		const { id } = req.params;
-		await Lodging.deleteMany({ id });
+		const deletedLodging = await Lodging.deleteMany({ id });
 		logInfo(
-			infoMessages(user.email, 'elimino', 'un', 'lodging', 'con placeId')
+			infoMessages(
+				user.email,
+				'elimino',
+				'un',
+				'lodging',
+				deletedLodging,
+				'con placeId'
+			)
 		);
 		res.json({ status: true });
 	} catch (error) {

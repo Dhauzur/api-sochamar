@@ -51,7 +51,9 @@ const createOne = async (user, placeId, period, res) => {
 		let periods = new Periods(period);
 		periods.place = placeId;
 		const periodsDB = await periods.save();
-		logInfo(infoMessages(user.email, 'registro', 'un', 'period'));
+		logInfo(
+			infoMessages(user.email, 'registro', 'un', 'period', periodsDB)
+		);
 		res.json({
 			status: true,
 			periods: periodsDB,
@@ -64,11 +66,19 @@ const createOne = async (user, placeId, period, res) => {
 
 const deleteOne = async (user, placeId, periodId, res) => {
 	try {
-		await Periods.findOneAndDelete(
+		const deletedPeriod = await Periods.findOneAndDelete(
 			{ _id: periodId, place: placeId },
 			{ projection: 'name' }
 		);
-		logInfo(infoMessages(user.email, 'elimino', 'un', 'periodpayment'));
+		logInfo(
+			infoMessages(
+				user.email,
+				'elimino',
+				'un',
+				'periodpayment',
+				deletedPeriod
+			)
+		);
 		res.json({ status: true });
 	} catch (error) {
 		logError(error.message);

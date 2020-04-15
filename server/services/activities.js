@@ -25,7 +25,15 @@ const createOne = async (user, activity, res) => {
 	try {
 		let activities = new Activities(activity);
 		const activitiesDB = await activities.save();
-		logInfo(infoMessages(user.email, 'registro', 'un', 'activities'));
+		logInfo(
+			infoMessages(
+				user.email,
+				'registro',
+				'un',
+				'activities',
+				activitiesDB
+			)
+		);
 		res.json({
 			status: true,
 			activities: activitiesDB,

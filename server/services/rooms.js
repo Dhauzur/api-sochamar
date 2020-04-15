@@ -51,7 +51,7 @@ const createOne = async (user, placeId, room, res) => {
 		let rooms = new Rooms(room);
 		rooms.place = placeId;
 		const roomsDB = await rooms.save();
-		logInfo(infoMessages(user.email, 'registro', 'un', 'rooms'));
+		logInfo(infoMessages(user.email, 'registro', 'un', 'rooms', roomsDB));
 		res.json({
 			status: true,
 			rooms: roomsDB,
@@ -64,11 +64,13 @@ const createOne = async (user, placeId, room, res) => {
 
 const deleteOne = async (user, placeId, roomId, res) => {
 	try {
-		await Rooms.findOneAndDelete(
+		const deletedRoom = await Rooms.findOneAndDelete(
 			{ _id: roomId, place: placeId },
 			{ projection: 'name' }
 		);
-		logInfo(infoMessages(user.email, 'elimino', 'un', 'rooms'));
+		logInfo(
+			infoMessages(user.email, 'elimino', 'un', 'rooms', deletedRoom)
+		);
 		res.json({ status: true });
 	} catch (error) {
 		logError(error.message);

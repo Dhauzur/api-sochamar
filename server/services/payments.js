@@ -15,7 +15,9 @@ const createOne = async (user, payment, file, res) => {
 			};
 		}
 		const paymentDB = await payments.save();
-		logInfo(infoMessages(user.email, 'registro', 'un', 'payment'));
+		logInfo(
+			infoMessages(user.email, 'registro', 'un', 'payment', paymentDB)
+		);
 		return res.json({ status: true, payment: paymentDB });
 	} catch (error) {
 		logError(error.message);
@@ -31,8 +33,19 @@ const createOne = async (user, payment, file, res) => {
  */
 const editOne = async (user, paymentId, comments, res) => {
 	try {
-		await Payments.findByIdAndUpdate(paymentId, comments);
-		logInfo(infoMessages(user.email, 'actualizo', 'un', 'payment'));
+		const updatedPayment = await Payments.findByIdAndUpdate(
+			paymentId,
+			comments
+		);
+		logInfo(
+			infoMessages(
+				user.email,
+				'actualizo',
+				'un',
+				'payment',
+				updatedPayment
+			)
+		);
 		res.json({ status: true });
 	} catch (error) {
 		logError(error.message);
@@ -70,8 +83,10 @@ const getAll = async (user, req, res) => {
 const deleteOne = async (user, req, res) => {
 	try {
 		const { id } = req.params;
-		await Payments.findByIdAndRemove(id);
-		logInfo(infoMessages(user.email, 'elimino', 'un', 'payment'));
+		const deletedPayment = await Payments.findByIdAndRemove(id);
+		logInfo(
+			infoMessages(user.email, 'elimino', 'un', 'payment', deletedPayment)
+		);
 		res.json({
 			status: true,
 		});

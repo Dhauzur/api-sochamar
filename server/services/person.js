@@ -13,7 +13,9 @@ const createOne = async (user, person, res) => {
 	try {
 		let persons = new Persons(person);
 		const personsDB = await persons.save();
-		logInfo(infoMessages(user.email, 'registro', 'un', 'person'));
+		logInfo(
+			infoMessages(user.email, 'registro', 'un', 'person', personsDB)
+		);
 		res.json({
 			status: true,
 			person: personsDB,
@@ -42,7 +44,9 @@ const editOne = async (user, person, personId, res) => {
 			person,
 			{ new: true, runValidators: true }
 		);
-		logInfo(infoMessages(user.email, 'actualizo', 'un', 'person'));
+		logInfo(
+			infoMessages(user.email, 'actualizo', 'un', 'person', personsDB)
+		);
 		res.json({
 			status: true,
 			person: personsDB,
@@ -94,7 +98,14 @@ const getPersonsCompany = async (user, idCompany, res) => {
 			idCompany: { $in: idCompany },
 		});
 		logInfo(
-			infoMessages(user.email, 'obtuvo', 'un', 'person', 'con companyId')
+			infoMessages(
+				user.email,
+				'obtuvo',
+				'un',
+				'person',
+				undefined,
+				'con companyId'
+			)
 		);
 		res.json({
 			status: true,
@@ -209,12 +220,19 @@ const patchRequest = async (user, data, res) => {
  */
 const deleteOne = async (user, personId, res) => {
 	try {
-		await Persons.findByIdAndRemove({
+		const deletedPerson = await Persons.findByIdAndRemove({
 			_id: personId,
 			users: { $in: user._id },
 		});
 		logInfo(
-			infoMessages(user.email, 'elimino', 'un', 'person', 'con personId')
+			infoMessages(
+				user.email,
+				'elimino',
+				'un',
+				'person',
+				deletedPerson,
+				'con personId'
+			)
 		);
 		res.json({
 			status: true,

@@ -42,7 +42,7 @@ const createOne = async (user, place, res) => {
 		const newPlace = new Place(place);
 		newPlace.users.push(user._id);
 		const placeDB = await newPlace.save();
-		logInfo(infoMessages(user.email, 'registro', 'un', 'place'));
+		logInfo(infoMessages(user.email, 'registro', 'un', 'place', placeDB));
 		res.json({
 			status: true,
 			place: placeDB,
@@ -59,9 +59,11 @@ const deleteOne = async (user, placeId, res) => {
 			_id: placeId,
 			users: { $in: user._id },
 		});
-		await Place.deleteOne({ _id: placeId });
+		const deletedPlace = await Place.findOneAndRemove({ _id: placeId });
 		const lodging = await Lodging.deleteMany({ place: placeId });
-		logInfo(infoMessages(user.email, 'elimino', 'un', 'place'));
+		logInfo(
+			infoMessages(user.email, 'elimino', 'un', 'place', deletedPlace)
+		);
 		res.json({
 			delete: place.name,
 			lodgins: lodging.deletedCount,
@@ -87,7 +89,9 @@ const createService = async (user, placeId, service, res) => {
 		//Nuestro nuevo servicio siempre se encontrara en la ultima posición del arreglo
 		const lastIndex = savedPlace.services.length - 1;
 		const newService = savedPlace.services[lastIndex];
-		logInfo(infoMessages(user.email, 'registro', 'un', 'place Service'));
+		logInfo(
+			infoMessages(user.email, 'registro', 'un', 'place Service', service)
+		);
 		createdResponse('service', newService, res);
 	} catch (error) {
 		logError(error);
@@ -104,7 +108,15 @@ const updateService = async (user, placeId, serviceId, service, res) => {
 		const foundService = place.services.id({ _id: serviceId });
 		foundService.set(service);
 		await place.save();
-		logInfo(infoMessages(user.email, 'actualizo', 'un', 'place Service'));
+		logInfo(
+			infoMessages(
+				user.email,
+				'actualizo',
+				'un',
+				'place Service',
+				foundService
+			)
+		);
 		return res.sendStatus(200);
 	} catch (error) {
 		logError(error.message);
@@ -118,9 +130,11 @@ const deleteService = async (user, placeId, serviceId, res) => {
 			_id: placeId,
 			users: { $in: user._id },
 		});
-		place.services.id({ _id: serviceId }).remove();
+		const test = place.services.id({ _id: serviceId }).remove();
 		await place.save();
-		logInfo(infoMessages(user.email, 'elimino', 'un', 'place Service'));
+		logInfo(
+			infoMessages(user.email, 'elimino', 'un', 'place Service', test)
+		);
 		return res.sendStatus(200);
 	} catch (error) {
 		logError(error.message);
