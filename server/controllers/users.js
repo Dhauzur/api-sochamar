@@ -9,13 +9,13 @@ const userController = {
 		const { user } = req;
 		const profile = req.body;
 		//If the request doesnt have a file we
-		userService.updateProfile(user._id, profile, res);
+		userService.updateProfile(user, profile, res);
 	},
 	updateAvatar(req, res) {
 		if (req.file) {
 			const { user } = req;
 			const avatar = req.file.cloudStoragePublicUrl;
-			userService.updateAvatar(user._id, avatar, res);
+			userService.updateAvatar(user, avatar, res);
 		}
 	},
 	deleteAll(req, res) {
@@ -27,7 +27,7 @@ const userController = {
 	updatePassword(req, res) {
 		const { user } = req;
 		const password = req.body.password;
-		userService.updatePassword(user._id, password, res);
+		userService.updatePassword(user, password, res);
 	},
 };
 

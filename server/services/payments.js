@@ -1,10 +1,11 @@
 import Payments from '../models/payments';
-import { logError } from '../config/pino';
+import { logError, logInfo } from '../config/pino';
+import { infoMessages } from '../utils/logger/infoMessages';
 
 /**
  * create a new payment and return the payment
  */
-const createOne = async (payment, file, res) => {
+const createOne = async (user, payment, file, res) => {
 	try {
 		let payments = new Payments(payment);
 		if (file) {
@@ -14,6 +15,9 @@ const createOne = async (payment, file, res) => {
 			};
 		}
 		const paymentDB = await payments.save();
+		logInfo(
+			infoMessages(user.email, 'registro', 'un', 'payment', paymentDB)
+		);
 		return res.json({ status: true, payment: paymentDB });
 	} catch (error) {
 		logError(error.message);
@@ -27,9 +31,21 @@ const createOne = async (payment, file, res) => {
 /**
  * edit a payment
  */
-const editOne = async (paymentId, comments, res) => {
+const editOne = async (user, paymentId, comments, res) => {
 	try {
-		await Payments.findByIdAndUpdate(paymentId, comments);
+		const updatedPayment = await Payments.findByIdAndUpdate(
+			paymentId,
+			comments
+		);
+		logInfo(
+			infoMessages(
+				user.email,
+				'actualizo',
+				'un',
+				'payment',
+				updatedPayment
+			)
+		);
 		res.json({ status: true });
 	} catch (error) {
 		logError(error.message);
@@ -43,10 +59,11 @@ const editOne = async (paymentId, comments, res) => {
 /**
  * get all payments of the place
  */
-const getAll = async (req, res) => {
+const getAll = async (user, req, res) => {
 	const { id } = req.params;
 	try {
 		const payments = await Payments.find({ idPlace: id });
+		logInfo(infoMessages(user.email, 'obtuvo', 'todos los', 'payment'));
 		return res.json({
 			status: true,
 			payments,
@@ -63,10 +80,13 @@ const getAll = async (req, res) => {
 /**
  * delete a person
  */
-const deleteOne = async (req, res) => {
+const deleteOne = async (user, req, res) => {
 	try {
 		const { id } = req.params;
-		await Payments.findByIdAndRemove(id);
+		const deletedPayment = await Payments.findByIdAndRemove(id);
+		logInfo(
+			infoMessages(user.email, 'elimino', 'un', 'payment', deletedPayment)
+		);
 		res.json({
 			status: true,
 		});

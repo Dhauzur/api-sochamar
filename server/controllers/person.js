@@ -5,38 +5,43 @@ import personsService from '../services/person';
  */
 const personsController = {
 	create(req, res) {
+		const { user } = req;
 		const person = req.body;
-		personsService.createOne(person, res);
+		personsService.createOne(user, person, res);
 	},
 	getAll(req, res) {
 		const { user } = req;
-		personsService.getAll(user._id, res);
+		personsService.getAll(user, res);
 	},
 	getPersonsCompany(req, res) {
+		const { user } = req;
 		const { idCompany } = req.params;
-		personsService.getPersonsCompany(idCompany, res);
+		personsService.getPersonsCompany(user, idCompany, res);
 	},
 	getOne(req, res) {
+		const { user } = req;
 		const { id } = req.params;
-		personsService.getOne(id, res);
+		personsService.getOne(user, id, res);
 	},
 	patchRequest(req, res) {
+		const { user } = req;
 		const data = req.body;
-		personsService.patchRequest(data, res);
+		personsService.patchRequest(user, data, res);
 	},
 	editOne(req, res) {
+		const { user } = req;
 		const { id } = req.params;
 		const person = req.body;
-		personsService.editOne(person, id, res);
+		personsService.editOne(user, person, id, res);
 	},
 	deleteAll(req, res) {
 		const { user } = req;
-		personsService.deleteAll(user._id, res);
+		personsService.deleteAll(user, res);
 	},
 	deleteOne(req, res) {
 		const { user } = req;
 		const { id } = req.params;
-		personsService.deleteOne(user._id, id, res);
+		personsService.deleteOne(user, id, res);
 	},
 };
 

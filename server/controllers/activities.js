@@ -2,14 +2,17 @@ import activitiesService from '../services/activities';
 
 const activitiesController = {
 	getAll(req, res) {
-		activitiesService.getAll(res);
+		const { user } = req;
+		activitiesService.getAll(user, res);
 	},
 	create(req, res) {
+		const { user } = req;
 		const place = req.body;
-		activitiesService.createOne(place, res);
+		activitiesService.createOne(user, place, res);
 	},
 	deleteAll(req, res) {
-		activitiesService.deleteAll(res);
+		const { user } = req;
+		activitiesService.deleteAll(user, res);
 	},
 };
 
