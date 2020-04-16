@@ -24,6 +24,10 @@ const personsController = {
 		const data = req.body;
 		personsService.patchRequest(data, res);
 	},
+	patchConversation(req, res) {
+		const data = req.body;
+		personsService.patchConversation(data, res);
+	},
 	editOne(req, res) {
 		const { id } = req.params;
 		const person = req.body;

@@ -184,6 +184,29 @@ const patchRequest = async (data, res) => {
 };
 
 /**
+ * Patch conversation
+ * @param {Object} data
+ * @param {Object} res
+ * @returns {Object}
+ */
+const patchConversation = async (data, res) => {
+	try {
+		const person = await Persons.findById(data.id);
+		person.conversation.length
+			? person.conversation.push(data.conversation)
+			: (person.conversation = data.conversation);
+		await person.save();
+		return res.json({ status: true, person });
+	} catch (error) {
+		logError(error.message);
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
+};
+
+/**
  * Delete person by id
  * @param {string} userId
  * @param {string} personId
@@ -237,6 +260,7 @@ const personsService = {
 	editOne,
 	deleteOne,
 	deleteAll,
+	patchConversation,
 };
 
 export default Object.freeze(personsService);
