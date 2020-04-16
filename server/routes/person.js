@@ -111,4 +111,5 @@ personsRouter.delete(
 	personsController.deleteAll
 );
 
+personsRouter.get('/persons/reports/pdf', personsController.generatePdfReport);
 export default personsRouter;

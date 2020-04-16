@@ -2,6 +2,8 @@ import Persons from '../models/person';
 import { logError, logInfo } from '../config/pino';
 import { findIndex } from 'underscore';
 import { actionInfo, infoMessages } from '../utils/logger/infoMessages';
+import ejs from 'ejs';
+import pdf from 'html-pdf';
 /**
  * Create new persons
  * @param user
@@ -268,6 +270,33 @@ const deleteAll = async (user, res) => {
 	}
 };
 
+const generatePdfReport = async res => {
+	const foundPersons = await Persons.find();
+	ejs.renderFile(
+		'./server/templates/person-template.ejs',
+		{ persons: foundPersons },
+		(err, data) => {
+			if (err) {
+				res.send(err);
+			} else {
+				let config = {
+					directory: '/uploads',
+				};
+				pdf.create(data, config).toStream(function(err, stream) {
+					if (err) {
+						logError(err.message);
+						res.sendStatus(400);
+					} else {
+						res.header('Content-type', 'application/pdf');
+
+						stream.pipe(res);
+					}
+				});
+			}
+		}
+	);
+};
+
 const personsService = {
 	createOne,
 	getAll,
@@ -277,6 +306,7 @@ const personsService = {
 	editOne,
 	deleteOne,
 	deleteAll,
+	generatePdfReport,
 };
 
 export default Object.freeze(personsService);
