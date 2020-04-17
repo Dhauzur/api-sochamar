@@ -26,6 +26,9 @@ let payments = new Schema({
 	comments: {
 		type: Array,
 	},
+	account: {
+		type: String,
+	},
 });
 
 payments.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
