@@ -1,9 +1,8 @@
 import Payments from '../models/payments';
 import { logError, logInfo } from '../config/pino';
 import { infoMessages } from '../utils/logger/infoMessages';
-import Persons from '../models/person';
 import ejs from 'ejs';
-import pdf from 'html-pdf';
+import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
 
 /**
  * create a new payment and return the payment
@@ -109,21 +108,10 @@ const generatePdfReport = async res => {
 		{ payments: foundPayments },
 		(err, data) => {
 			if (err) {
-				res.send(err);
+				logError(err.message);
+				res.sendStatus(400);
 			} else {
-				let config = {
-					directory: '/uploads',
-				};
-				pdf.create(data, config).toStream(function(err, stream) {
-					if (err) {
-						logError(err.message);
-						res.sendStatus(400);
-					} else {
-						res.header('Content-type', 'application/pdf');
-
-						stream.pipe(res);
-					}
-				});
+				createPdfWithStreamAndSendResponse(data, res);
 			}
 		}
 	);

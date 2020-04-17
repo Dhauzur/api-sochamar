@@ -6,8 +6,6 @@ import storage from '../middleware/storage';
 import validation from '../middleware/validation';
 import paymentsSchema from '../schemas/payments';
 import grantAccess from '../middleware/strategies/rbac';
-import personsController from '../controllers/person';
-import personsRouter from './person';
 
 const paymentsRouter = express.Router();
 paymentsRouter.get(

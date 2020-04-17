@@ -3,7 +3,7 @@ import { logError, logInfo } from '../config/pino';
 import { findIndex } from 'underscore';
 import { actionInfo, infoMessages } from '../utils/logger/infoMessages';
 import ejs from 'ejs';
-import pdf from 'html-pdf';
+import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
 /**
  * Create new persons
  * @param user
@@ -277,28 +277,10 @@ const generatePdfReport = async res => {
 		{ persons: foundPersons },
 		(err, data) => {
 			if (err) {
-				res.send(err);
+				logError(err.message);
+				res.sendStatus(400);
 			} else {
-				let config = {
-					height: '11.25in',
-					width: '8.5in',
-					header: {
-						height: '20mm',
-					},
-					footer: {
-						height: '20mm',
-					},
-				};
-				pdf.create(data, config).toStream(function(err, stream) {
-					if (err) {
-						logError(err.message);
-						res.sendStatus(400);
-					} else {
-						res.header('Content-type', 'application/pdf');
-
-						stream.pipe(res);
-					}
-				});
+				createPdfWithStreamAndSendResponse(data, res);
 			}
 		}
 	);

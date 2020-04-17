@@ -4,6 +4,7 @@ import lodgingController from '../controllers/lodging';
 import validation from '../middleware/validation';
 import lodgingSchema from '../schemas/lodging';
 import grantAccess from '../middleware/strategies/rbac';
+import paymentsRouter from './payments';
 
 const lodgingRouter = Router();
 
@@ -55,6 +56,12 @@ lodgingRouter.post(
 		validation(lodgingSchema.create, 'body'),
 	],
 	lodgingController.create
+);
+
+paymentsRouter.get(
+	'/lodgings/:placeId/reports/pdf',
+	passport.authenticate('jwt', { session: false }),
+	lodgingController.generatePdfReport
 );
 
 export default lodgingRouter;

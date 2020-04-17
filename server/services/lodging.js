@@ -2,6 +2,10 @@ import Lodging from '../models/lodging';
 import moment from 'moment';
 import { logError, logInfo } from '../config/pino';
 import { infoMessages } from '../utils/logger/infoMessages';
+import placeServices from '../services/place';
+import ejs from 'ejs';
+import pdf from 'html-pdf';
+import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
 
 const mountTotal = days => {
 	let totalAmount = 0;
@@ -157,6 +161,42 @@ const deleteOneWithPlaceId = async (user, req, res) => {
 	}
 };
 
+const generatePdfReport = async (user, placeId, res) => {
+	if (placeId === 'null') {
+		const userPlaces = await placeServices.getPlacesIds(user._id);
+		console.log(userPlaces);
+		const foundLodgings = await Lodging.find({
+			place: { $in: userPlaces },
+		});
+		console.log(foundLodgings);
+		ejs.renderFile(
+			'./server/templates/lodging-allPlaces-template.ejs',
+			{ lodgings: foundLodgings },
+			(err, data) => {
+				if (err) {
+					res.send(err);
+				} else {
+					createPdfWithStreamAndSendResponse(data, res);
+				}
+			}
+		);
+	} else {
+		const foundLodgings = await Lodging.find({ place: placeId });
+		ejs.renderFile(
+			'./server/templates/lodging-singlePlace-template.ejs',
+			{ lodgings: foundLodgings },
+			(err, data) => {
+				if (err) {
+					logError(err.message);
+					res.sendStatus(400);
+				} else {
+					createPdfWithStreamAndSendResponse(data, res);
+				}
+			}
+		);
+	}
+};
+
 const lodgingService = {
 	getAll,
 	createOne,
@@ -164,6 +204,7 @@ const lodgingService = {
 	getAllForPlace,
 	deleteAllWithPlace,
 	deleteOneWithPlaceId,
+	generatePdfReport,
 };
 
 export default Object.freeze(lodgingService);
