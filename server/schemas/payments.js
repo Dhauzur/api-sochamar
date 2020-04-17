@@ -8,6 +8,7 @@ const paymentsSchema = {
 		endDate: Joi.string().required(),
 		mount: Joi.string().required(),
 		voucher: Joi.optional(),
+		account: Joi.string(),
 	}),
 	update: Joi.object({
 		comments: Joi.array(),
