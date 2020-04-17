@@ -56,7 +56,7 @@ const register = async (user, res) => {
 };
 
 const sendPasswordRecover = async (email, res) => {
-	const user = getUserByEmail(email);
+	const user = await getUserByEmail(email);
 	if (!user) {
 		return res.sendStatus(404);
 	} else {

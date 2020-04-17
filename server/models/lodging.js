@@ -17,7 +17,8 @@ let lodging = new Schema({
 		type: String,
 	},
 	place: {
-		type: String,
+		type: Schema.Types.ObjectID,
+		ref: 'place',
 	},
 	end: {
 		type: String,
