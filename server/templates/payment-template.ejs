@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <h3>Reporte de Pagos</h3>
+        <table>
+            <tr>
+                <th>Fecha de inicio</th>
+                <th>Fecha de fin</th>
+                <th>Comentarios</th>
+                <th>Monto</th>
+            </tr>
+            <% if (payments.length > 0) { %>
+                <% payments.forEach(payment => {%>
+                    <tr>
+                        <td><%= payment.startDate %></td>
+                        <td><%= payment.endDate %></td>
+                        <td><%= payment.comments %></td>
+                        <td><%= payment.mount %></td>
+                    </tr>
+                <%  });%>
+            <% }%>
+        </table>
+    </div>
+</div>
+</body>
+</html>

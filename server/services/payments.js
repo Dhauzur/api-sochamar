@@ -1,6 +1,9 @@
 import Payments from '../models/payments';
 import { logError, logInfo } from '../config/pino';
 import { infoMessages } from '../utils/logger/infoMessages';
+import Persons from '../models/person';
+import ejs from 'ejs';
+import pdf from 'html-pdf';
 
 /**
  * create a new payment and return the payment
@@ -99,7 +102,35 @@ const deleteOne = async (user, req, res) => {
 	}
 };
 
+const generatePdfReport = async res => {
+	const foundPayments = await Payments.find();
+	ejs.renderFile(
+		'./server/templates/payment-template.ejs',
+		{ payments: foundPayments },
+		(err, data) => {
+			if (err) {
+				res.send(err);
+			} else {
+				let config = {
+					directory: '/uploads',
+				};
+				pdf.create(data, config).toStream(function(err, stream) {
+					if (err) {
+						logError(err.message);
+						res.sendStatus(400);
+					} else {
+						res.header('Content-type', 'application/pdf');
+
+						stream.pipe(res);
+					}
+				});
+			}
+		}
+	);
+};
+
 const personsService = {
+	generatePdfReport,
 	createOne,
 	getAll,
 	editOne,

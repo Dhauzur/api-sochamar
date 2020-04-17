@@ -280,7 +280,14 @@ const generatePdfReport = async res => {
 				res.send(err);
 			} else {
 				let config = {
-					directory: '/uploads',
+					height: '11.25in',
+					width: '8.5in',
+					header: {
+						height: '20mm',
+					},
+					footer: {
+						height: '20mm',
+					},
 				};
 				pdf.create(data, config).toStream(function(err, stream) {
 					if (err) {

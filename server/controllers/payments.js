@@ -1,4 +1,5 @@
 import paymentsService from '../services/payments';
+import personsService from '../services/person';
 
 /**
  * controller for payments
@@ -24,6 +25,9 @@ const paymentsController = {
 	deleteOne(req, res) {
 		const { user } = req;
 		paymentsService.deleteOne(user, req, res);
+	},
+	generatePdfReport(req, res) {
+		paymentsService.generatePdfReport(res);
 	},
 };
 
