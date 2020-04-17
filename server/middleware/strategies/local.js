@@ -16,7 +16,7 @@ const strategy = new LocalStrategy(strategyConfig, function(
 	password,
 	done
 ) {
-	User.findOne({ email: email })
+	User.findOne({ email: email.toLowerCase() })
 		.then(data => {
 			if (!data || !bcrypt.compareSync(password, data.password)) {
 				return done(null, false);
