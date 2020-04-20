@@ -3,6 +3,7 @@ import { logError, logInfo } from '../config/pino';
 import { infoMessages } from '../utils/logger/infoMessages';
 import ejs from 'ejs';
 import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
+import { errorResponse } from '../utils/responses/errorResponse';
 
 /**
  * create a new payment and return the payment
@@ -109,7 +110,7 @@ const generatePdfReport = async res => {
 		(err, data) => {
 			if (err) {
 				logError(err.message);
-				res.sendStatus(400);
+				errorResponse(err, res);
 			} else {
 				createPdfWithStreamAndSendResponse(data, res);
 			}

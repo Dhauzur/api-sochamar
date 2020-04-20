@@ -5,6 +5,7 @@ import { infoMessages } from '../utils/logger/infoMessages';
 import placeServices from '../services/place';
 import ejs from 'ejs';
 import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
+import { errorResponse } from '../utils/responses/errorResponse';
 
 const mountTotal = days => {
 	let totalAmount = 0;
@@ -162,17 +163,29 @@ const deleteOneWithPlaceId = async (user, req, res) => {
 
 const generatePdfReport = async (user, placeId, res) => {
 	if (placeId === 'null') {
+		//if null is the value, getting all user places is needed then
 		const userPlaces = await placeServices.getPlacesIds(user._id);
+		//we need populate to get place names without calling mongoose again or a place model function
 		const foundLodgings = await Lodging.find({
 			place: { $in: userPlaces },
+		}).populate('place');
+		//allPlaces pdf needs to order the data based on one place and his lodgings, to do this first we filter the unique places with set
+		// ... allow us to make an array object instead of a array of set
+		const uniquePlaces = [...new Set(foundLodgings.map(l => l.place))];
+		//based in one place, we return a new object { placeName:'minera 1', lodgings: ['minera 1 lodgings only']}
+		const organizedLodgings = uniquePlaces.map(place => {
+			return {
+				placeName: place.name,
+				lodgings: foundLodgings.filter(l => l.place._id === place._id),
+			};
 		});
 		ejs.renderFile(
 			'./server/templates/lodging-allPlaces-template.ejs',
-			{ lodgings: foundLodgings },
+			{ lodgings: organizedLodgings },
 			(err, data) => {
 				if (err) {
 					logError(err.message);
-					res.sendStatus(400);
+					errorResponse(err, res);
 				} else {
 					createPdfWithStreamAndSendResponse(data, res);
 				}
@@ -186,7 +199,7 @@ const generatePdfReport = async (user, placeId, res) => {
 			(err, data) => {
 				if (err) {
 					logError(err.message);
-					res.sendStatus(400);
+					errorResponse(err, res);
 				} else {
 					createPdfWithStreamAndSendResponse(data, res);
 				}
