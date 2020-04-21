@@ -28,22 +28,26 @@
         <table>
             <h3><%= placeLodging.placeName %></h3>
             <tr>
+                <th>Lugar</th>
                 <th>Fecha inicio</th>
                 <th>Fecha fin</th>
                 <th>Monto total</th>
-                <th>Lugar</th>
             </tr>
             <% placeLodging.lodgings.forEach(lodging => {%>
             <tr>
+                    <td><%= placeLodging.placeName %></td>
                     <td><%= lodging.start %></td>
                     <td><%= lodging.end %></td>
                     <td><%= lodging.mountTotal %></td>
-                    <td><%= placeLodging.placeName %></td>
             <tr>
             <%  });%>
+        </table>
+                <p>TOTAL NETO: <%= placeLodging.lodgingTotalAmount %></p>
+                <% let totalWithIva = placeLodging.lodgingTotalAmount * 1.19 %>
+                <p>TOTAL: <%= totalWithIva.toFixed(3) %> IVA Incluido</p>
             <%  });%>
             <% }%>
-        </table>
+
 </div>
 </body>
 </html>

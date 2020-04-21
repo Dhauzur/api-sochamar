@@ -27,6 +27,14 @@ const mountTotal = days => {
 	return totalAmount;
 };
 
+const lodgingsTotal = lodgings => {
+	let totalAmount = 0;
+	lodgings.forEach(lodging => {
+		totalAmount += lodging.mountTotal;
+	});
+	return totalAmount;
+};
+
 const getAll = async (user, res) => {
 	try {
 		const lodgings = await Lodging.find({});
@@ -177,6 +185,7 @@ const generatePdfReport = async (user, placeId, res) => {
 			return {
 				placeName: place.name,
 				lodgings: foundLodgings.filter(l => l.place._id === place._id),
+				lodgingTotalAmount: lodgingsTotal(foundLodgings),
 			};
 		});
 		ejs.renderFile(
@@ -195,12 +204,13 @@ const generatePdfReport = async (user, placeId, res) => {
 			const foundLodgings = await Lodging.find({ place: placeId });
 			//searching place by id to get his name
 			const place = await placeServices.searchOneWithId(placeId);
-
+			const lodgingsTotalAmount = lodgingsTotal(foundLodgings);
 			ejs.renderFile(
 				'./server/templates/lodging-singlePlace-template.ejs',
 				{
 					lodgings: foundLodgings,
 					placeName: place.name,
+					lodgingsTotalAmount: lodgingsTotalAmount,
 				},
 				(err, data) => {
 					if (err) {
