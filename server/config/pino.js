@@ -8,6 +8,6 @@ export const logger = pino({
 	level: 'info',
 });
 
-export const logError = err => logger.error(err);
+export const logError = err => logger.error(err.message);
 
 export const logInfo = info => logger.info(info);

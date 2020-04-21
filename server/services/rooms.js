@@ -41,7 +41,7 @@ const getAll = async (user, placeId, res) => {
 			});
 		}
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({ status: false, error: error.message });
 	}
 };
@@ -57,7 +57,7 @@ const createOne = async (user, placeId, room, res) => {
 			rooms: roomsDB,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({ status: false, error: error.message });
 	}
 };
@@ -73,7 +73,7 @@ const deleteOne = async (user, placeId, roomId, res) => {
 		);
 		res.json({ status: true });
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({ status: false, error: error.message });
 	}
 };
@@ -86,7 +86,7 @@ const deleteAll = async (user, placeId, res) => {
 			deleteAll: true,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({ status: false, error: error.message });
 	}
 };

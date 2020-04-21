@@ -19,7 +19,7 @@ const grantAccess = function(action, resource) {
 			}
 			next();
 		} catch (error) {
-			logError(error.message);
+			logError(error);
 			next(error);
 		}
 	};

@@ -23,7 +23,7 @@ const createOne = async (user, payment, file, res) => {
 		);
 		return res.json({ status: true, payment: paymentDB });
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).send({
 			status: false,
 			error: error.message,
@@ -51,7 +51,7 @@ const editOne = async (user, paymentId, comments, res) => {
 		);
 		res.json({ status: true });
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).send({
 			status: false,
 			error: error.message,
@@ -72,7 +72,7 @@ const getAll = async (user, req, res) => {
 			payments,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).send({
 			status: false,
 			error: error.message,
@@ -94,7 +94,7 @@ const deleteOne = async (user, req, res) => {
 			status: true,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).send({
 			status: false,
 			error: error.message,

@@ -4,97 +4,47 @@
     <style>
         table {
             border-collapse: collapse;
+            table-layout: fixed;
+            width: 100%;
+        }
+        .longStringBreak {
+            word-wrap: break-word;
+            border: 1px solid blue;
+            /* Just to keep text selection hightlight inside the table: */
+            overflow: hidden;
         }
         table, th, td {
             border: 1px solid black;
+            overflow:hidden;
         }
     </style>
 </head>
 <body>
 <div>
-    <div>
-        <h3>Reporte de Hospedajes</h3>
+    <h3>Reporte de Hospedajes</h3>
+
+        <% if (lodgings.length > 0) { %>
+            <% lodgings.forEach(placeLodging => {%>
         <table>
+            <h3><%= placeLodging.placeName %></h3>
             <tr>
-                <th>Nombre</th>
-                <th>Apellidos</th>
-                <th>Rut</th>
-                <th>Edad</th>
-                <th>Fecha de Nacimiento</th>
-                <th>Estado</th>
-                <th>Region</th>
-                <th>Comuna</th>
-                <th>Telefono</th>
-                <th>Email</th>
+                <th>Fecha inicio</th>
+                <th>Fecha fin</th>
+                <th>Monto total</th>
+                <th>Lugar</th>
             </tr>
-            <% if (lodgings.length > 0) { %>
-                <% lodgings.forEach(persons => {%>
-                    <tr>
-                        <td><%= persons.firstName %></td>
-                        <td><%= persons.lastName %></td>
-                        <td><%= persons.rut %></td>
-                        <td><%=persons.age %></td>
-                        <td><%=persons.birthdate %></td>
-                        <td><%=persons.state %></td>
-                        <td><%=persons.region %></td>
-                        <td><%=persons.comuna %></td>
-                        <td><%=persons.phone %></td>
-                        <td><%= persons.email %></td>
-                    </tr>
-                <%  });%>
+            <% placeLodging.lodgings.forEach(lodging => {%>
+            <tr>
+                    <td><%= lodging.start %></td>
+                    <td><%= lodging.end %></td>
+                    <td><%= lodging.mountTotal %></td>
+                    <td><%= placeLodging.placeName %></td>
+            <tr>
+            <%  });%>
+            <%  });%>
             <% }%>
         </table>
-    </div>
 </div>
 </body>
 </html>
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        table {
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-    </style>
-</head>
-<body>
-<div>
-    <div>
-        <h3>Reporte de Hospedajes</h3>
-        <table>
-            <tr>
-                <th>Nombre</th>
-                <th>Apellidos</th>
-                <th>Rut</th>
-                <th>Edad</th>
-                <th>Fecha de Nacimiento</th>
-                <th>Estado</th>
-                <th>Region</th>
-                <th>Comuna</th>
-                <th>Telefono</th>
-                <th>Email</th>
-            </tr>
-            <% if (lodgings.length > 0) { %>
-                <% lodgings.forEach(persons => {%>
-                    <tr>
-                        <td><%= persons.firstName %></td>
-                        <td><%= persons.lastName %></td>
-                        <td><%= persons.rut %></td>
-                        <td><%=persons.age %></td>
-                        <td><%=persons.birthdate %></td>
-                        <td><%=persons.state %></td>
-                        <td><%=persons.region %></td>
-                        <td><%=persons.comuna %></td>
-                        <td><%=persons.phone %></td>
-                        <td><%= persons.email %></td>
-                    </tr>
-                <%  });%>
-            <% }%>
-        </table>
-    </div>
-</div>
-</body>
-</html>
+

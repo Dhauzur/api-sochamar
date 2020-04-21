@@ -47,7 +47,7 @@ const register = async (user, res) => {
 		logInfo(actionInfo(user.email, 'se registro con exito'));
 		return res.status(201).json({ token: generateJwt(user), user });
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(409).json({
 			status: false,
 			error,

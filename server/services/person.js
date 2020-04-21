@@ -24,7 +24,7 @@ const createOne = async (user, person, res) => {
 			person: personsDB,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -55,7 +55,7 @@ const editOne = async (user, person, personId, res) => {
 			person: personsDB,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -80,7 +80,7 @@ const getAll = async (user, res) => {
 			count,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -115,7 +115,7 @@ const getPersonsCompany = async (user, idCompany, res) => {
 			persons,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -139,7 +139,7 @@ const getOne = async (user, id, res) => {
 			person,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -205,7 +205,7 @@ const patchRequest = async (user, data, res) => {
 			person,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -241,7 +241,7 @@ const deleteOne = async (user, personId, res) => {
 			status: true,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -263,7 +263,7 @@ const deleteAll = async (user, res) => {
 			status: true,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({
 			status: false,
 			error: error.message,

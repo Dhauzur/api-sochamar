@@ -4,9 +4,18 @@
     <style>
         table {
             border-collapse: collapse;
+            table-layout: fixed;
+            width: 100%;
+        }
+        .longStringBreak {
+            word-wrap: break-word;
+            border: 1px solid blue;
+            /* Just to keep text selection hightlight inside the table: */
+            overflow: hidden;
         }
         table, th, td {
             border: 1px solid black;
+            overflow:hidden;
         }
     </style>
 </head>
@@ -26,7 +35,9 @@
                     <tr>
                         <td><%= payment.startDate %></td>
                         <td><%= payment.endDate %></td>
-                        <td><%= payment.comments %></td>
+                        <td class="longStringBreak">
+                            <%= payment.comments %>
+                        </td>
                         <td><%= payment.mount %></td>
                     </tr>
                 <%  });%>

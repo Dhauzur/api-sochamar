@@ -1,11 +1,11 @@
 import Lodging from '../models/lodging';
 import moment from 'moment';
-import { logError, logInfo } from '../config/pino';
+import { logInfo } from '../config/pino';
 import { infoMessages } from '../utils/logger/infoMessages';
 import placeServices from '../services/place';
 import ejs from 'ejs';
 import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
-import { errorResponse } from '../utils/responses/errorResponse';
+import { errorCallback } from '../utils/functions/errorCallback';
 
 const mountTotal = days => {
 	let totalAmount = 0;
@@ -37,9 +37,8 @@ const getAll = async (user, res) => {
 			lodgings,
 			length,
 		});
-	} catch (error) {
-		logError(error.message);
-		res.status(400).json({ status: false, error: error.message });
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
@@ -102,9 +101,8 @@ const createOne = async (user, lodging, res) => {
 			status: true,
 			lodging: lodgingDB,
 		});
-	} catch (error) {
-		logError(error.message);
-		res.status(400).json({ status: false, error: error.message });
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
@@ -113,9 +111,8 @@ const deleteAll = async (user, res) => {
 		await Lodging.deleteMany({});
 		logInfo(infoMessages(user.email, 'elimino', 'todos los', 'lodging'));
 		res.json({ status: true });
-	} catch (error) {
-		logError(error.message);
-		res.status(400).json({ status: false, error: error.message });
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
@@ -134,9 +131,8 @@ const deleteAllWithPlace = async (user, req, res) => {
 			)
 		);
 		res.json({ status: true });
-	} catch (error) {
-		logError(error.message);
-		res.status(400).json({ status: false, error: error.message });
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
@@ -155,19 +151,23 @@ const deleteOneWithPlaceId = async (user, req, res) => {
 			)
 		);
 		res.json({ status: true });
-	} catch (error) {
-		logError(error.message);
-		res.status(400).json({ status: false, error: error.message });
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
 const generatePdfReport = async (user, placeId, res) => {
 	if (placeId === 'null') {
 		//if null is the value, getting all user places is needed then
-		const userPlaces = await placeServices.getPlacesIds(user._id);
+		/*const userPlaces = await placeServices.getPlacesIds(user._id);*/
+		const test = [
+			'5e9a1c30ceb0031a3c496564',
+			'5e9a1c3bceb0031a3c496566',
+			'5e9dd87409d49c342cfbc44f',
+		];
 		//we need populate to get place names without calling mongoose again or a place model function
 		const foundLodgings = await Lodging.find({
-			place: { $in: userPlaces },
+			place: { $in: test },
 		}).populate('place');
 		//allPlaces pdf needs to order the data based on one place and his lodgings, to do this first we filter the unique places with set
 		// ... allow us to make an array object instead of a array of set
@@ -184,27 +184,35 @@ const generatePdfReport = async (user, placeId, res) => {
 			{ lodgings: organizedLodgings },
 			(err, data) => {
 				if (err) {
-					logError(err.message);
-					errorResponse(err, res);
+					errorCallback(err, res);
 				} else {
 					createPdfWithStreamAndSendResponse(data, res);
 				}
 			}
 		);
 	} else {
-		const foundLodgings = await Lodging.find({ place: placeId });
-		ejs.renderFile(
-			'./server/templates/lodging-singlePlace-template.ejs',
-			{ lodgings: foundLodgings },
-			(err, data) => {
-				if (err) {
-					logError(err.message);
-					errorResponse(err, res);
-				} else {
-					createPdfWithStreamAndSendResponse(data, res);
+		try {
+			const foundLodgings = await Lodging.find({ place: placeId });
+			//searching place by id to get his name
+			const place = await placeServices.searchOneWithId(placeId);
+
+			ejs.renderFile(
+				'./server/templates/lodging-singlePlace-template.ejs',
+				{
+					lodgings: foundLodgings,
+					placeName: place.name,
+				},
+				(err, data) => {
+					if (err) {
+						errorCallback(err, res);
+					} else {
+						createPdfWithStreamAndSendResponse(data, res);
+					}
 				}
-			}
-		);
+			);
+		} catch (e) {
+			errorCallback(e, res);
+		}
 	}
 };
 
