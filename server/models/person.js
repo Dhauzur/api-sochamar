@@ -53,6 +53,9 @@ let persons = new Schema({
 	request: {
 		type: Array,
 	},
+	conversation: {
+		type: Array,
+	},
 });
 
 persons.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });

@@ -36,6 +36,10 @@ const personSchema = {
 		idCompany: Joi.string(),
 		request: Joi.array(),
 	}),
+	patchConversation: Joi.object({
+		id: Joi.string().required(),
+		conversation: Joi.object().required(),
+	}),
 };
 
 export default Object.freeze(personSchema);
