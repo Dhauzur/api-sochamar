@@ -171,8 +171,7 @@ const getPlacesIds = async user => {
 };
 
 const searchOneWithId = async placeId => {
-	throw { message: 'tu mama es puta' };
-	/*return await Place.findById(placeId);*/
+	return await Place.findById(placeId);
 };
 const placeService = {
 	getOne,

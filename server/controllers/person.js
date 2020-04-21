@@ -44,7 +44,8 @@ const personsController = {
 		personsService.deleteOne(user, id, res);
 	},
 	generatePdfReport(req, res) {
-		personsService.generatePdfReport(res);
+		const { user } = req;
+		personsService.generatePdfReport(user, res);
 	},
 };
 

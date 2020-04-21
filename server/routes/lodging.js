@@ -60,6 +60,10 @@ lodgingRouter.post(
 
 paymentsRouter.get(
 	'/lodgings/:placeId/reports/pdf',
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readAny', 'lodging'),
+	],
 	lodgingController.generatePdfReport
 );
 

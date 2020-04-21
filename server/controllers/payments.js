@@ -27,7 +27,12 @@ const paymentsController = {
 		paymentsService.deleteOne(user, req, res);
 	},
 	generatePdfReport(req, res) {
-		paymentsService.generatePdfReport(res);
+		const { placeId } = req.params;
+		paymentsService.generatePdfReport(placeId, res);
+	},
+	generateCsvReport(req, res) {
+		const { placeId } = req.params;
+		paymentsService.generateCsvReport(res);
 	},
 };
 

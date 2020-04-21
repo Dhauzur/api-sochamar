@@ -9,7 +9,6 @@
             }
             .longStringBreak {
                 word-wrap: break-word;
-                border: 1px solid blue;
                 /* Just to keep text selection hightlight inside the table: */
                 overflow: hidden;
             }
@@ -17,6 +16,7 @@
                 border: 1px solid black;
                 overflow:hidden;
             }
+            tr { page-break-inside: avoid; page-break-after: auto; }
         </style>
     </head>
     <body>

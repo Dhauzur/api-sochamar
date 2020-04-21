@@ -1,9 +1,12 @@
 import Payments from '../models/payments';
-import { logError, logInfo } from '../config/pino';
+import { logInfo } from '../config/pino';
 import { infoMessages } from '../utils/logger/infoMessages';
 import ejs from 'ejs';
 import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
+import fs from 'fs';
+import { errorCallback } from '../utils/functions/errorCallback';
 import { errorResponse } from '../utils/responses/errorResponse';
+const csv = require('fast-csv');
 
 /**
  * create a new payment and return the payment
@@ -22,12 +25,8 @@ const createOne = async (user, payment, file, res) => {
 			infoMessages(user.email, 'registro', 'un', 'payment', paymentDB)
 		);
 		return res.json({ status: true, payment: paymentDB });
-	} catch (error) {
-		logError(error);
-		return res.status(400).send({
-			status: false,
-			error: error.message,
-		});
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
@@ -50,33 +49,37 @@ const editOne = async (user, paymentId, comments, res) => {
 			)
 		);
 		res.json({ status: true });
-	} catch (error) {
-		logError(error);
-		return res.status(400).send({
-			status: false,
-			error: error.message,
-		});
+	} catch (err) {
+		errorCallback(err, res);
 	}
 };
-
+/*Search payments with a placeId*/
+const searchAllWithPlaceId = async placeId => {
+	return await Payments.find({ idPlace: placeId });
+};
 /**
  * get all payments of the place
  */
 const getAll = async (user, req, res) => {
 	const { id } = req.params;
 	try {
-		const payments = await Payments.find({ idPlace: id });
-		logInfo(infoMessages(user.email, 'obtuvo', 'todos los', 'payment'));
+		const payments = await searchAllWithPlaceId(id);
+		logInfo(
+			infoMessages(
+				user.email,
+				'obtuvo',
+				'todos los',
+				'payment',
+				payments,
+				'con placeId'
+			)
+		);
 		return res.json({
 			status: true,
 			payments,
 		});
-	} catch (error) {
-		logError(error);
-		return res.status(400).send({
-			status: false,
-			error: error.message,
-		});
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
@@ -93,29 +96,35 @@ const deleteOne = async (user, req, res) => {
 		res.json({
 			status: true,
 		});
-	} catch (error) {
-		logError(error);
-		return res.status(400).send({
-			status: false,
-			error: error.message,
-		});
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
-const generatePdfReport = async res => {
-	const foundPayments = await Payments.find();
+const generatePdfReport = async (placeId, res) => {
+	const foundPayments = await searchAllWithPlaceId(placeId);
 	ejs.renderFile(
 		'./server/templates/payment-template.ejs',
 		{ payments: foundPayments },
 		(err, data) => {
 			if (err) {
-				logError(err.message);
-				errorResponse(err, res);
+				errorCallback(err, res);
 			} else {
 				createPdfWithStreamAndSendResponse(data, res);
 			}
 		}
 	);
+};
+
+const generateCsvReport = async res => {
+	const foundPayments = await Payments.find();
+	const ws = fs.createWriteStream('out.csv');
+	csv.write(foundPayments, { headers: true })
+		.pipe(ws)
+		.on('data', row => {
+			console.log(row);
+		})
+		.on('end', data => {});
 };
 
 const personsService = {
@@ -124,6 +133,7 @@ const personsService = {
 	getAll,
 	editOne,
 	deleteOne,
+	generateCsvReport,
 };
 
 export default Object.freeze(personsService);

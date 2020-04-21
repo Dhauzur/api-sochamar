@@ -4,7 +4,7 @@ import { findIndex } from 'underscore';
 import { actionInfo, infoMessages } from '../utils/logger/infoMessages';
 import ejs from 'ejs';
 import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
-import { errorResponse } from '../utils/responses/errorResponse';
+import { errorCallback } from '../utils/functions/errorCallback';
 /**
  * Create new persons
  * @param user
@@ -63,6 +63,10 @@ const editOne = async (user, person, personId, res) => {
 	}
 };
 
+/*search persons based in one userId*/
+const searchAllWithUserId = async userId => {
+	return await Persons.find({ users: { $in: userId } });
+};
 /**
  * Get all persons
  * @param user
@@ -71,7 +75,7 @@ const editOne = async (user, person, personId, res) => {
  */
 const getAll = async (user, res) => {
 	try {
-		const persons = await Persons.find({ users: { $in: user._id } });
+		const persons = await searchAllWithUserId(user._id);
 		const count = await Persons.countDocuments({});
 		logInfo(infoMessages(user.email, 'obtuvo', 'todos los', 'person'));
 		res.json({
@@ -271,15 +275,15 @@ const deleteAll = async (user, res) => {
 	}
 };
 
-const generatePdfReport = async res => {
-	const foundPersons = await Persons.find();
+const generatePdfReport = async (user, res) => {
+	const foundPersons = await Persons.find({});
+	/*const foundPersons = await searchAllWithUserId(user._id);*/
 	ejs.renderFile(
 		'./server/templates/person-template.ejs',
 		{ persons: foundPersons },
 		(err, data) => {
 			if (err) {
-				logError(err.message);
-				errorResponse(err, res);
+				errorCallback(err, res);
 			} else {
 				createPdfWithStreamAndSendResponse(data, res);
 			}

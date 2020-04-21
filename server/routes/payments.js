@@ -49,8 +49,17 @@ paymentsRouter.delete(
 );
 
 paymentsRouter.get(
-	'/payments/reports/pdf',
+	'/payments/:placeId/reports/pdf',
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readAny', 'payments'),
+	],
 	paymentsController.generatePdfReport
+);
+
+paymentsRouter.get(
+	'/payments/reports/csv',
+	paymentsController.generateCsvReport
 );
 
 export default paymentsRouter;

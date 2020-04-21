@@ -111,6 +111,13 @@ personsRouter.delete(
 	personsController.deleteAll
 );
 
-personsRouter.get('/persons/reports/pdf', personsController.generatePdfReport);
+personsRouter.get(
+	'/persons/reports/pdf',
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readAny', 'person'),
+	],
+	personsController.generatePdfReport
+);
 
 export default personsRouter;

@@ -4,10 +4,19 @@
     <style>
         table {
             border-collapse: collapse;
+            table-layout: fixed;
+            width: 100%;
+        }
+        .longStringBreak {
+            word-wrap: break-word;
+            /* Just to keep text selection hightlight inside the table: */
+            overflow: hidden;
         }
         table, th, td {
             border: 1px solid black;
+            overflow:hidden;
         }
+        tr { page-break-inside: avoid; page-break-after: auto; }
     </style>
 </head>
 <body>
@@ -16,10 +25,7 @@
         <h3>Reporte de Personas</h3>
             <table>
                 <tr>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Rut</th>
-                    <th>Edad</th>
+                    <th>Nombre Completo</th>
                     <th>Fecha de Nacimiento</th>
                     <th>Estado</th>
                     <th>Region</th>
@@ -28,18 +34,19 @@
                     <th>Email</th>
                 </tr>
                 <% if (persons.length > 0) { %>
-                    <% persons.forEach(persons => {%>
+                    <% persons.forEach(person => {
+                        //ternary for controlling possible undefined values
+                        let nameAndRut = `${person.firstName} ${person.lastName? person.lastName: ''} ${person.rut ? person.rut: ''}`
+                        let birthDateAndAge = `${person.birthdate? person.birthdate: ''} ${person.age ? `(${person.age} años)`: ''}`
+                    %>
                         <tr>
-                            <td><%= persons.firstName %></td>
-                            <td><%= persons.lastName %></td>
-                            <td><%= persons.rut %></td>
-                            <td><%=persons.age %></td>
-                            <td><%=persons.birthdate %></td>
-                            <td><%=persons.state %></td>
-                            <td><%=persons.region %></td>
-                            <td><%=persons.comuna %></td>
-                            <td><%=persons.phone %></td>
-                            <td><%= persons.email %></td>
+                            <td class="longStringBreak"><%= nameAndRut %></td>
+                            <td class="longStringBreak"><%=birthDateAndAge %></td>
+                            <td><%=person.state %></td>
+                            <td class="longStringBreak"><%=person.region %></td>
+                            <td><%=person.comuna %></td>
+                            <td><%=person.phone %></td>
+                            <td class="longStringBreak"><%= person.email %></td>
                         </tr>
                     <%  });%>
                 <% }%>
