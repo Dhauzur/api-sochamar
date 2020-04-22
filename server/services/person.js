@@ -24,7 +24,7 @@ const createOne = async (user, person, res) => {
 			person: personsDB,
 		});
 	} catch (error) {
-		logError(error);
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -55,7 +55,7 @@ const editOne = async (user, person, personId, res) => {
 			person: personsDB,
 		});
 	} catch (error) {
-		logError(error);
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -63,10 +63,6 @@ const editOne = async (user, person, personId, res) => {
 	}
 };
 
-/*search persons based in one userId*/
-const searchAllWithUserId = async userId => {
-	return await Persons.find({ users: { $in: userId } });
-};
 /**
  * Get all persons
  * @param user
@@ -75,7 +71,7 @@ const searchAllWithUserId = async userId => {
  */
 const getAll = async (user, res) => {
 	try {
-		const persons = await searchAllWithUserId(user._id);
+		const persons = await Persons.find({ users: { $in: user._id } });
 		const count = await Persons.countDocuments({});
 		logInfo(infoMessages(user.email, 'obtuvo', 'todos los', 'person'));
 		res.json({
@@ -84,7 +80,7 @@ const getAll = async (user, res) => {
 			count,
 		});
 	} catch (error) {
-		logError(error);
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -92,6 +88,11 @@ const getAll = async (user, res) => {
 	}
 };
 
+const findAllWithCompanyId = async companyId => {
+	return await Persons.find({
+		idCompany: { $in: companyId },
+	});
+};
 /**
  * get all persons attach a company
  * @param user
@@ -101,9 +102,7 @@ const getAll = async (user, res) => {
  */
 const getPersonsCompany = async (user, idCompany, res) => {
 	try {
-		const persons = await Persons.find({
-			idCompany: { $in: idCompany },
-		});
+		const persons = await findAllWithCompanyId(idCompany);
 		logInfo(
 			infoMessages(
 				user.email,
@@ -119,7 +118,7 @@ const getPersonsCompany = async (user, idCompany, res) => {
 			persons,
 		});
 	} catch (error) {
-		logError(error);
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -143,7 +142,7 @@ const getOne = async (user, id, res) => {
 			person,
 		});
 	} catch (error) {
-		logError(error);
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -209,7 +208,30 @@ const patchRequest = async (user, data, res) => {
 			person,
 		});
 	} catch (error) {
-		logError(error);
+		logError(error.message);
+		return res.status(400).json({
+			status: false,
+			error: error.message,
+		});
+	}
+};
+
+/**
+ * Patch conversation
+ * @param {Object} data
+ * @param {Object} res
+ * @returns {Object}
+ */
+const patchConversation = async (data, res) => {
+	try {
+		const person = await Persons.findById(data.id);
+		person.conversation.length
+			? person.conversation.push(data.conversation)
+			: (person.conversation = data.conversation);
+		await person.save();
+		return res.json({ status: true, person });
+	} catch (error) {
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -245,7 +267,7 @@ const deleteOne = async (user, personId, res) => {
 			status: true,
 		});
 	} catch (error) {
-		logError(error);
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -267,7 +289,7 @@ const deleteAll = async (user, res) => {
 			status: true,
 		});
 	} catch (error) {
-		logError(error);
+		logError(error.message);
 		return res.status(400).json({
 			status: false,
 			error: error.message,
@@ -277,7 +299,7 @@ const deleteAll = async (user, res) => {
 
 const generatePdfReport = async (user, res) => {
 	const foundPersons = await Persons.find({});
-	/*const foundPersons = await searchAllWithUserId(user._id);*/
+	/*const foundPersons = await findAllWithCompanyId(user._id);*/
 	ejs.renderFile(
 		'./server/templates/person-template.ejs',
 		{ persons: foundPersons },
@@ -301,6 +323,7 @@ const personsService = {
 	deleteOne,
 	deleteAll,
 	generatePdfReport,
+	patchConversation,
 };
 
 export default Object.freeze(personsService);

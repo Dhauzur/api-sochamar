@@ -35,7 +35,7 @@ const getUserByEmail = async email => {
 const register = async (user, res) => {
 	const newUser = new User({
 		name: user.name,
-		email: user.email,
+		email: user.email.toLowerCase(),
 		password: bcrypt.hashSync(user.password, 10),
 		role: user.role,
 		analyst: user.analyst,

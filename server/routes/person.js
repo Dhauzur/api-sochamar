@@ -42,9 +42,19 @@ personsRouter.patch(
 	'/person/patchRequest',
 	[
 		passport.authenticate('jwt', { session: false }),
-		grantAccess('readOwn', 'person'),
+		grantAccess('updateOwn', 'person'),
 	],
 	personsController.patchRequest
+);
+
+personsRouter.patch(
+	'/person/patchConversation',
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('updateOwn', 'person'),
+	],
+	validation(personSchema.patchConversation, 'body'),
+	personsController.patchConversation
 );
 
 // route create a person
