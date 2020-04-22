@@ -6,6 +6,8 @@ import { uploadAvatar, uploadDocuments } from '../middleware/gscPerson';
 import personSchema from '../schemas/person';
 import validation from '../middleware/validation';
 import grantAccess from '../middleware/strategies/rbac';
+import paymentsController from '../controllers/payments';
+import paymentsRouter from './payments';
 
 const personsRouter = Router();
 // route for get all persons
@@ -118,6 +120,15 @@ personsRouter.get(
 		grantAccess('readAny', 'person'),
 	],
 	personsController.generatePdfReport
+);
+
+paymentsRouter.get(
+	'/persons/reports/csv',
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readAny', 'person'),
+	],
+	paymentsController.generateCsvReport
 );
 
 export default personsRouter;

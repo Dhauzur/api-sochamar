@@ -1,5 +1,4 @@
 import paymentsService from '../services/payments';
-import personsService from '../services/person';
 
 /**
  * controller for payments
@@ -32,7 +31,7 @@ const paymentsController = {
 	},
 	generateCsvReport(req, res) {
 		const { placeId } = req.params;
-		paymentsService.generateCsvReport(res);
+		paymentsService.generateCsvReport(placeId, res);
 	},
 };
 

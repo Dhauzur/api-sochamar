@@ -59,6 +59,10 @@ paymentsRouter.get(
 
 paymentsRouter.get(
 	'/payments/reports/csv',
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readAny', 'payments'),
+	],
 	paymentsController.generateCsvReport
 );
 

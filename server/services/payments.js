@@ -5,7 +5,6 @@ import ejs from 'ejs';
 import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
 import fs from 'fs';
 import { errorCallback } from '../utils/functions/errorCallback';
-import { errorResponse } from '../utils/responses/errorResponse';
 const csv = require('fast-csv');
 
 /**
@@ -116,15 +115,31 @@ const generatePdfReport = async (placeId, res) => {
 	);
 };
 
-const generateCsvReport = async res => {
-	const foundPayments = await Payments.find();
-	const ws = fs.createWriteStream('out.csv');
-	csv.write(foundPayments, { headers: true })
-		.pipe(ws)
-		.on('data', row => {
-			console.log(row);
-		})
-		.on('end', data => {});
+const generateCsvReport = async (placeId, res) => {
+	const foundPayments = await searchAllWithPlaceId(placeId);
+	const formattedPayments = foundPayments.map(payment => {
+		return {
+			startDate: payment.startDate,
+			endDate: payment.endDate,
+			comments: payment.comments[0],
+			mount: payment.mount,
+		};
+	});
+	res.writeHead(200, {
+		'Content-Type': 'text/csv',
+		'Content-Disposition': 'attachment; filename=payments.csv',
+	});
+	csv.write(formattedPayments, {
+		headers: true,
+		transform: function(row) {
+			return {
+				'fecha inicio': row.startDate,
+				'fecha fin': row.endDate,
+				comentarios: row.comments,
+				monto: row.mount,
+			};
+		},
+	}).pipe(res);
 };
 
 const personsService = {
