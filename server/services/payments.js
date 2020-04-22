@@ -1,6 +1,6 @@
 import Payments from '../models/payments';
 import { logInfo } from '../config/pino';
-import { infoMessages } from '../utils/logger/infoMessages';
+import { actionInfo, infoMessages } from '../utils/logger/infoMessages';
 import ejs from 'ejs';
 import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
 import { errorCallback } from '../utils/functions/errorCallback';
@@ -99,46 +99,56 @@ const deleteOne = async (user, req, res) => {
 	}
 };
 
-const generatePdfReport = async (placeId, res) => {
-	const foundPayments = await searchAllWithPlaceId(placeId);
-	ejs.renderFile(
-		'./server/templates/payment-template.ejs',
-		{ payments: foundPayments },
-		(err, data) => {
-			if (err) {
-				errorCallback(err, res);
-			} else {
-				createPdfWithStreamAndSendResponse(data, res);
+const generatePdfReport = async (user, placeId, res) => {
+	try {
+		const foundPayments = await searchAllWithPlaceId(placeId);
+		ejs.renderFile(
+			'./server/templates/payment-template.ejs',
+			{ payments: foundPayments },
+			(err, data) => {
+				if (err) {
+					errorCallback(err, res);
+				} else {
+					logInfo(actionInfo(user.email, 'exporto un pdf de pagos'));
+					createPdfWithStreamAndSendResponse(data, res);
+				}
 			}
-		}
-	);
+		);
+	} catch (e) {
+		errorCallback(e, res);
+	}
 };
 
-const generateCsvReport = async (placeId, res) => {
-	const foundPayments = await searchAllWithPlaceId(placeId);
-	const formattedPayments = foundPayments.map(payment => {
-		return {
-			startDate: payment.startDate,
-			endDate: payment.endDate,
-			comments: payment.comments[0],
-			mount: payment.mount,
-		};
-	});
-	res.writeHead(200, {
-		'Content-Type': 'text/csv',
-		'Content-Disposition': 'attachment; filename=payments.csv',
-	});
-	csv.write(formattedPayments, {
-		headers: true,
-		transform: function(row) {
+const generateCsvReport = async (user, placeId, res) => {
+	try {
+		const foundPayments = await searchAllWithPlaceId(placeId);
+		const formattedPayments = foundPayments.map(payment => {
 			return {
-				'fecha inicio': row.startDate,
-				'fecha fin': row.endDate,
-				comentarios: row.comments,
-				monto: row.mount,
+				startDate: payment.startDate,
+				endDate: payment.endDate,
+				comments: payment.comments[0],
+				mount: payment.mount,
 			};
-		},
-	}).pipe(res);
+		});
+		res.writeHead(200, {
+			'Content-Type': 'text/csv',
+			'Content-Disposition': 'attachment; filename=payments.csv',
+		});
+		logInfo(actionInfo(user.email, 'exporto un csv de pagos'));
+		csv.write(formattedPayments, {
+			headers: true,
+			transform: function(row) {
+				return {
+					'fecha inicio': row.startDate || '-',
+					'fecha fin': row.endDate || '-',
+					comentarios: row.comments || '-',
+					monto: row.mount || '-',
+				};
+			},
+		}).pipe(res);
+	} catch (e) {
+		errorCallback(e, res);
+	}
 };
 
 const personsService = {

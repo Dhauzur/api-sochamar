@@ -58,7 +58,7 @@ paymentsRouter.get(
 );
 
 paymentsRouter.get(
-	'/payments/reports/csv',
+	'/payments/:placeId/reports/csv',
 	[
 		passport.authenticate('jwt', { session: false }),
 		grantAccess('readAny', 'payments'),

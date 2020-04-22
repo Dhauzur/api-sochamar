@@ -1,12 +1,12 @@
 import Lodging from '../models/lodging';
 import moment from 'moment';
 import { logInfo } from '../config/pino';
-import { infoMessages } from '../utils/logger/infoMessages';
+import { actionInfo, infoMessages } from '../utils/logger/infoMessages';
 import placeServices from '../services/place';
 import ejs from 'ejs';
 import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
 import { errorCallback } from '../utils/functions/errorCallback';
-import { errorResponse } from '../utils/responses/errorResponse';
+
 const csv = require('fast-csv');
 
 const mountTotal = days => {
@@ -195,6 +195,12 @@ const generatePdfReport = async (user, placeId, res) => {
 					if (err) {
 						errorCallback(err, res);
 					} else {
+						logInfo(
+							actionInfo(
+								user.email,
+								'exporto un pdf de hospedajes en base a todos sus lugares'
+							)
+						);
 						createPdfWithStreamAndSendResponse(data, res);
 					}
 				}
@@ -204,7 +210,9 @@ const generatePdfReport = async (user, placeId, res) => {
 		}
 	} else {
 		try {
-			const foundLodgings = await Lodging.find({ place: placeId });
+			const foundLodgings = await Lodging.find({
+				place: placeId,
+			});
 			//searching place by id to get his name
 			const place = await placeServices.searchOneWithId(placeId);
 			const lodgingsTotalAmount = lodgingsTotal(foundLodgings);
@@ -219,6 +227,12 @@ const generatePdfReport = async (user, placeId, res) => {
 					if (err) {
 						errorCallback(err, res);
 					} else {
+						logInfo(
+							actionInfo(
+								user.email,
+								`exporto un pdf de hospedajes del lugar: ${place.name}`
+							)
+						);
 						createPdfWithStreamAndSendResponse(data, res);
 					}
 				}
@@ -244,25 +258,42 @@ const generateCsvReport = async (user, placeId, res) => {
 					startDate: lodging.start,
 					endDate: lodging.end,
 					mountTotal: lodging.mountTotal,
+					lodgingTotal: '',
+					lodgingTotalWithIva: '',
 				};
+			});
+			const lodgingsTotalAmount = lodgingsTotal(foundLodgings);
+			const totalWithIva = lodgingsTotalAmount * 1.19;
+			formattedLodgings.push({
+				lodgingTotal: lodgingsTotalAmount,
+				lodgingTotalWithIva: Math.trunc(totalWithIva),
 			});
 			res.writeHead(200, {
 				'Content-Type': 'text/csv',
 				'Content-Disposition': 'attachment; filename=hospedajes.csv',
 			});
+			logInfo(
+				actionInfo(
+					user.email,
+					'exporto un csv de hospedajes en base a todos sus lugares'
+				)
+			);
 			csv.write(formattedLodgings, {
 				headers: true,
 				transform: function(row) {
 					return {
-						Lugar: row.rut,
-						'Fecha inicio': row.birthdate,
-						'Fecha fin': row.age,
-						'Monto total': row.state,
+						Lugar: row.placeName || '-',
+						'Fecha inicio': row.startDate || '-',
+						'Fecha fin': row.endDate || '-',
+						'Monto total': row.mountTotal || '-',
+						'Total hospedaje': row.lodgingTotal || '-',
+						'Total hospedaje con iva':
+							row.lodgingTotalWithIva || '-',
 					};
 				},
 			}).pipe(res);
 		} catch (e) {
-			errorResponse(e, res);
+			errorCallback(e, res);
 		}
 	} else {
 		try {
@@ -275,21 +306,37 @@ const generateCsvReport = async (user, placeId, res) => {
 					startDate: lodging.start,
 					endDate: lodging.end,
 					mountTotal: lodging.mountTotal,
+					lodgingTotal: '',
+					lodgingTotalWithIva: '',
 				};
 			});
-
+			const lodgingsTotalAmount = lodgingsTotal(foundLodgings);
+			const totalWithIva = lodgingsTotalAmount * 1.19;
+			formattedLodgings.push({
+				lodgingTotal: lodgingsTotalAmount,
+				lodgingTotalWithIva: Math.trunc(totalWithIva),
+			});
 			res.writeHead(200, {
 				'Content-Type': 'text/csv',
 				'Content-Disposition': 'attachment; filename=hospedajes.csv',
 			});
+			logInfo(
+				actionInfo(
+					user.email,
+					`exporto un csv de hospedajes del lugar: ${place.name}`
+				)
+			);
 			csv.write(formattedLodgings, {
 				headers: true,
 				transform: function(row) {
 					return {
-						Lugar: row.placeName,
-						'Fecha inicio': row.birthdate,
-						'Fecha fin': row.age,
-						'Monto total': row.state,
+						Lugar: row.placeName || '-',
+						'Fecha inicio': row.startDate || '-',
+						'Fecha fin': row.endDate || '-',
+						'Monto total': row.mountTotal || '-',
+						'Total hospedaje': row.lodgingTotal || '-',
+						'Total hospedaje con iva':
+							row.lodgingTotalWithIva || '-',
 					};
 				},
 			}).pipe(res);

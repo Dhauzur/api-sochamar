@@ -300,57 +300,69 @@ const deleteAll = async (user, res) => {
 };
 
 const generatePdfReport = async (user, companyId, res) => {
-	const foundPersons = await findAllWithCompanyId(user._id);
-	ejs.renderFile(
-		'./server/templates/person-template.ejs',
-		{ persons: foundPersons },
-		(err, data) => {
-			if (err) {
-				errorCallback(err, res);
-			} else {
-				createPdfWithStreamAndSendResponse(data, res);
+	try {
+		const foundPersons = await findAllWithCompanyId(user._id);
+		ejs.renderFile(
+			'./server/templates/person-template.ejs',
+			{ persons: foundPersons },
+			(err, data) => {
+				if (err) {
+					errorCallback(err, res);
+				} else {
+					logInfo(
+						actionInfo(user.email, 'exporto un pdf de personas')
+					);
+					createPdfWithStreamAndSendResponse(data, res);
+				}
 			}
-		}
-	);
+		);
+	} catch (e) {
+		errorCallback(e, res);
+	}
 };
 
 const generateCsvReport = async (user, companyId, res) => {
-	const foundPersons = await findAllWithCompanyId(user._id);
-	const formattedPersons = foundPersons.map(person => {
-		return {
-			firstName: person.firstName,
-			lastName: person.lastName,
-			rut: person.rut,
-			age: person.age,
-			state: person.state,
-			region: person.region,
-			comuna: person.comuna,
-			phone: person.phone,
-			email: person.email,
-		};
-	});
-	res.writeHead(200, {
-		'Content-Type': 'text/csv',
-		'Content-Disposition': 'attachment; filename=personas.csv',
-	});
-	csv.write(formattedPersons, {
-		headers: true,
-		transform: function(row) {
+	try {
+		const foundPersons = await findAllWithCompanyId(user._id);
+		const formattedPersons = foundPersons.map(person => {
 			return {
-				'Nombre Completo': `${row.firstName} ${
-					row.lastName ? row.lastName : ''
-				}`,
-				Rut: row.rut,
-				'Fecha de Nacimiento': row.birthdate,
-				Edad: row.age,
-				Estado: row.state,
-				Region: row.region,
-				Comuna: row.comuna,
-				Telefono: row.phone,
-				Email: row.email,
+				firstName: person.firstName,
+				lastName: person.lastName,
+				rut: person.rut,
+				age: person.age,
+				state: person.state,
+				region: person.region,
+				comuna: person.comuna,
+				phone: person.phone,
+				email: person.email,
 			};
-		},
-	}).pipe(res);
+		});
+		res.writeHead(200, {
+			'Content-Type': 'text/csv',
+			'Content-Disposition': 'attachment; filename=personas.csv',
+		});
+		logInfo(actionInfo(user.email, 'exporto un csv de personas'));
+		csv.write(formattedPersons, {
+			headers: true,
+			transform: function(row) {
+				return {
+					'Nombre Completo': `${row.firstName} ${
+						row.lastName ? row.lastName : ''
+					}`,
+					Rut: row.rut || '-',
+					'Fecha de Nacimiento': row.birthdate || '-',
+					Edad: row.age || '-',
+					Estado: row.state || '-',
+					Region: row.region || '-',
+					Comuna: row.comuna || '-',
+					Telefono: row.phone || '-',
+					Email: row.email || '-',
+				};
+			},
+		}).pipe(res);
+	} catch (e) {
+		errorCallback(e, res);
+	}
 };
 
 const personsService = {

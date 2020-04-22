@@ -26,12 +26,14 @@ const paymentsController = {
 		paymentsService.deleteOne(user, req, res);
 	},
 	generatePdfReport(req, res) {
+		const { user } = req;
 		const { placeId } = req.params;
-		paymentsService.generatePdfReport(placeId, res);
+		paymentsService.generatePdfReport(user, placeId, res);
 	},
 	generateCsvReport(req, res) {
+		const { user } = req;
 		const { placeId } = req.params;
-		paymentsService.generateCsvReport(placeId, res);
+		paymentsService.generateCsvReport(user, placeId, res);
 	},
 };
 

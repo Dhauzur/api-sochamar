@@ -44,7 +44,7 @@
             </table>
             <p>TOTAL NETO: <%= lodgingsTotalAmount %></p>
             <% let totalWithIva = lodgingsTotalAmount * 1.19 %>
-            <p>TOTAL: <%= totalWithIva.toFixed(3) %> IVA Incluido</p>
+            <p>TOTAL: <%= Math.trunc(totalWithIva) %> IVA Incluido</p>
         </div>
     </div>
     </body>
