@@ -299,9 +299,8 @@ const deleteAll = async (user, res) => {
 	}
 };
 
-const generatePdfReport = async (user, res) => {
-	const foundPersons = await Persons.find({});
-	/*const foundPersons = await findAllWithCompanyId(user._id);*/
+const generatePdfReport = async (user, companyId, res) => {
+	const foundPersons = await findAllWithCompanyId(user._id);
 	ejs.renderFile(
 		'./server/templates/person-template.ejs',
 		{ persons: foundPersons },
@@ -315,8 +314,8 @@ const generatePdfReport = async (user, res) => {
 	);
 };
 
-const generateCsvReport = async (companyId, res) => {
-	const foundPersons = await Persons.find({});
+const generateCsvReport = async (user, companyId, res) => {
+	const foundPersons = await findAllWithCompanyId(user._id);
 	const formattedPersons = foundPersons.map(person => {
 		return {
 			firstName: person.firstName,

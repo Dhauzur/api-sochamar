@@ -49,11 +49,13 @@ const personsController = {
 	},
 	generatePdfReport(req, res) {
 		const { user } = req;
-		personsService.generatePdfReport(user, res);
+		const { companyId } = req.params;
+		personsService.generatePdfReport(user, companyId, res);
 	},
 	generateCsvReport(req, res) {
 		const { user } = req;
-		personsService.generateCsvReport(user, res);
+		const { companyId } = req.params;
+		personsService.generateCsvReport(user, companyId, res);
 	},
 };
 
