@@ -4,7 +4,6 @@ import lodgingController from '../controllers/lodging';
 import validation from '../middleware/validation';
 import lodgingSchema from '../schemas/lodging';
 import grantAccess from '../middleware/strategies/rbac';
-import paymentsRouter from './payments';
 
 const lodgingRouter = Router();
 
