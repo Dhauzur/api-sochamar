@@ -132,13 +132,13 @@ personsRouter.get(
 	personsController.generatePdfReport
 );
 
-paymentsRouter.get(
+personsRouter.get(
 	'/persons/reports/csv',
 	[
 		passport.authenticate('jwt', { session: false }),
 		grantAccess('readAny', 'person'),
 	],
-	paymentsController.generateCsvReport
+	personsController.generateCsvReport
 );
 
 export default personsRouter;

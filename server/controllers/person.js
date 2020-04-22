@@ -51,6 +51,10 @@ const personsController = {
 		const { user } = req;
 		personsService.generatePdfReport(user, res);
 	},
+	generateCsvReport(req, res) {
+		const { user } = req;
+		personsService.generateCsvReport(user, res);
+	},
 };
 
 export default Object.freeze(personsController);

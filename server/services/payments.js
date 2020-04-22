@@ -3,7 +3,6 @@ import { logInfo } from '../config/pino';
 import { infoMessages } from '../utils/logger/infoMessages';
 import ejs from 'ejs';
 import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
-import fs from 'fs';
 import { errorCallback } from '../utils/functions/errorCallback';
 const csv = require('fast-csv');
 

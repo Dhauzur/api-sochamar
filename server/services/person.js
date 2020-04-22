@@ -5,6 +5,8 @@ import { actionInfo, infoMessages } from '../utils/logger/infoMessages';
 import ejs from 'ejs';
 import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
 import { errorCallback } from '../utils/functions/errorCallback';
+const csv = require('fast-csv');
+
 /**
  * Create new persons
  * @param user
@@ -313,6 +315,45 @@ const generatePdfReport = async (user, res) => {
 	);
 };
 
+const generateCsvReport = async (companyId, res) => {
+	const foundPersons = await Persons.find({});
+	const formattedPersons = foundPersons.map(person => {
+		return {
+			firstName: person.firstName,
+			lastName: person.lastName,
+			rut: person.rut,
+			age: person.age,
+			state: person.state,
+			region: person.region,
+			comuna: person.comuna,
+			phone: person.phone,
+			email: person.email,
+		};
+	});
+	res.writeHead(200, {
+		'Content-Type': 'text/csv',
+		'Content-Disposition': 'attachment; filename=personas.csv',
+	});
+	csv.write(formattedPersons, {
+		headers: true,
+		transform: function(row) {
+			return {
+				'Nombre Completo': `${row.firstName} ${
+					row.lastName ? row.lastName : ''
+				}`,
+				Rut: row.rut,
+				'Fecha de Nacimiento': row.birthdate,
+				Edad: row.age,
+				Estado: row.state,
+				Region: row.region,
+				Comuna: row.comuna,
+				Telefono: row.phone,
+				Email: row.email,
+			};
+		},
+	}).pipe(res);
+};
+
 const personsService = {
 	createOne,
 	getAll,
@@ -323,6 +364,7 @@ const personsService = {
 	deleteOne,
 	deleteAll,
 	generatePdfReport,
+	generateCsvReport,
 	patchConversation,
 };
 

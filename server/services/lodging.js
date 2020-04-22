@@ -6,6 +6,8 @@ import placeServices from '../services/place';
 import ejs from 'ejs';
 import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
 import { errorCallback } from '../utils/functions/errorCallback';
+import { errorResponse } from '../utils/responses/errorResponse';
+const csv = require('fast-csv');
 
 const mountTotal = days => {
 	let totalAmount = 0;
@@ -166,39 +168,40 @@ const deleteOneWithPlaceId = async (user, req, res) => {
 
 const generatePdfReport = async (user, placeId, res) => {
 	if (placeId === 'null') {
-		//if null is the value, getting all user places is needed then
-		/*const userPlaces = await placeServices.getPlacesIds(user._id);*/
-		const test = [
-			'5e9a1c30ceb0031a3c496564',
-			'5e9a1c3bceb0031a3c496566',
-			'5e9dd87409d49c342cfbc44f',
-		];
-		//we need populate to get place names without calling mongoose again or a place model function
-		const foundLodgings = await Lodging.find({
-			place: { $in: test },
-		}).populate('place');
-		//allPlaces pdf needs to order the data based on one place and his lodgings, to do this first we filter the unique places with set
-		// ... allow us to make an array object instead of a array of set
-		const uniquePlaces = [...new Set(foundLodgings.map(l => l.place))];
-		//based in one place, we return a new object { placeName:'minera 1', lodgings: ['minera 1 lodgings only']}
-		const organizedLodgings = uniquePlaces.map(place => {
-			return {
-				placeName: place.name,
-				lodgings: foundLodgings.filter(l => l.place._id === place._id),
-				lodgingTotalAmount: lodgingsTotal(foundLodgings),
-			};
-		});
-		ejs.renderFile(
-			'./server/templates/lodging-allPlaces-template.ejs',
-			{ lodgings: organizedLodgings },
-			(err, data) => {
-				if (err) {
-					errorCallback(err, res);
-				} else {
-					createPdfWithStreamAndSendResponse(data, res);
+		try {
+			//if null is the value, getting all user places is needed then
+			const userPlaces = await placeServices.getPlacesIds(user._id);
+			//we need populate to get place names without calling mongoose again or a place model function
+			const foundLodgings = await Lodging.find({
+				place: { $in: userPlaces },
+			}).populate('place');
+			//allPlaces pdf needs to order the data based on one place and his lodgings, to do this first we filter the unique places with set
+			// ... allow us to make an array object instead of a array of set
+			const uniquePlaces = [...new Set(foundLodgings.map(l => l.place))];
+			//based in one place, we return a new object { placeName:'minera 1', lodgings: ['minera 1 lodgings only']}
+			const organizedLodgings = uniquePlaces.map(place => {
+				return {
+					placeName: place.name,
+					lodgings: foundLodgings.filter(
+						l => l.place._id === place._id
+					),
+					lodgingTotalAmount: lodgingsTotal(foundLodgings),
+				};
+			});
+			ejs.renderFile(
+				'./server/templates/lodging-allPlaces-template.ejs',
+				{ lodgings: organizedLodgings },
+				(err, data) => {
+					if (err) {
+						errorCallback(err, res);
+					} else {
+						createPdfWithStreamAndSendResponse(data, res);
+					}
 				}
-			}
-		);
+			);
+		} catch (e) {
+			errorCallback(e, res);
+		}
 	} else {
 		try {
 			const foundLodgings = await Lodging.find({ place: placeId });
@@ -226,6 +229,76 @@ const generatePdfReport = async (user, placeId, res) => {
 	}
 };
 
+const generateCsvReport = async (user, placeId, res) => {
+	if (placeId === 'null') {
+		try {
+			//if null is the value, getting all user places is needed then
+			const userPlaces = await placeServices.getPlacesIds(user._id);
+			//we need populate to get place names without calling mongoose again or a place model function
+			const foundLodgings = await Lodging.find({
+				place: { $in: userPlaces },
+			}).populate('place');
+			const formattedLodgings = foundLodgings.map(lodging => {
+				return {
+					placeName: lodging.place.name,
+					startDate: lodging.start,
+					endDate: lodging.end,
+					mountTotal: lodging.mountTotal,
+				};
+			});
+			res.writeHead(200, {
+				'Content-Type': 'text/csv',
+				'Content-Disposition': 'attachment; filename=hospedajes.csv',
+			});
+			csv.write(formattedLodgings, {
+				headers: true,
+				transform: function(row) {
+					return {
+						Lugar: row.rut,
+						'Fecha inicio': row.birthdate,
+						'Fecha fin': row.age,
+						'Monto total': row.state,
+					};
+				},
+			}).pipe(res);
+		} catch (e) {
+			errorResponse(e, res);
+		}
+	} else {
+		try {
+			const foundLodgings = await Lodging.find({ place: placeId });
+			//searching place by id to get his name
+			const place = await placeServices.searchOneWithId(placeId);
+			const formattedLodgings = foundLodgings.map(lodging => {
+				return {
+					placeName: place.name,
+					startDate: lodging.start,
+					endDate: lodging.end,
+					mountTotal: lodging.mountTotal,
+				};
+			});
+
+			res.writeHead(200, {
+				'Content-Type': 'text/csv',
+				'Content-Disposition': 'attachment; filename=hospedajes.csv',
+			});
+			csv.write(formattedLodgings, {
+				headers: true,
+				transform: function(row) {
+					return {
+						Lugar: row.placeName,
+						'Fecha inicio': row.birthdate,
+						'Fecha fin': row.age,
+						'Monto total': row.state,
+					};
+				},
+			}).pipe(res);
+		} catch (e) {
+			errorCallback(e, res);
+		}
+	}
+};
+
 const lodgingService = {
 	getAll,
 	createOne,
@@ -234,6 +307,7 @@ const lodgingService = {
 	deleteAllWithPlace,
 	deleteOneWithPlaceId,
 	generatePdfReport,
+	generateCsvReport,
 };
 
 export default Object.freeze(lodgingService);
