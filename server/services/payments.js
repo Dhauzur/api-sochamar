@@ -127,7 +127,7 @@ const generateCsvReport = async (user, placeId, res) => {
 				startDate: payment.startDate,
 				endDate: payment.endDate,
 				comments: payment.comments[0],
-				mount: payment.mount,
+				mount: `$ ${payment.mount}`,
 			};
 		});
 		res.writeHead(200, {

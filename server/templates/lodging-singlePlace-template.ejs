@@ -42,9 +42,9 @@
                     <%  });%>
                 <% }%>
             </table>
-            <p>TOTAL NETO: <%= lodgingsTotalAmount %></p>
+            <p>TOTAL NETO: <%= `$ ${lodgingsTotalAmount}` %></p>
             <% let totalWithIva = lodgingsTotalAmount * 1.19 %>
-            <p>TOTAL: <%= Math.trunc(totalWithIva) %> IVA Incluido</p>
+            <p>TOTAL: <%=  `$ ${Math.trunc(totalWithIva)}` %> IVA Incluido</p>
         </div>
     </div>
     </body>

@@ -31,14 +31,14 @@
                 <th>Monto</th>
             </tr>
             <% if (payments.length > 0) { %>
-                <% payments.forEach(payment => {%>
+                <% payments.forEach(payment => { %>
                     <tr>
                         <td><%= payment.startDate %></td>
                         <td><%= payment.endDate %></td>
                         <td class="longStringBreak">
                             <%= payment.comments %>
                         </td>
-                        <td><%= payment.mount %></td>
+                        <td><%= `$ ${payment.mount}` %></td>
                     </tr>
                 <%  });%>
             <% }%>
