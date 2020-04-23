@@ -175,6 +175,7 @@ const patchRequest = async (user, data, res) => {
 				.status(400)
 				.send(`Ya haz enviado una solicitud a este usuario`);
 		}
+
 		if (data.cancel) {
 			/**
 			 * Calcel a request, return status 200
@@ -186,6 +187,12 @@ const patchRequest = async (user, data, res) => {
 				findIndex(person.request, { idCompany: data.newRequest }),
 				1
 			);
+		} else if (data.unsubscribe) {
+			/**
+			 * unsubscribe person to company "admin".
+			 */
+			logInfo(actionInfo(person.email, 'Salió de su equipo'));
+			person.idCompany = '';
 		} else {
 			/**
 			 * update person, push new request.
