@@ -25,6 +25,16 @@ const paymentsController = {
 		const { user } = req;
 		paymentsService.deleteOne(user, req, res);
 	},
+	generatePdfReport(req, res) {
+		const { user } = req;
+		const { placeId } = req.params;
+		paymentsService.generatePdfReport(user, placeId, res);
+	},
+	generateCsvReport(req, res) {
+		const { user } = req;
+		const { placeId } = req.params;
+		paymentsService.generateCsvReport(user, placeId, res);
+	},
 };
 
 export default Object.freeze(paymentsController);

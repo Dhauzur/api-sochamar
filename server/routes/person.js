@@ -121,4 +121,22 @@ personsRouter.delete(
 	personsController.deleteAll
 );
 
+personsRouter.get(
+	'/persons/:companyId/reports/pdf',
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readAny', 'person'),
+	],
+	personsController.generatePdfReport
+);
+
+personsRouter.get(
+	'/persons/:companyId/reports/csv',
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readAny', 'person'),
+	],
+	personsController.generateCsvReport
+);
+
 export default personsRouter;

@@ -11,13 +11,15 @@ let lodging = new Schema({
 		type: String,
 	},
 	group: {
-		type: String,
+		type: Schema.Types.ObjectID,
+		ref: 'periods',
 	},
 	start: {
 		type: String,
 	},
 	place: {
-		type: String,
+		type: Schema.Types.ObjectID,
+		ref: 'place',
 	},
 	end: {
 		type: String,

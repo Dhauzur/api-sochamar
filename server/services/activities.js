@@ -13,7 +13,7 @@ const getAll = async (user, res) => {
 			length,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).send({
 			status: false,
 			error: error.message,
@@ -39,7 +39,7 @@ const createOne = async (user, activity, res) => {
 			activities: activitiesDB,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).send({
 			status: false,
 			error: error.message,
@@ -55,7 +55,7 @@ const deleteAll = async (user, res) => {
 			status: true,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).send({
 			status: false,
 			error: error.message,

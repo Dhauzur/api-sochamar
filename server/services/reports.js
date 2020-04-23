@@ -11,7 +11,7 @@ const getAll = async res => {
 			length,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).send({
 			status: false,
 			error: error.message,
@@ -28,7 +28,7 @@ const createOne = async (report, res) => {
 			reports: reportsDB,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).send({
 			status: false,
 			error: error.message,
@@ -43,7 +43,7 @@ const deleteAll = async res => {
 			status: true,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).send({
 			status: false,
 			error: error.message,

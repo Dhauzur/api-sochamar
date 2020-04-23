@@ -1,6 +1,10 @@
 import Payments from '../models/payments';
-import { logError, logInfo } from '../config/pino';
-import { infoMessages } from '../utils/logger/infoMessages';
+import { logInfo } from '../config/pino';
+import { actionInfo, infoMessages } from '../utils/logger/infoMessages';
+import ejs from 'ejs';
+import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
+import { errorCallback } from '../utils/functions/errorCallback';
+const csv = require('fast-csv');
 
 /**
  * create a new payment and return the payment
@@ -19,12 +23,8 @@ const createOne = async (user, payment, file, res) => {
 			infoMessages(user.email, 'registro', 'un', 'payment', paymentDB)
 		);
 		return res.json({ status: true, payment: paymentDB });
-	} catch (error) {
-		logError(error.message);
-		return res.status(400).send({
-			status: false,
-			error: error.message,
-		});
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
@@ -47,33 +47,37 @@ const editOne = async (user, paymentId, comments, res) => {
 			)
 		);
 		res.json({ status: true });
-	} catch (error) {
-		logError(error.message);
-		return res.status(400).send({
-			status: false,
-			error: error.message,
-		});
+	} catch (err) {
+		errorCallback(err, res);
 	}
 };
-
+/*Search payments with a placeId*/
+const searchAllWithPlaceId = async placeId => {
+	return await Payments.find({ idPlace: placeId });
+};
 /**
  * get all payments of the place
  */
 const getAll = async (user, req, res) => {
 	const { id } = req.params;
 	try {
-		const payments = await Payments.find({ idPlace: id });
-		logInfo(infoMessages(user.email, 'obtuvo', 'todos los', 'payment'));
+		const payments = await searchAllWithPlaceId(id);
+		logInfo(
+			infoMessages(
+				user.email,
+				'obtuvo',
+				'todos los',
+				'payment',
+				payments,
+				'con placeId'
+			)
+		);
 		return res.json({
 			status: true,
 			payments,
 		});
-	} catch (error) {
-		logError(error.message);
-		return res.status(400).send({
-			status: false,
-			error: error.message,
-		});
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
@@ -90,20 +94,70 @@ const deleteOne = async (user, req, res) => {
 		res.json({
 			status: true,
 		});
-	} catch (error) {
-		logError(error.message);
-		return res.status(400).send({
-			status: false,
-			error: error.message,
+	} catch (e) {
+		errorCallback(e, res);
+	}
+};
+
+const generatePdfReport = async (user, placeId, res) => {
+	try {
+		const foundPayments = await searchAllWithPlaceId(placeId);
+		ejs.renderFile(
+			'./server/templates/payment-template.ejs',
+			{ payments: foundPayments },
+			(err, data) => {
+				if (err) {
+					errorCallback(err, res);
+				} else {
+					logInfo(actionInfo(user.email, 'exporto un pdf de pagos'));
+					createPdfWithStreamAndSendResponse(data, res);
+				}
+			}
+		);
+	} catch (e) {
+		errorCallback(e, res);
+	}
+};
+
+const generateCsvReport = async (user, placeId, res) => {
+	try {
+		const foundPayments = await searchAllWithPlaceId(placeId);
+		const formattedPayments = foundPayments.map(payment => {
+			return {
+				startDate: payment.startDate,
+				endDate: payment.endDate,
+				comments: payment.comments[0],
+				mount: `$ ${payment.mount}`,
+			};
 		});
+		res.writeHead(200, {
+			'Content-Type': 'text/csv',
+			'Content-Disposition': 'attachment; filename=payments.csv',
+		});
+		logInfo(actionInfo(user.email, 'exporto un csv de pagos'));
+		csv.write(formattedPayments, {
+			headers: true,
+			transform: function(row) {
+				return {
+					'fecha inicio': row.startDate || '-',
+					'fecha fin': row.endDate || '-',
+					comentarios: row.comments || '-',
+					monto: row.mount || '-',
+				};
+			},
+		}).pipe(res);
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
 const personsService = {
+	generatePdfReport,
 	createOne,
 	getAll,
 	editOne,
 	deleteOne,
+	generateCsvReport,
 };
 
 export default Object.freeze(personsService);

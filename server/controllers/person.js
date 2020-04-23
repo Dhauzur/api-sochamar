@@ -47,6 +47,16 @@ const personsController = {
 		const { id } = req.params;
 		personsService.deleteOne(user, id, res);
 	},
+	generatePdfReport(req, res) {
+		const { user } = req;
+		const { companyId } = req.params;
+		personsService.generatePdfReport(user, companyId, res);
+	},
+	generateCsvReport(req, res) {
+		const { user } = req;
+		const { companyId } = req.params;
+		personsService.generateCsvReport(user, companyId, res);
+	},
 };
 
 export default Object.freeze(personsController);

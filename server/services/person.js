@@ -2,6 +2,11 @@ import Persons from '../models/person';
 import { logError, logInfo } from '../config/pino';
 import { findIndex } from 'underscore';
 import { actionInfo, infoMessages } from '../utils/logger/infoMessages';
+import ejs from 'ejs';
+import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
+import { errorCallback } from '../utils/functions/errorCallback';
+const csv = require('fast-csv');
+
 /**
  * Create new persons
  * @param user
@@ -85,6 +90,11 @@ const getAll = async (user, res) => {
 	}
 };
 
+const findAllWithCompanyId = async companyId => {
+	return await Persons.find({
+		idCompany: { $in: companyId },
+	});
+};
 /**
  * get all persons attach a company
  * @param user
@@ -94,9 +104,7 @@ const getAll = async (user, res) => {
  */
 const getPersonsCompany = async (user, idCompany, res) => {
 	try {
-		const persons = await Persons.find({
-			idCompany: { $in: idCompany },
-		});
+		const persons = await findAllWithCompanyId(idCompany);
 		logInfo(
 			infoMessages(
 				user.email,
@@ -298,6 +306,72 @@ const deleteAll = async (user, res) => {
 	}
 };
 
+const generatePdfReport = async (user, companyId, res) => {
+	try {
+		const foundPersons = await findAllWithCompanyId(user._id);
+		ejs.renderFile(
+			'./server/templates/person-template.ejs',
+			{ persons: foundPersons },
+			(err, data) => {
+				if (err) {
+					errorCallback(err, res);
+				} else {
+					logInfo(
+						actionInfo(user.email, 'exporto un pdf de personas')
+					);
+					createPdfWithStreamAndSendResponse(data, res);
+				}
+			}
+		);
+	} catch (e) {
+		errorCallback(e, res);
+	}
+};
+
+const generateCsvReport = async (user, companyId, res) => {
+	try {
+		const foundPersons = await findAllWithCompanyId(user._id);
+		const formattedPersons = foundPersons.map(person => {
+			return {
+				firstName: person.firstName,
+				lastName: person.lastName,
+				rut: person.rut,
+				age: person.age,
+				state: person.state,
+				region: person.region,
+				comuna: person.comuna,
+				phone: person.phone,
+				email: person.email,
+			};
+		});
+		res.writeHead(200, {
+			'Content-Type': 'text/csv',
+			'Content-Disposition': 'attachment; filename=personas.csv',
+		});
+		logInfo(actionInfo(user.email, 'exporto un csv de personas'));
+		csv.write(formattedPersons, {
+			headers: true,
+			transform: function(row) {
+				return {
+					'Nombre Completo': `${row.firstName} ${
+						row.lastName ? row.lastName : ''
+					}`,
+					Rut: row.rut || '-',
+					'Fecha de Nacimiento': row.birthdate || '-',
+					Edad: row.age || '-',
+					Estado: row.state || '-',
+					Region: row.region || '-',
+					Comuna: row.comuna || '-',
+					Telefono: row.phone || '-',
+					Email: row.email || '-',
+				};
+			},
+		}).pipe(res);
+	} catch (e) {
+		errorCallback(e, res);
+	}
+};
+
 const personsService = {
 	createOne,
 	getAll,
@@ -307,6 +381,8 @@ const personsService = {
 	editOne,
 	deleteOne,
 	deleteAll,
+	generatePdfReport,
+	generateCsvReport,
 	patchConversation,
 };
 

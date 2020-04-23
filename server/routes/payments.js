@@ -48,4 +48,22 @@ paymentsRouter.delete(
 	paymentsController.deleteOne
 );
 
+paymentsRouter.get(
+	'/payments/:placeId/reports/pdf',
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readAny', 'payments'),
+	],
+	paymentsController.generatePdfReport
+);
+
+paymentsRouter.get(
+	'/payments/:placeId/reports/csv',
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('readAny', 'payments'),
+	],
+	paymentsController.generateCsvReport
+);
+
 export default paymentsRouter;

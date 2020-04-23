@@ -1,7 +1,13 @@
 import Lodging from '../models/lodging';
 import moment from 'moment';
-import { logError, logInfo } from '../config/pino';
-import { infoMessages } from '../utils/logger/infoMessages';
+import { logInfo } from '../config/pino';
+import { actionInfo, infoMessages } from '../utils/logger/infoMessages';
+import placeServices from '../services/place';
+import ejs from 'ejs';
+import { createPdfWithStreamAndSendResponse } from '../utils/pdf/createToStream';
+import { errorCallback } from '../utils/functions/errorCallback';
+
+const csv = require('fast-csv');
 
 const mountTotal = days => {
 	let totalAmount = 0;
@@ -23,6 +29,14 @@ const mountTotal = days => {
 	return totalAmount;
 };
 
+const lodgingsTotal = lodgings => {
+	let totalAmount = 0;
+	lodgings.forEach(lodging => {
+		totalAmount += lodging.mountTotal;
+	});
+	return totalAmount;
+};
+
 const getAll = async (user, res) => {
 	try {
 		const lodgings = await Lodging.find({});
@@ -33,9 +47,8 @@ const getAll = async (user, res) => {
 			lodgings,
 			length,
 		});
-	} catch (error) {
-		logError(error.message);
-		res.status(400).json({ status: false, error: error.message });
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
@@ -98,9 +111,8 @@ const createOne = async (user, lodging, res) => {
 			status: true,
 			lodging: lodgingDB,
 		});
-	} catch (error) {
-		logError(error.message);
-		res.status(400).json({ status: false, error: error.message });
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
@@ -109,9 +121,8 @@ const deleteAll = async (user, res) => {
 		await Lodging.deleteMany({});
 		logInfo(infoMessages(user.email, 'elimino', 'todos los', 'lodging'));
 		res.json({ status: true });
-	} catch (error) {
-		logError(error.message);
-		res.status(400).json({ status: false, error: error.message });
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
@@ -130,9 +141,8 @@ const deleteAllWithPlace = async (user, req, res) => {
 			)
 		);
 		res.json({ status: true });
-	} catch (error) {
-		logError(error.message);
-		res.status(400).json({ status: false, error: error.message });
+	} catch (e) {
+		errorCallback(e, res);
 	}
 };
 
@@ -151,9 +161,188 @@ const deleteOneWithPlaceId = async (user, req, res) => {
 			)
 		);
 		res.json({ status: true });
-	} catch (error) {
-		logError(error.message);
-		res.status(400).json({ status: false, error: error.message });
+	} catch (e) {
+		errorCallback(e, res);
+	}
+};
+
+const generatePdfReport = async (user, placeId, res) => {
+	if (placeId === 'null') {
+		try {
+			//if null is the value, getting all user places is needed then
+			const userPlaces = await placeServices.getPlacesIds(user._id);
+			//we need populate to get place names without calling mongoose again or a place model function
+			const foundLodgings = await Lodging.find({
+				place: { $in: userPlaces },
+			}).populate('place');
+			//allPlaces pdf needs to order the data based on one place and his lodgings, to do this first we filter the unique places with set
+			// ... allow us to make an array object instead of a array of set
+			const uniquePlaces = [...new Set(foundLodgings.map(l => l.place))];
+			//based in one place, we return a new object { placeName:'minera 1', lodgings: ['minera 1 lodgings only']}
+			const organizedLodgings = uniquePlaces.map(place => {
+				return {
+					placeName: place.name,
+					lodgings: foundLodgings.filter(
+						l => l.place._id === place._id
+					),
+					lodgingTotalAmount: lodgingsTotal(foundLodgings),
+				};
+			});
+			ejs.renderFile(
+				'./server/templates/lodging-allPlaces-template.ejs',
+				{ lodgings: organizedLodgings },
+				(err, data) => {
+					if (err) {
+						errorCallback(err, res);
+					} else {
+						logInfo(
+							actionInfo(
+								user.email,
+								'exporto un pdf de hospedajes en base a todos sus lugares'
+							)
+						);
+						createPdfWithStreamAndSendResponse(data, res);
+					}
+				}
+			);
+		} catch (e) {
+			errorCallback(e, res);
+		}
+	} else {
+		try {
+			const foundLodgings = await Lodging.find({
+				place: placeId,
+			});
+			//searching place by id to get his name
+			const place = await placeServices.searchOneWithId(placeId);
+			const lodgingsTotalAmount = lodgingsTotal(foundLodgings);
+			ejs.renderFile(
+				'./server/templates/lodging-singlePlace-template.ejs',
+				{
+					lodgings: foundLodgings,
+					placeName: place.name,
+					lodgingsTotalAmount: lodgingsTotalAmount,
+				},
+				(err, data) => {
+					if (err) {
+						errorCallback(err, res);
+					} else {
+						logInfo(
+							actionInfo(
+								user.email,
+								`exporto un pdf de hospedajes del lugar: ${place.name}`
+							)
+						);
+						createPdfWithStreamAndSendResponse(data, res);
+					}
+				}
+			);
+		} catch (e) {
+			errorCallback(e, res);
+		}
+	}
+};
+
+const generateCsvReport = async (user, placeId, res) => {
+	if (placeId === 'null') {
+		try {
+			//if null is the value, getting all user places is needed then
+			const userPlaces = await placeServices.getPlacesIds(user._id);
+			//we need populate to get place names without calling mongoose again or a place model function
+			const foundLodgings = await Lodging.find({
+				place: { $in: userPlaces },
+			}).populate('place');
+			const formattedLodgings = foundLodgings.map(lodging => {
+				return {
+					placeName: lodging.place.name,
+					startDate: lodging.start,
+					endDate: lodging.end,
+					mountTotal: lodging.mountTotal,
+					lodgingTotal: '',
+					lodgingTotalWithIva: '',
+				};
+			});
+			const lodgingsTotalAmount = lodgingsTotal(foundLodgings);
+			const totalWithIva = lodgingsTotalAmount * 1.19;
+			formattedLodgings.push({
+				lodgingTotal: lodgingsTotalAmount,
+				lodgingTotalWithIva: Math.trunc(totalWithIva),
+			});
+			res.writeHead(200, {
+				'Content-Type': 'text/csv',
+				'Content-Disposition': 'attachment; filename=hospedajes.csv',
+			});
+			logInfo(
+				actionInfo(
+					user.email,
+					'exporto un csv de hospedajes en base a todos sus lugares'
+				)
+			);
+			csv.write(formattedLodgings, {
+				headers: true,
+				transform: function(row) {
+					return {
+						Lugar: row.placeName || '-',
+						'Fecha inicio': row.startDate || '-',
+						'Fecha fin': row.endDate || '-',
+						'Monto total': row.mountTotal || '-',
+						'Total hospedaje': row.lodgingTotal || '-',
+						'Total hospedaje con iva':
+							row.lodgingTotalWithIva || '-',
+					};
+				},
+			}).pipe(res);
+		} catch (e) {
+			errorCallback(e, res);
+		}
+	} else {
+		try {
+			const foundLodgings = await Lodging.find({ place: placeId });
+			//searching place by id to get his name
+			const place = await placeServices.searchOneWithId(placeId);
+			const formattedLodgings = foundLodgings.map(lodging => {
+				return {
+					placeName: place.name,
+					startDate: lodging.start,
+					endDate: lodging.end,
+					mountTotal: lodging.mountTotal,
+					lodgingTotal: '',
+					lodgingTotalWithIva: '',
+				};
+			});
+			const lodgingsTotalAmount = lodgingsTotal(foundLodgings);
+			const totalWithIva = lodgingsTotalAmount * 1.19;
+			formattedLodgings.push({
+				lodgingTotal: lodgingsTotalAmount,
+				lodgingTotalWithIva: Math.trunc(totalWithIva),
+			});
+			res.writeHead(200, {
+				'Content-Type': 'text/csv',
+				'Content-Disposition': 'attachment; filename=hospedajes.csv',
+			});
+			logInfo(
+				actionInfo(
+					user.email,
+					`exporto un csv de hospedajes del lugar: ${place.name}`
+				)
+			);
+			csv.write(formattedLodgings, {
+				headers: true,
+				transform: function(row) {
+					return {
+						Lugar: row.placeName || '-',
+						'Fecha inicio': row.startDate || '-',
+						'Fecha fin': row.endDate || '-',
+						'Monto total': row.mountTotal || '-',
+						'Total hospedaje': row.lodgingTotal || '-',
+						'Total hospedaje con iva':
+							row.lodgingTotalWithIva || '-',
+					};
+				},
+			}).pipe(res);
+		} catch (e) {
+			errorCallback(e, res);
+		}
 	}
 };
 
@@ -164,6 +353,8 @@ const lodgingService = {
 	getAllForPlace,
 	deleteAllWithPlace,
 	deleteOneWithPlaceId,
+	generatePdfReport,
+	generateCsvReport,
 };
 
 export default Object.freeze(lodgingService);

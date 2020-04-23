@@ -16,7 +16,7 @@ const getOne = async (user, placeId, res) => {
 			place,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({ status: false, error: error.message });
 	}
 };
@@ -32,7 +32,7 @@ const getAll = async (user, res) => {
 			length,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({ status: false, error: error.message });
 	}
 };
@@ -48,7 +48,7 @@ const createOne = async (user, place, res) => {
 			place: placeDB,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({ status: false, error: error.message });
 	}
 };
@@ -69,7 +69,7 @@ const deleteOne = async (user, placeId, res) => {
 			lodgins: lodging.deletedCount,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({ status: false, error: error.message });
 	}
 };
@@ -119,7 +119,7 @@ const updateService = async (user, placeId, serviceId, service, res) => {
 		);
 		return res.sendStatus(200);
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({ status: false, error: error.message });
 	}
 };
@@ -137,7 +137,7 @@ const deleteService = async (user, placeId, serviceId, res) => {
 		);
 		return res.sendStatus(200);
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({ status: false, error: error.message });
 	}
 };
@@ -156,7 +156,7 @@ const deleteAll = async (user, res) => {
 			status: true,
 		});
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 		return res.status(400).json({ status: false, error: error.message });
 	}
 };
@@ -166,10 +166,13 @@ const getPlacesIds = async user => {
 		const place = await Place.find({ users: { $in: user._id } });
 		return place.map(place => place._id);
 	} catch (error) {
-		logError(error.message);
+		logError(error);
 	}
 };
 
+const searchOneWithId = async placeId => {
+	return await Place.findById(placeId);
+};
 const placeService = {
 	getOne,
 	getAll,
@@ -180,6 +183,7 @@ const placeService = {
 	deleteService,
 	deleteAll,
 	getPlacesIds,
+	searchOneWithId,
 };
 
 export default Object.freeze(placeService);

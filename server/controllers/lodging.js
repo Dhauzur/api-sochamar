@@ -26,6 +26,16 @@ const lodgingController = {
 		const { user } = req;
 		lodgingService.deleteOneWithPlaceId(user, req, res);
 	},
+	generatePdfReport(req, res) {
+		const { placeId } = req.params;
+		const { user } = req;
+		lodgingService.generatePdfReport(user, placeId, res);
+	},
+	generateCsvReport(req, res) {
+		const { placeId } = req.params;
+		const { user } = req;
+		lodgingService.generateCsvReport(user, placeId, res);
+	},
 };
 
 export default Object.freeze(lodgingController);
