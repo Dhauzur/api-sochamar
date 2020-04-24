@@ -10,6 +10,12 @@ const lodgingController = {
 		const lodging = req.body;
 		lodgingService.createOne(user, lodging, res);
 	},
+	update(req, res) {
+		const { user } = req;
+		const { id } = req.params;
+		const data = req.body;
+		lodgingService.createOne(user, id, data, res);
+	},
 	deleteAll(req, res) {
 		const { user } = req;
 		lodgingService.deleteAll(user, res);

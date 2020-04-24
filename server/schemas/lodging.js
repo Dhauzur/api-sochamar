@@ -2,15 +2,28 @@ import Joi from '@hapi/joi';
 
 const lodgingSchema = {
 	create: Joi.object({
-		id: Joi.string(),
+		name: Joi.string().required(),
 		group: Joi.string().required(),
-		start: Joi.string().required(),
 		place: Joi.string().required(),
+		start: Joi.string().required(),
 		end: Joi.string().required(),
+		room: Joi.string(),
 		days: Joi.array(),
-		persons: Joi.array().allow(null),
+		totalDays: Joi.string(),
+		person: Joi.string(),
 		mountTotal: Joi.number(),
-		content: Joi.string(),
+	}),
+	update: Joi.object({
+		name: Joi.string().required(),
+		group: Joi.string().required(),
+		place: Joi.string().required(),
+		start: Joi.string().required(),
+		end: Joi.string().required(),
+		room: Joi.string(),
+		days: Joi.array(),
+		totalDays: Joi.string(),
+		person: Joi.string(),
+		mountTotal: Joi.number(),
 	}),
 };
 

@@ -1,5 +1,4 @@
 import Lodging from '../models/lodging';
-import moment from 'moment';
 import { logInfo } from '../config/pino';
 import { actionInfo, infoMessages } from '../utils/logger/infoMessages';
 import placeServices from '../services/place';
@@ -86,33 +85,29 @@ const getAllForPlace = async (user, req, res) => {
 
 const createOne = async (user, lodging, res) => {
 	try {
-		const lodgingDB = await Lodging.findOneAndUpdate(
-			{ id: lodging.id },
-			{
-				group: lodging.group,
-				start: moment(lodging.start)
-					.hours(16)
-					.format('YYYY-MM-DD'),
-				end: moment(lodging.end)
-					.hours(12)
-					.format('YYYY-MM-DD'),
-				days: lodging.days,
-				place: lodging.place,
-				persons: lodging.persons,
-				content: lodging.content,
-				mountTotal: mountTotal(lodging.days),
-			},
-			{ upsert: true }
-		);
+		const newLodging = new Lodging(lodging);
+		const newLodgingDB = await newLodging.save();
 		logInfo(
-			infoMessages(user.email, 'registro', 'un', 'lodging', lodgingDB)
+			infoMessages(user.email, 'registro', 'un', 'lodging', newLodgingDB)
 		);
 		res.json({
 			status: true,
-			lodging: lodgingDB,
+			lodging: newLodgingDB,
 		});
 	} catch (e) {
 		errorCallback(e, res);
+	}
+};
+
+const updateOne = async (user, id, data, res) => {
+	try {
+		const lodging = await Lodging.findByIdAndUpdate(id, data);
+		logInfo(
+			infoMessages(user.email, 'actualizo', 'un', 'lodging', lodging)
+		);
+		res.json({ status: true, lodging });
+	} catch (err) {
+		errorCallback(err, res);
 	}
 };
 
@@ -349,6 +344,7 @@ const generateCsvReport = async (user, placeId, res) => {
 const lodgingService = {
 	getAll,
 	createOne,
+	updateOne,
 	deleteAll,
 	getAllForPlace,
 	deleteAllWithPlace,

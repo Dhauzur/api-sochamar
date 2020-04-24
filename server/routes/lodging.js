@@ -57,6 +57,16 @@ lodgingRouter.post(
 	lodgingController.create
 );
 
+lodgingRouter.put(
+	'/lodging/:id',
+	[
+		passport.authenticate('jwt', { session: false }),
+		grantAccess('updateAny', 'lodging'),
+		validation(lodgingSchema.update, 'body'),
+	],
+	lodgingController.update
+);
+
 lodgingRouter.get(
 	'/lodgings/:placeId/reports/pdf',
 	[

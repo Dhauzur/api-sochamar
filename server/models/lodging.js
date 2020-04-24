@@ -7,19 +7,27 @@ import { Schema, model } from 'mongoose';
 // };
 
 let lodging = new Schema({
-	id: {
+	name: {
 		type: String,
+	},
+	room: {
+		type: Schema.Types.ObjectID,
+		ref: 'rooms',
 	},
 	group: {
 		type: Schema.Types.ObjectID,
 		ref: 'periods',
 	},
-	start: {
-		type: String,
-	},
 	place: {
 		type: Schema.Types.ObjectID,
 		ref: 'place',
+	},
+	person: {
+		type: Schema.Types.ObjectID,
+		ref: 'persons',
+	},
+	start: {
+		type: String,
 	},
 	end: {
 		type: String,
@@ -27,14 +35,14 @@ let lodging = new Schema({
 	days: {
 		type: Array,
 	},
-	persons: {
+	totalDays: {
+		type: String,
+	},
+	calendar: {
 		type: Array,
 	},
 	mountTotal: {
 		type: Number,
-	},
-	content: {
-		type: String,
 	},
 });
 
