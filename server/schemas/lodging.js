@@ -9,9 +9,10 @@ const lodgingSchema = {
 		end: Joi.string().required(),
 		room: Joi.string(),
 		days: Joi.array(),
-		totalDays: Joi.string(),
+		totalDays: Joi.number(),
 		person: Joi.string(),
 		mountTotal: Joi.number(),
+		calendar: Joi.array(),
 	}),
 	update: Joi.object({
 		name: Joi.string().required(),
@@ -21,9 +22,10 @@ const lodgingSchema = {
 		end: Joi.string().required(),
 		room: Joi.string(),
 		days: Joi.array(),
-		totalDays: Joi.string(),
+		totalDays: Joi.number(),
 		person: Joi.string(),
 		mountTotal: Joi.number(),
+		calendar: Joi.array(),
 	}),
 };
 

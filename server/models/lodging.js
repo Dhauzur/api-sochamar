@@ -36,7 +36,7 @@ let lodging = new Schema({
 		type: Array,
 	},
 	totalDays: {
-		type: String,
+		type: Number,
 	},
 	calendar: {
 		type: Array,
