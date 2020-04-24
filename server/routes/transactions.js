@@ -8,4 +8,8 @@ transactionsRouter.post(
 	transactionController.handleMercadoPagoNotification
 );
 
+transactionsRouter.post(
+	'mercadopago/unlock/:unlockId/transaction/start',
+	transactionController.startMercadoPagoTransaction
+);
 export default transactionsRouter;

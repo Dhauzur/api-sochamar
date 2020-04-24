@@ -14,6 +14,17 @@ const transactionController = {
 			body
 		);
 	},
+	startMercadoPagoTransaction(req, res) {
+		const { user } = req;
+		const { body } = req;
+		const { unlockId } = req.params;
+		transactionService.startMercadoPagoTransaction(
+			user,
+			body,
+			unlockId,
+			res
+		);
+	},
 };
 
 export default transactionController;
