@@ -9,6 +9,7 @@ import placeRoutes from './place';
 import reportsRoutes from './reports';
 import roomsRoutes from './room';
 import userRoutes from './user';
+import transactionsRouter from './transactions';
 
 const apiVersion = '/api/v1';
 
@@ -24,4 +25,5 @@ export default app => {
 	app.use(apiVersion, reportsRoutes);
 	app.use(apiVersion, roomsRoutes);
 	app.use(apiVersion, userRoutes);
+	app.use(apiVersion, transactionsRouter);
 };

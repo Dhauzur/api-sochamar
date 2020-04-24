@@ -24,3 +24,11 @@ process.env.GOOGLE_STRATEGY_CALLBACK =
 	process.env.GOOGLE_STRATEGY_CALLBACK ||
 	'http://localhost:3000/api/v1/auth/google/callback';
 process.env.BUCKETNAME = process.env.BUCKETNAME || 'bucket-plhain-staging';
+process.env.MERCADOPAGO_SANDBOX_KEY = process.env.MERCADOPAGO_SANDBOX_KEY || '';
+process.env.MERCADOPAGO_PRODUCTION_KEY =
+	process.env.MERCADOPAGO_PRODUCTION_KEY || '';
+process.env.MERCADOPAGO_SUCCESS_URL = process.env.MERCADOPAGO_SUCCESS_URL || '';
+process.env.MERCADOPAGO_FAILURE_URL = process.env.MERCADOPAGO_FAILURE_URL || '';
+process.env.MERCADOPAGO_PENDING_URL = process.env.MERCADOPAGO_PENDING_URL || '';
+process.env.MERCADOPAGO_NOTIFICATION_URL =
+	process.env.MERCADOPAGO_NOTIFICATION_URL || '';
